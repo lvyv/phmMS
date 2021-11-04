@@ -32,7 +32,7 @@ phmMD unit test module
 import unittest
 import uvicorn
 from physics import __version__
-from physics.config import basiccfg as bcf
+from config import basiccfg as bcf
 import logging
 
 logging.basicConfig(level=logging.INFO,
@@ -59,7 +59,7 @@ class TestMain(unittest.TestCase):
         """Tear down test fixtures, if any."""
 
     def test_Main(self):
-        """Test app.main:app"""
+        """Test physics.main:app"""
         logging.info(f'********************  CASICLOUD AI METER services  ********************')
         logging.info(f'phmMD is starting...')
         logging.info(f'phmMD micro service starting at {bcf.PHMMD_HOST}: {bcf.PHMMD_PORT}')

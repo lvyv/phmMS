@@ -93,6 +93,5 @@ if __name__ == '__main__':
                 host="0.0.0.0",
                 port=29083,
                 ssl_keyfile="cert.key",
-                ssl_certfile="cert.cer",
-                workers=3
+                ssl_certfile="cert.cer"
                 )

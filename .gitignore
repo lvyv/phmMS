@@ -1,4 +1,5 @@
 __pycache__
+SQLiteSpy.db3
 app.db
 .pytest_cache
 *.exe
