@@ -20,23 +20,20 @@
 
 """
 =========================
-mock module
+entrypoint of the app
 =========================
 
-接口测试，用于健康模型构件的接口测试仿真。
-同时也是phmMD中模型的参考实现（多线程）。
+模型微服务入口.
 """
-
-# Author: Awen <26896225@qq.com>
-# License: MIT
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from time import sleep
-import uvicorn
+from physics.vrla.soh import evaluate_soh as vrla_soh
+from physics.config import basiccfg as bcf
 import concurrent.futures
 import httpx
+import json
 import logging
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -52,28 +49,34 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-
-# IFX:REST 数据资源集成分系统提供的数据服务接口
-@app.get("/api/v1/devicetype")
-async def calculate_soh(deviceid: str):
-    """模拟耗时的机器学习任务"""
-    return {'deviceid': deviceid, 'type': 'vrla'}
-
-
-# IF11:REST MODEL 外部接口-phmMD与phmMS之间仿真接口
 # 线程池初始化
 executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 
 
-def computationally_intensive(sohin, reqid):
-    logging.info(f'{sohin}, {reqid}')
-    sleep(5)
+# time intensive tasks
+def soh_task(sohin, reqid):
     with httpx.Client(timeout=None, verify=False) as client:
-        r = client.put(f'https://127.0.0.1:29081/api/v1/reqhistory/item/?reqid={reqid}&res={"threading end result."}')
+        # 查询传入的设备号是什么样的设备类型（要求传入的设备号都是同样的设备类型）
+        devids = json.loads(sohin.devices)
+        devid = devids[0]
+        params = {'deviceid': devid}
+        r = client.get(f'{bcf.URL_DEVICETYPE}', params=params)
+        jso = json.loads(str(r.content, 'utf-8'))
+        devtype = jso['type']
+        logging.info(jso)
+        # 根据查询到的设备类型调用相应的模型计算soh值
+        res = 'threading end result.'
+        if devtype == bcf.DT_VRLA:          # 阀控铅酸电池
+            res = vrla_soh(devids)
+        elif devtype == bcf.DT_CELLPACK:    # UPS电池组
+            res = bcf.DT_CELLPACK
+        params = {'reqid': reqid, 'res':  json.dumps(res)}
+        r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
         logging.info(r)
-    return 0
+        return 0
 
 
+# IF11:REST MODEL 外部接口-phmMD与phmMS之间接口
 class SohInputParams(BaseModel):
     devices: str = '[]'     # json string
     tags: str = '[]'        # json string
@@ -84,15 +87,5 @@ class SohInputParams(BaseModel):
 @app.post("/api/v1/soh")
 async def calculate_soh(sohin: SohInputParams, reqid: int):
     """模拟耗时的机器学习任务"""
-    executor_.submit(computationally_intensive, sohin, reqid)
+    executor_.submit(soh_task, sohin, reqid)
     return {'task': reqid, 'status': 'submitted to work thread.'}
-
-
-if __name__ == '__main__':
-    uvicorn.run('mock:app',                # noqa
-                host="0.0.0.0",
-                port=29083,
-                ssl_keyfile="cert.key",
-                ssl_certfile="cert.cer",
-                workers=3
-                )

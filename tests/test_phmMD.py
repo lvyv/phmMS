@@ -31,9 +31,8 @@ phmMD unit test module
 
 import unittest
 import uvicorn
-from app import __version__
-import models.tables as tb
-import config.constants as ct
+from physics import __version__
+from physics.config import basiccfg as bcf
 import logging
 
 logging.basicConfig(level=logging.INFO,
@@ -62,13 +61,13 @@ class TestMain(unittest.TestCase):
     def test_Main(self):
         """Test app.main:app"""
         logging.info(f'********************  CASICLOUD AI METER services  ********************')
-        logging.info(f'phmMS tables were created by import statement {tb.TABLES}.')
-        logging.info(f'phmMS micro service starting at {ct.PHMMS_HOST}: {ct.PHMMS_PORT}')
-        uvicorn.run('app.main:app',  # noqa 标准用法
-                host=ct.PHMMS_HOST,
-                port=ct.PHMMS_PORT,
-                ssl_keyfile=ct.PHMMS_KEY,
-                ssl_certfile=ct.PHMMS_CER,
+        logging.info(f'phmMD is starting...')
+        logging.info(f'phmMD micro service starting at {bcf.PHMMD_HOST}: {bcf.PHMMD_PORT}')
+        uvicorn.run('physics.main:app',  # noqa 标准用法
+                host=bcf.PHMMD_HOST,
+                port=bcf.PHMMD_PORT,
+                ssl_keyfile=bcf.PHMMD_KEY,
+                ssl_certfile=bcf.PHMMD_CER,
                 log_level='warning',
                 workers=3
                 )
