@@ -1,0 +1,5 @@
+__pycache__
+app.db
+.pytest_cache
+*.exe
+*.dll
