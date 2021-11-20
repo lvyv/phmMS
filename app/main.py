@@ -28,7 +28,7 @@ entrypoint of the app
 
 from utils.app_exceptions import AppExceptionCase
 from fastapi import FastAPI
-from routers import battery, reqhistory
+from routers import battery, reqhistory, equipment
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from utils.request_exceptions import (
@@ -39,8 +39,10 @@ from utils.app_exceptions import app_exception_handler
 import threading
 import models.tables as tb
 import logging
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+app.mount('/static', StaticFiles(directory='../swagger_ui_dep/static'), name='static')
 logging.info(f'Worker Thread: {threading.current_thread().ident:6}     tables {tb.TABLES}.')
 
 
@@ -61,3 +63,4 @@ async def custom_app_exception_handler(request, e):
 
 app.include_router(reqhistory.router)
 app.include_router(battery.router)
+app.include_router(equipment.router)

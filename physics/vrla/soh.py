@@ -265,6 +265,39 @@ def solve_ode():
     plt.ylabel('y(t)')
     plt.show()
 
+# 电路微分方程组
+
+
+def ocv(t):
+    """
+    开路电压。
+    :param t:
+    :return:
+    """
+    return 12
+
+
+def ul(t):
+    """
+    端子电压。
+    :param t:
+    :return:
+    """
+    return 12
+
+
+Il, R0, Rth, Cth = (1, 1, 1, 1)
+
+
+def ode_equiption(u, t):
+    logging.info(f'iteration: {t}')
+    # dudt = - u/(Rth * Cth) + Il/Cth
+    dudt = - (ocv(t) - ul(t) - Il*R0)/(Rth * Cth) + Il/Cth
+    return dudt
+
+
+solution = odeint(ode_equiption, y0 ,t)
+
 
 # 需要拟合的函数
 def f_1(x, a, b):

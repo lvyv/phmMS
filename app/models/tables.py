@@ -29,7 +29,7 @@ table data model module
 # Author: Awen <26896225@qq.com>
 # License: MIT
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, TIMESTAMP, FLOAT, INTEGER
 from config.database import Base, create_tables
 
 
@@ -83,6 +83,41 @@ class TApiToken(Base):
     id = Column(Integer, primary_key=True, index=True)
     url = Column(String)
     tk = Column(String)
+
+
+class TEquipment(Base):
+    """
+    令牌表，暂存api访问令牌，便于使用。
+    该表主要字段：
+        id: 记录权限Token；
+        url: api的原型，https://ip:port/api/v1/phm/{soh}；
+        tk: 该api的访问令牌。
+
+    Attributes
+    ----------
+
+    Methods
+    -------
+
+    """
+    __tablename__ = "public.xc_equipment"
+
+    ts = Column(Integer, primary_key=True, index=True)
+
+    id = Column(Integer, index=True, default=0)
+    devclass = Column(String, default='BATTERY')
+
+    dis_voltage = Column(FLOAT, default=0)
+    dis_current = Column(FLOAT, default=0)
+    dis_resistance = Column(FLOAT, default=0)
+    dis_temperature = Column(FLOAT, default=0)
+    dis_dischargecycles = Column(INTEGER, default=0)
+
+    chg_voltage = Column(FLOAT, default=0)
+    chg_current = Column(FLOAT, default=0)
+    chg_resistance = Column(FLOAT, default=0)
+    chg_temperature = Column(FLOAT, default=0)
+    chg_dischargecycles = Column(INTEGER, default=0)
 
 
 # create all tables

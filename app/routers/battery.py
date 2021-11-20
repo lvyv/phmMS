@@ -95,7 +95,7 @@ async def call_opmode(device_id: str, sts: int, dts: int, taglist: str, db: get_
     :return:
     :rtype:  ServiceResult
     """
-    logging.info(f'{sts}{dts}{taglist}')
+    logging.info(f'{device_id}{sts}{dts}{taglist}')
     bs = VRLABatteryService(db)
-    res = await bs.soh(device_id)
+    res = await bs.soh([], [], 0, 0)
     return handle_result(res)
