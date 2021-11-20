@@ -4,3 +4,4 @@ app.db
 .pytest_cache
 *.exe
 *.dll
+.scannerwork

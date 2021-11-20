@@ -23,6 +23,7 @@ Receiving objects: 100% (108/108), 1.70 MiB | 217.00 KiB/s, done.
 Resolving deltas: 100% (35/35), done.
 ```
 4.安装依赖包。
+
 ```
 (py397) PS E:\document\source\repos\pytest> cd .\phmMS\
 (py397) PS E:\document\source\repos\pytest\phmMS> pip install -r .\requirements.txt
@@ -52,3 +53,15 @@ INFO: Sat 20 Nov 2021 17:09:10 main.py Worker Thread:   9376     tables ['req_hi
 3.设置代码目录为app（调度），physics（模型）。
 
 4.添加一个启动项，指向tests目录的test_phmMS.py，test_phmMD.py两个文件为启动入口，分别启动调度微服务和模型微服务。
+
+
+# 三、代码静态分析
+1.启动sonarqube
+2.下载安装sonarscanner（绿色软件需要设置其bin目录到环境变量path；设置conf下的sonar-sonar.host.url=http://192.168.47.144:9119）
+3.执行命令
+```
+sonar-scanner.bat -D"sonar.projectKey=97875a8430eaf4fe582e2c31401d12620eb4dba7" -D"sonar.sources=." -D"sonar.host.url=http://192.168.47.144:9119" -D"sonar.login=97875a8430eaf4fe582e2c31401d12620eb4dba7"
+```
+
+
+
