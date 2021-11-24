@@ -26,6 +26,6 @@ def get_db():
 Base = declarative_base()
 
 
-def create_tables() -> dict:
+def create_tables() -> list:
     Base.metadata.create_all(bind=engine)
     return list(Base.metadata.tables.keys())

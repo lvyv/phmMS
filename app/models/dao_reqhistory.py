@@ -33,7 +33,7 @@ import time
 from services.main import AppCRUD
 from models.tables import TReqHistory
 from schemas.reqhistory import ReqItemCreate
-from config import constants as ct
+from phmconfig import constants as ct
 
 
 class RequestHistoryCRUD(AppCRUD):

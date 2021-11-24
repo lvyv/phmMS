@@ -33,7 +33,7 @@ from fastapi import APIRouter, Depends
 from services.battery import VRLABatteryService
 from utils.service_result import handle_result, ServiceResult
 from utils.app_exceptions import AppException
-from config.database import get_db
+from phmconfig.database import get_db
 from pydantic import BaseModel
 
 import json

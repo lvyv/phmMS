@@ -33,7 +33,7 @@ import unittest
 import uvicorn
 from app import __version__
 import models.tables as tb
-import config.constants as ct
+import phmconfig.constants as ct
 import logging
 
 logging.basicConfig(level=logging.INFO,

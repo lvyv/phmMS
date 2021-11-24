@@ -30,7 +30,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from physics.vrla.soh import evaluate_soh as vrla_soh
-from config import basiccfg as bcf
+from phmconfig import basiccfg as bcf
 import concurrent.futures
 import httpx
 import json

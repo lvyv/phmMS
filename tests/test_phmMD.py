@@ -32,7 +32,7 @@ phmMD unit test module
 import unittest
 import uvicorn
 from physics import __version__
-from config import basiccfg as bcf
+from phmconfig import basiccfg as bcf
 import logging
 
 logging.basicConfig(level=logging.INFO,

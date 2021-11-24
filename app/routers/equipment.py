@@ -33,7 +33,7 @@ from fastapi import APIRouter, Depends
 from services.equipment import EquipmentService
 from schemas.equipment import EquipmentItem, EquipmentItemCreate
 from utils.service_result import handle_result
-from config.database import get_db
+from phmconfig.database import get_db
 
 router = APIRouter(
     prefix="/api/v1/equipment",

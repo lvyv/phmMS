@@ -29,8 +29,8 @@ table data model module
 # Author: Awen <26896225@qq.com>
 # License: MIT
 
-from sqlalchemy import Column, Integer, String, TIMESTAMP, FLOAT, INTEGER
-from config.database import Base, create_tables
+from sqlalchemy import Column, Integer, String, FLOAT, INTEGER
+from phmconfig.database import Base, create_tables
 
 
 class TReqHistory(Base):

@@ -38,7 +38,7 @@ from services.main import AppService
 from models.dao_reqhistory import RequestHistoryCRUD
 from utils.service_result import ServiceResult
 from utils.app_exceptions import AppException
-from config import constants as ct
+from phmconfig import constants as ct
 
 
 class VRLABatteryService(AppService):

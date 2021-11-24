@@ -5,8 +5,8 @@
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/app" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/physics" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/config" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/phmconfig" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7 (odoo-14.0.post20201231)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

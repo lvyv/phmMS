@@ -20,7 +20,7 @@
 
 """
 =========================
-basic config module
+basic phmconfig module
 =========================
 
 定义健康管理模型的各种公共配置。
