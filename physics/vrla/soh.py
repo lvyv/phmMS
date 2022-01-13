@@ -296,7 +296,7 @@ def ode_equiption(u, t):
     return dudt
 
 
-solution = odeint(ode_equiption, y0 ,t)
+# solution = odeint(ode_equiption, y0 ,t)
 
 
 # 需要拟合的函数

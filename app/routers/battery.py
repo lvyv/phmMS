@@ -50,8 +50,8 @@ router = APIRouter(
 
 # 1.健康评估模型，即根据输入设备的MVs，定义和解算SOH。
 class SohInputParams(BaseModel):
-    devices: str = '[]'     # json string
-    tags: str = '[]'        # json string
+    devices: str = '["d1", "d2"]'     # json string
+    tags: str = '["t1", "t2"]'        # json string
     startts: int            # timestamp ms
     duration: int           # ms
 

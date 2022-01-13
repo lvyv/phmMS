@@ -54,6 +54,8 @@ INFO: Sat 20 Nov 2021 17:09:10 main.py Worker Thread:   9376     tables ['req_hi
 
 4.添加一个启动项，指向tests目录的test_phmMS.py，test_phmMD.py两个文件为启动入口，分别启动调度微服务和模型微服务。
 
+5.启动mock程序模仿外部资源。
+
 
 # 三、代码静态分析
 1.启动sonarqube

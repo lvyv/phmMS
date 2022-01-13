@@ -42,10 +42,13 @@ REQ_STATUS_PENDING = 'pending'
 REQ_STATUS_SETTLED = 'settled'
 
 # 后台ai模型的地址
-REST_REQUEST_TIMEOUT = 1
+REST_REQUEST_TIMEOUT = 10
 
 # 后台ai模型的地址
 AIURL_SOH = 'https://127.0.0.1:29082/api/v1/soh'
+# 后台ai模型mock的地址
+# AIURL_SOH = 'https://127.0.0.1:29083/api/v1/soh'
+
 
 # phmMS启动的地址、端口、证书等
 PHMMS_HOST = '0.0.0.0'
