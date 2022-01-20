@@ -20,30 +20,40 @@
 
 """
 =========================
-controller layer
+config module
 =========================
 
-controller层，负责equipment数据的填入.
+Configuration related stuff here.
+1个视频通道对应rtsp的url
+1个视频通道包含多个预置点viewpoint
+1个预置点包含多个热点区aoi
 """
 
 # Author: Awen <26896225@qq.com>
-# License: MIT
+# License: Apache Licence 2.0
 
-from fastapi import APIRouter, Depends
-from services.equipment import EquipmentService
-from schemas.equipment import EquipmentItem, EquipmentItemCreate
-from utils.service_result import handle_result
-from phmconfig.database import get_db
-
-router = APIRouter(
-    prefix="/api/v1/equipment",
-    tags=["装备指标历史统计微服务"],
-    responses={404: {"description": "Not found"}},
-)
+import json
 
 
-@router.post("/item/{counts}", response_model=EquipmentItem)
-async def create_item(item: EquipmentItemCreate, db: get_db = Depends(), counts: int = 0):
-    so = EquipmentService(db)
-    result = so.create_items(item, counts)
-    return handle_result(result)
+class ConfigSet:
+    cfg_ = None             # 下发配置
+    path2cfg_ = None        # 下发配置路径
+
+    @classmethod
+    def load_json(cls, fp):
+        try:
+            load_dict = None
+            cls.path2cfg_ = fp
+            with open(fp, 'r', encoding='UTF-8') as load_f:
+                load_dict = json.load(load_f)
+                load_f.close()
+        finally:
+            return load_dict
+
+    @classmethod
+    def save_json(cls):
+        formatted_cfg = json.dumps(cls.cfg_, ensure_ascii=False, indent=2)
+        if cls.path2cfg_:
+            with open(cls.path2cfg_, 'w', encoding='utf-8') as fp:
+                fp.write(formatted_cfg)
+                fp.close()

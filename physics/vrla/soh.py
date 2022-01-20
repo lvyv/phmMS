@@ -30,6 +30,7 @@ unit test module
 # License: MIT
 
 import logging
+import time
 import unittest
 from app import __version__
 import numpy as np
@@ -47,20 +48,30 @@ def test_version():
     assert __version__ == "0.1.0"
 
 
+def calculate_soh(did):
+    """
+    计算soh和扩展指标的值并返回。
+    :param did:
+    :return:
+    """
+    return 0.99, {"soc": 0.8, "R_imbalance": 0.1}
+
+
 def evaluate_soh(devs: list):
     """
     根据输入的电池标识数值逐个计算其对应的soh，soc，并返回。
-    :param devs: 电池设备标识列表，比如["598-djm12180-1-1", "598-djm12180-1-2", "598-djm12180-1-3"]。
+    :param devs: 电池设备标识列表，比如["d01", "d02"]。
     :type: list。
-    :return: soh等计算的结果，比如[{"598-djm12180-1-1": {"soh": 99, "soc": 98, "ts": 1636011489015}}]。
+    :return: soh等计算的结果，比如[{"d01": {"soh": 99, "extend": {”soc":0.98}, "ts": 1636011489015}}, ...]。
     :type: list。
     """
     logging.info(devs)
-    return [
-        {"598-djm12180-1-1": {"soh": 0.99, "soc": 1, "ts": 1636011489015}},
-        {"598-djm12180-1-2": {"soh": 0.98, "soc": 0.78, "ts": 1636011489015}},
-        {"598-djm12180-1-3": {"soh": 0.99, "soc": 0.8, "ts": 1636011489015}},
-            ]
+    results = {}
+    for dev in devs:
+        ts = int(time.time()*1000)
+        soh, extend = calculate_soh(dev)
+        results.update({dev: {'soh': soh, 'extend': extend, 'ts': ts}})
+    return results
 
 
 '''

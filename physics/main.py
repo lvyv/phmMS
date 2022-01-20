@@ -60,11 +60,13 @@ def soh_task(sohin, reqid):
         devids = json.loads(sohin.devices)
         devid = devids[0]
         params = {'deviceid': devid}
-        r = client.get(f'{bcf.URL_DEVICETYPE}', params=params)
-        jso = json.loads(str(r.content, 'utf-8'))
-        devtype = jso['type']
-        logging.info(jso)
+        # r = client.get(f'{bcf.URL_DEVICETYPE}', params=params)
+        # jso = json.loads(str(r.content, 'utf-8'))
+        # devtype = jso['type']
+        # logging.info(jso)
         # 根据查询到的设备类型调用相应的模型计算soh值
+
+        devtype = bcf.DT_VRLA
         res = 'threading end result.'
         if devtype == bcf.DT_VRLA:          # 阀控铅酸电池
             res = vrla_soh(devids)
@@ -81,7 +83,7 @@ class SohInputParams(BaseModel):
     devices: str = '[]'     # json string
     tags: str = '[]'        # json string
     startts: int            # timestamp ms
-    duration: int           # ms
+    endts: int              # timestamp ms
 
 
 @app.post("/api/v1/soh")

@@ -38,11 +38,11 @@ import time
 
 class EquipmentService(AppService):
     def create_items(self, pi, counts=500000) -> ServiceResult:
+        equipment_item = None
         pi.devclass = 'BATTERY'
         for ii in range(counts):
             pi.ts = int(time.time()*1000)
             pi.id = ii % 40
             pi.dis_dischargecycles = ii
             equipment_item = EquipmentCRUD(self.db).create_record(pi)
-            # print(ii)
         return ServiceResult(equipment_item)

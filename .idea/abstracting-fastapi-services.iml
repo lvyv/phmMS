@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/phmconfig" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7 (Native)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="py378(odoo+v2v)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

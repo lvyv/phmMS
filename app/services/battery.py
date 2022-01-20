@@ -45,7 +45,7 @@ class VRLABatteryService(AppService):
     """
     电池模型业务逻辑服务。
     """
-    async def soh(self, devs: list, tags: list, startts: int, duration: int) -> ServiceResult:
+    async def soh(self, devs: list, tags: list, startts: int, endts: int) -> ServiceResult:
         dev_type = ct.DEV_VRLA
         external_data = {
             'model': dev_type,
@@ -62,7 +62,7 @@ class VRLABatteryService(AppService):
                     "devices": json.dumps(devs),
                     "tags": json.dumps(tags),
                     "startts": startts,
-                    "duration": duration
+                    "endts": endts
                 }
                 params = {"reqid": soh_item.id}
                 r = await client.post(f'{ct.AIURL_SOH}', json=payload, params=params)

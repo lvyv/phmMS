@@ -53,7 +53,7 @@ class SohInputParams(BaseModel):
     devices: str = '["d1", "d2"]'     # json string
     tags: str = '["t1", "t2"]'        # json string
     startts: int            # timestamp ms
-    duration: int           # ms
+    endts: int              # timestamp ms
 
 
 @router.post("/soh")
@@ -70,7 +70,7 @@ async def call_soh(sohin: SohInputParams, db: get_db = Depends()):
     """
     try:
         bs = VRLABatteryService(db)
-        res = await bs.soh(json.loads(sohin.devices), json.loads(sohin.tags), sohin.startts, sohin.duration)
+        res = await bs.soh(json.loads(sohin.devices), json.loads(sohin.tags), sohin.startts, sohin.endts)
     except json.decoder.JSONDecodeError:
         res = ServiceResult(AppException.HttpRequestParamsIllegal())
     return handle_result(res)

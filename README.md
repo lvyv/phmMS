@@ -54,7 +54,7 @@ INFO: Sat 20 Nov 2021 17:09:10 main.py Worker Thread:   9376     tables ['req_hi
 
 4.添加一个启动项，指向tests目录的test_phmMS.py，test_phmMD.py两个文件为启动入口，分别启动调度微服务和模型微服务。
 
-5.启动mock程序模仿外部资源。
+5.启动mock程序模仿外部资源，比如数据资源集成分系统的各种数据集市api。
 
 
 # 三、代码静态分析
@@ -65,5 +65,32 @@ INFO: Sat 20 Nov 2021 17:09:10 main.py Worker Thread:   9376     tables ['req_hi
 sonar-scanner.bat -D"sonar.projectKey=97875a8430eaf4fe582e2c31401d12620eb4dba7" -D"sonar.sources=." -D"sonar.host.url=http://192.168.47.144:9119" -D"sonar.login=97875a8430eaf4fe582e2c31401d12620eb4dba7"
 ```
 
+# 四、待办事项
+
+1.对于给定的时间窗口，返回soh和扩展值
+
+包含实时计算和历史查询返回两个逻辑。如果startts==0，endts==0，则实时计算；如果startts和endts差是一个区间，则查询历史值。
+
+1.1.实时计算
+
+soh的api调用下发后，计算出soh，并且返回，还要publish到mqtt。
+
+a）计算soh
+
+b）写入数据库（既要写入req表，还要写入equipment表NOK）
+
+c）发送到mqtt
+
+1.2.历史查询（NOK）
+
+不调用模型，直接从数据库的equipment取出历史区间的值。
+
+ts：[]
+
+soh:[]
 
 
+
+【注意】实时计算的时候产生的这个指标计算值在后面可以通过一个定时任务，每天算一次，从而得到历史趋势指标值（NOK），需要提供微服务接口。
+
+当前可以先利用/api/v1/equipment/item/{counts}修改得到仿真数据。
