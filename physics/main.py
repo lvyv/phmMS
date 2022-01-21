@@ -35,6 +35,8 @@ import concurrent.futures
 import httpx
 import json
 import logging
+import paho.mqtt.client as mqtt_client
+
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 app = FastAPI()
@@ -84,6 +86,10 @@ def post_process_vrla_soh(reqid, sohres):
             r = client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
 
         # 3.推送MQTT
+        mqttclient = mqtt_client.Client('mqttcid')
+        mqttclient.username_pw_set('tstusr12', 'pwdtst')
+        mqttclient.connect('test.mosquitto.org', 1883)
+        mqttclient.publish('phm/vlra_7891/soh', {"reqid": reqid, "sohres": sohres})
 
         logging.info(r)
 

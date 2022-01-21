@@ -54,6 +54,7 @@ def calculate_soh(did):
     :param did:
     :return:
     """
+    logging.info(did)
     return 0.99, {"soc": 0.8, "Rimbalance": 0.1}
 
 
@@ -285,6 +286,7 @@ def ocv(t):
     :param t:
     :return:
     """
+    logging.info(t)
     return 12
 
 
@@ -294,6 +296,7 @@ def ul(t):
     :param t:
     :return:
     """
+    logging.info(t)
     return 12
 
 
@@ -301,7 +304,7 @@ Il, R0, Rth, Cth = (1, 1, 1, 1)
 
 
 def ode_equiption(u, t):
-    logging.info(f'iteration: {t}')
+    logging.info(f'iteration: {u, t}')
     # dudt = - u/(Rth * Cth) + Il/Cth
     dudt = - (ocv(t) - ul(t) - Il*R0)/(Rth * Cth) + Il/Cth
     return dudt
