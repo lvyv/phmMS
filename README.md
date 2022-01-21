@@ -75,11 +75,13 @@ sonar-scanner.bat -D"sonar.projectKey=97875a8430eaf4fe582e2c31401d12620eb4dba7" 
 
 soh的api调用下发后，计算出soh，并且返回，还要publish到mqtt。
 
-a）计算soh
+a）计算soh-OK
 
-b）写入数据库（既要写入req表，还要写入equipment表NOK）
+b）写入数据库（既要写入req表，还要写入equipment表）OK
 
-c）发送到mqtt
+c）发送到mqtt(NOK)
+
+
 
 1.2.历史查询（NOK）
 

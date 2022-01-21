@@ -35,9 +35,13 @@ PHMMD_PORT = 29082
 PHMMD_KEY = 'cert.key'
 PHMMD_CER = 'cert.cer'
 
-# 后台ai模型的地址
+# RESTFul请求超时期限
 REST_REQUEST_TIMEOUT = 1
+# 各种MOCK地址
 URL_DEVICETYPE = 'https://127.0.0.1:29083/api/v1/devicetype'
+# 创建一个统计指标数据记录
+URL_POST_EQUIPMENT = 'https://127.0.0.1:29081/api/v1/equipment/item'
+# 更新历史请求记录
 URL_RESULT_WRITEBACK = 'https://127.0.0.1:29081/api/v1/reqhistory/item'
 
 # 设备类型

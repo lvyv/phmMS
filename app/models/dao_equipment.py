@@ -41,7 +41,7 @@ class EquipmentCRUD(AppCRUD):
 
     def create_record(self, item: EquipmentItemCreate) -> TEquipment:
         reqdao = TEquipment(ts=item.ts,  # 主键
-                            id=item.id,
+                            did=item.did,
                             devclass=item.devclass,
                             dis_voltage=item.dis_voltage,
                             dis_current=item.dis_current,
@@ -52,7 +52,11 @@ class EquipmentCRUD(AppCRUD):
                             chg_current=item.chg_current,
                             chg_resistance=item.chg_resistance,
                             chg_temperature=item.chg_temperature,
-                            chg_dischargecycles=item.chg_dischargecycles)
+                            chg_dischargecycles=item.chg_dischargecycles,
+                            soh=item.soh,
+                            soc=item.soc,
+                            Rimbalance=item.Rimbalance
+                            )
         self.db.add(reqdao)
         self.db.commit()
         self.db.refresh(reqdao)

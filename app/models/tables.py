@@ -103,8 +103,8 @@ class TEquipment(Base):
     __tablename__ = "public.xc_equipment"
 
     ts = Column(Integer, primary_key=True, index=True)
+    did = Column(String,  primary_key=True, index=True, default='d01')
 
-    id = Column(Integer, index=True, default=0)
     devclass = Column(String, default='BATTERY')
 
     dis_voltage = Column(FLOAT, default=0)
@@ -118,6 +118,9 @@ class TEquipment(Base):
     chg_resistance = Column(FLOAT, default=0)
     chg_temperature = Column(FLOAT, default=0)
     chg_dischargecycles = Column(INTEGER, default=0)
+    soh = Column(FLOAT, default=0)
+    soc = Column(FLOAT, default=0)
+    Rimbalance = Column(FLOAT, default=0)
 
 
 # create all tables

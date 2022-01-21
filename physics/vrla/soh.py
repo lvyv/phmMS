@@ -54,7 +54,7 @@ def calculate_soh(did):
     :param did:
     :return:
     """
-    return 0.99, {"soc": 0.8, "R_imbalance": 0.1}
+    return 0.99, {"soc": 0.8, "Rimbalance": 0.1}
 
 
 def evaluate_soh(devs: list):

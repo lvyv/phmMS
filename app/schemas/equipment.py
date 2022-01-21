@@ -5,7 +5,7 @@ class EquipmentItemBase(BaseModel):
     """
 
     """
-    id: int
+    did: str
     devclass: str
 
     dis_voltage: float
@@ -19,6 +19,10 @@ class EquipmentItemBase(BaseModel):
     chg_resistance: float
     chg_temperature: float
     chg_dischargecycles: int
+    # 计算指标
+    soh: float
+    soc: float
+    Rimbalance: float
 
 
 class EquipmentItemCreate(EquipmentItemBase):

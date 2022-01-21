@@ -53,29 +53,55 @@ app.add_middleware(
 executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 
 
+def post_process_vrla_soh(reqid, sohres):
+    with httpx.Client(timeout=None, verify=False) as client:
+        params = {'reqid': reqid, 'res': json.dumps(sohres)}
+        # 1.写回请求响应数据库表
+        r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
+
+        # 2.写回指标统计数据库表
+        items = json.loads(params['res'])
+        for did in items.keys():
+            eqitem = items[did]
+            eqi = {
+                "did": did,
+                "devclass": "BATTERY",  # FIXME
+                "dis_voltage": 0,
+                "dis_current": 0,
+                "dis_resistance": 0,
+                "dis_temperature": 0,
+                "dis_dischargecycles": 0,
+                "chg_voltage": 0,
+                "chg_current": 0,
+                "chg_resistance": 0,
+                "chg_temperature": 0,
+                "chg_dischargecycles": 0,
+                "soh": eqitem['soh'],
+                "soc": eqitem['extend']['soc'],
+                "Rimbalance": eqitem['extend']['Rimbalance'],
+                "ts": eqitem['ts']
+            }
+            r = client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
+
+        # 3.推送MQTT
+
+        logging.info(r)
+
+
 # time intensive tasks
 def soh_task(sohin, reqid):
-    with httpx.Client(timeout=None, verify=False) as client:
-        # 查询传入的设备号是什么样的设备类型（要求传入的设备号都是同样的设备类型）
-        devids = json.loads(sohin.devices)
-        devid = devids[0]
-        params = {'deviceid': devid}
-        # r = client.get(f'{bcf.URL_DEVICETYPE}', params=params)
-        # jso = json.loads(str(r.content, 'utf-8'))
-        # devtype = jso['type']
-        # logging.info(jso)
-        # 根据查询到的设备类型调用相应的模型计算soh值
-
-        devtype = bcf.DT_VRLA
-        res = 'threading end result.'
-        if devtype == bcf.DT_VRLA:          # 阀控铅酸电池
-            res = vrla_soh(devids)
-        elif devtype == bcf.DT_CELLPACK:    # UPS电池组
-            res = bcf.DT_CELLPACK
-        params = {'reqid': reqid, 'res':  json.dumps(res)}
-        r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
-        logging.info(r)
-        return 0
+    # 查询传入的设备号是什么样的设备类型（要求传入的设备号都是同样的设备类型）
+    devids = json.loads(sohin.devices)
+    devtype = bcf.DT_VRLA
+    res = None
+    if devtype == bcf.DT_VRLA:          # 阀控铅酸电池
+        res = vrla_soh(devids)
+        post_process_vrla_soh(reqid, res)               # 写两个库表（req_history, public.xc_equipment），发mqtt
+    elif devtype == bcf.DT_CELLPACK:    # UPS电池组
+        pass
+    else:
+        pass
+    return res
 
 
 # IF11:REST MODEL 外部接口-phmMD与phmMS之间接口

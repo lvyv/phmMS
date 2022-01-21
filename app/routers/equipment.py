@@ -43,7 +43,14 @@ router = APIRouter(
 
 
 @router.post("/item/{counts}", response_model=EquipmentItem)
-async def create_item(item: EquipmentItemCreate, db: get_db = Depends(), counts: int = 0):
+async def create_items(item: EquipmentItemCreate, db: get_db = Depends(), counts: int = 0):
     so = EquipmentService(db)
     result = so.create_items(item, counts)
+    return handle_result(result)
+
+
+@router.post("/item", response_model=EquipmentItem)
+async def create_item(item: EquipmentItemCreate, db: get_db = Depends()):
+    so = EquipmentService(db)
+    result = so.create_item(item)
     return handle_result(result)
