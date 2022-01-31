@@ -29,6 +29,9 @@ constants module
 # Author: Awen <26896225@qq.com>
 # License: MIT
 
+from phmconfig.config import ConfigSet
+
+cfg = ConfigSet.get_cfg()
 # 所有后端的科学计算模型，phmMD类型
 DEV_VRLA = 'vrla'
 DEV_CELLPACK = 'cellpack'
@@ -45,13 +48,14 @@ REQ_STATUS_SETTLED = 'settled'
 REST_REQUEST_TIMEOUT = 10
 
 # 后台ai模型的地址
-AIURL_SOH = 'https://127.0.0.1:29082/api/v1/soh'
+URL_SOH = cfg['url_soh']
+URL_CLUSTER = cfg['url_cluster']
 # 后台ai模型mock的地址
 # AIURL_SOH = 'https://127.0.0.1:29083/api/v1/soh'
 
 
 # phmMS启动的地址、端口、证书等
-PHMMS_HOST = '0.0.0.0'
-PHMMS_PORT = 29081
-PHMMS_KEY = 'cert.key'
-PHMMS_CER = 'cert.cer'
+PHMMS_HOST = cfg['phmms_host']
+PHMMS_PORT = cfg['phmms_port']
+PHMMS_KEY = cfg['phmms_key']
+PHMMS_CER = cfg['phmms_cer']

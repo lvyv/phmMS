@@ -79,7 +79,7 @@ a）计算soh-OK
 
 b）写入数据库（既要写入req表，还要写入equipment表）OK
 
-c）发送到mqtt(NOK)
+c）发送到mqtt(OK)
 
 
 

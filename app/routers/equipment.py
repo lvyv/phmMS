@@ -54,3 +54,17 @@ async def create_item(item: EquipmentItemCreate, db: get_db = Depends()):
     so = EquipmentService(db)
     result = so.create_item(item)
     return handle_result(result)
+
+
+@router.get("/item/{item_id}")
+async def get_item(item_id: str, db: get_db = Depends()):
+    so = EquipmentService(db)
+    result = so.get_item(item_id)
+    return handle_result(result)
+
+
+@router.get("/items")
+async def get_items(did: str, startts: int, endts: int, db: get_db = Depends()):
+    so = EquipmentService(db)
+    result = so.get_items(did, startts, endts)
+    return handle_result(result)

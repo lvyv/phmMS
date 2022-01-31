@@ -50,3 +50,11 @@ class EquipmentService(AppService):
     def create_item(self, pi) -> ServiceResult:
         equipment_item = EquipmentCRUD(self.db).create_record(pi)
         return ServiceResult(equipment_item)
+
+    def get_item(self, pi) -> ServiceResult:
+        equipment_item = EquipmentCRUD(self.db).get_record(pi)
+        return ServiceResult(equipment_item)
+
+    def get_items(self, pi, sts, ets) -> ServiceResult:
+        equipment_items = EquipmentCRUD(self.db).get_records(pi, sts, ets)
+        return ServiceResult(equipment_items)

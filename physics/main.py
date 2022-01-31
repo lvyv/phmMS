@@ -31,6 +31,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from physics.vrla.soh import evaluate_soh as vrla_soh
 from phmconfig import basiccfg as bcf
+from phmconfig.config import ConfigSet
 import concurrent.futures
 import httpx
 import json
@@ -86,10 +87,11 @@ def post_process_vrla_soh(reqid, sohres):
             r = client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
 
         # 3.推送MQTT
-        mqttclient = mqtt_client.Client('mqttcid')
-        mqttclient.username_pw_set('tstusr12', 'pwdtst')
-        mqttclient.connect('test.mosquitto.org', 1883)
-        mqttclient.publish('phm/vlra_7891/soh', {"reqid": reqid, "sohres": sohres})
+        cfg = ConfigSet.get_cfg()
+        mqttclient = mqtt_client.Client(cfg['mqtt_cid'])
+        mqttclient.username_pw_set(cfg['mqtt_usr'], cfg['mqtt_pwd'])
+        mqttclient.connect(cfg['mqtt_svr'], cfg['mqtt_port'])
+        mqttclient.publish(cfg['mqtt_tp'], json.dumps({"reqid": reqid, "sohres": sohres}))
 
         logging.info(r)
 
@@ -110,6 +112,11 @@ def soh_task(sohin, reqid):
     return res
 
 
+def cluster_task(clusterin, reqid):
+    res = None
+    return res
+
+
 # IF11:REST MODEL 外部接口-phmMD与phmMS之间接口
 class SohInputParams(BaseModel):
     devices: str = '[]'     # json string
@@ -122,4 +129,11 @@ class SohInputParams(BaseModel):
 async def calculate_soh(sohin: SohInputParams, reqid: int):
     """模拟耗时的机器学习任务"""
     executor_.submit(soh_task, sohin, reqid)
+    return {'task': reqid, 'status': 'submitted to work thread.'}
+
+
+@app.post("/api/v1/cluster")
+async def calculate_cluster(sohin: SohInputParams, reqid: int):
+    """模拟耗时的机器学习任务"""
+    executor_.submit(cluster_task, sohin, reqid)
     return {'task': reqid, 'status': 'submitted to work thread.'}

@@ -57,3 +57,9 @@ class ConfigSet:
             with open(cls.path2cfg_, 'w', encoding='utf-8') as fp:
                 fp.write(formatted_cfg)
                 fp.close()
+
+    @classmethod
+    def get_cfg(cls, pathtocfg='phm.cfg'):
+        if cls.cfg_ is None:
+            cls.cfg_ = cls.load_json(pathtocfg)
+        return cls.cfg_

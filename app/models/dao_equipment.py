@@ -61,3 +61,27 @@ class EquipmentCRUD(AppCRUD):
         self.db.commit()
         self.db.refresh(reqdao)
         return reqdao
+
+    def get_record(self, did: int) -> TEquipment:
+        """
+        未完成，需要测试。
+        :param did:
+        :return:
+        """
+        reqdao = self.db.query(TEquipment).filter(TEquipment.did == did).first()
+        if reqdao:
+            return reqdao
+        return None     # noqa
+
+    def get_records(self, did: int, sts: int, ets: int) -> TEquipment:
+        """
+        未完成，需要测试。
+        :param did:
+        :param sts:
+        :param ets:
+        :return:
+        """
+        reqdao = self.db.query(TEquipment).filter(TEquipment.did == did).first()
+        if reqdao:
+            return reqdao
+        return None     # noqa

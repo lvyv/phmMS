@@ -46,6 +46,14 @@ class VRLABatteryService(AppService):
     电池模型业务逻辑服务。
     """
     async def soh(self, devs: list, tags: list, startts: int, endts: int) -> ServiceResult:
+        """
+        健康指标计算。
+        :param devs:
+        :param tags:
+        :param startts:
+        :param endts:
+        :return:
+        """
         dev_type = ct.DEV_VRLA
         external_data = {
             'model': dev_type,
@@ -65,7 +73,41 @@ class VRLABatteryService(AppService):
                     "endts": endts
                 }
                 params = {"reqid": soh_item.id}
-                r = await client.post(f'{ct.AIURL_SOH}', json=payload, params=params)
+                r = await client.post(f'{ct.URL_SOH}', json=payload, params=params)
+                logging.debug(r)
+                return ServiceResult(r.content)
+        except httpx.ConnectTimeout:
+            return ServiceResult(AppException.HttpRequestTimeout())
+
+    async def cluster(self, devs: list, tags: list, startts: int, endts: int) -> ServiceResult:
+        """
+        聚类计算。
+        :param devs:
+        :param tags:
+        :param startts:
+        :param endts:
+        :return:
+        """
+        dev_type = ct.DEV_VRLA
+        external_data = {
+            'model': dev_type,
+            'status': ct.REQ_STATUS_PENDING,
+            'result': ct.REQ_STATUS_PENDING,
+            'requestts': int(time.time() * 1000),
+            'memo': json.dumps(devs)
+        }
+        item = ReqItemCreate(**external_data)
+        cluster_item = RequestHistoryCRUD(self.db).create_record(item)
+        try:
+            async with httpx.AsyncClient(timeout=ct.REST_REQUEST_TIMEOUT, verify=False) as client:
+                payload = {
+                    "devices": json.dumps(devs),
+                    "tags": json.dumps(tags),
+                    "startts": startts,
+                    "endts": endts
+                }
+                params = {"reqid": cluster_item.id}
+                r = await client.post(f'{ct.URL_CLUSTER}', json=payload, params=params)
                 logging.debug(r)
                 return ServiceResult(r.content)
         except httpx.ConnectTimeout:

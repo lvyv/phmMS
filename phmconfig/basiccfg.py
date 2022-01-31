@@ -29,20 +29,23 @@ basic phmconfig module
 # Author: Awen <26896225@qq.com>
 # License: MIT
 
+from phmconfig.config import ConfigSet
+
+cfg = ConfigSet.get_cfg()
 # phmMD启动的地址、端口、证书等
-PHMMD_HOST = '0.0.0.0'
-PHMMD_PORT = 29082
-PHMMD_KEY = 'cert.key'
-PHMMD_CER = 'cert.cer'
+PHMMD_HOST = cfg['phmmd_host']
+PHMMD_PORT = cfg['phmmd_port']
+PHMMD_KEY = cfg['phmmd_key']
+PHMMD_CER = cfg['phmmd_cer']
 
 # RESTFul请求超时期限
 REST_REQUEST_TIMEOUT = 1
 # 各种MOCK地址
-URL_DEVICETYPE = 'https://127.0.0.1:29083/api/v1/devicetype'
+# URL_DEVICETYPE = 'https://127.0.0.1:29083/api/v1/devicetype'
 # 创建一个统计指标数据记录
-URL_POST_EQUIPMENT = 'https://127.0.0.1:29081/api/v1/equipment/item'
+URL_POST_EQUIPMENT = cfg['url_post_equipment']
 # 更新历史请求记录
-URL_RESULT_WRITEBACK = 'https://127.0.0.1:29081/api/v1/reqhistory/item'
+URL_RESULT_WRITEBACK = cfg['url_result_writeback']
 
 # 设备类型
 DT_VRLA = 'vrla'
