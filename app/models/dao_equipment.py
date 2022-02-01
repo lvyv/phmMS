@@ -32,6 +32,7 @@ data access层，负责处理模型调用的历史记录。
 from services.main import AppCRUD
 from models.tables import TEquipment
 from schemas.equipment import EquipmentItemCreate
+from sqlalchemy import and_
 
 
 class EquipmentCRUD(AppCRUD):
@@ -73,15 +74,17 @@ class EquipmentCRUD(AppCRUD):
             return reqdao
         return None     # noqa
 
-    def get_records(self, did: int, sts: int, ets: int) -> TEquipment:
+    def get_records(self, devs: int, sts: int, ets: int) -> TEquipment:
         """
         未完成，需要测试。
-        :param did:
+        :param devs:
         :param sts:
         :param ets:
         :return:
         """
-        reqdao = self.db.query(TEquipment).filter(TEquipment.did == did).first()
+        reqdao = self.db.query(TEquipment).filter(and_(TEquipment.did.in_(devs),
+                                                       TEquipment.ts.between(sts, ets)
+                                                       )).all()
         if reqdao:
             return reqdao
         return None     # noqa

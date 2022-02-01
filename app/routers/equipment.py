@@ -57,14 +57,17 @@ async def create_item(item: EquipmentItemCreate, db: get_db = Depends()):
 
 
 @router.get("/item/{item_id}")
-async def get_item(item_id: str, db: get_db = Depends()):
+async def get_item(item_id: str = "d1", db: get_db = Depends()):
     so = EquipmentService(db)
     result = so.get_item(item_id)
     return handle_result(result)
 
 
 @router.get("/items")
-async def get_items(did: str, startts: int, endts: int, db: get_db = Depends()):
+async def get_items(jsostr: str = '["d1","d2"]',
+                    startts: int = 1643619742920,
+                    endts: int = 1643621501376,
+                    db: get_db = Depends()):
     so = EquipmentService(db)
-    result = so.get_items(did, startts, endts)
+    result = so.get_items(jsostr, startts, endts)
     return handle_result(result)

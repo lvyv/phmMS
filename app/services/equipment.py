@@ -33,6 +33,8 @@ from services.main import AppService
 from models.dao_equipment import EquipmentCRUD
 from utils.service_result import ServiceResult
 import time
+import json
+import random
 # from utils.app_exceptions import AppException
 
 
@@ -43,7 +45,8 @@ class EquipmentService(AppService):
         for ii in range(counts):
             pi.ts = int(time.time()*1000)
             pi.did = f'd{ii % 40}'
-            pi.dis_dischargecycles = ii
+            pi.dis_dischargecycles = random.randint(5, 20)
+            pi.soh = random.uniform(0.93, 1)
             equipment_item = EquipmentCRUD(self.db).create_record(pi)
         return ServiceResult(equipment_item)
 
@@ -55,6 +58,7 @@ class EquipmentService(AppService):
         equipment_item = EquipmentCRUD(self.db).get_record(pi)
         return ServiceResult(equipment_item)
 
-    def get_items(self, pi, sts, ets) -> ServiceResult:
-        equipment_items = EquipmentCRUD(self.db).get_records(pi, sts, ets)
+    def get_items(self, jsostr, sts, ets) -> ServiceResult:
+        devs = json.loads(jsostr)
+        equipment_items = EquipmentCRUD(self.db).get_records(devs, sts, ets)
         return ServiceResult(equipment_items)
