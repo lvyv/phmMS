@@ -103,7 +103,7 @@ class TEquipment(Base):
     __tablename__ = "public.xc_equipment"
 
     ts = Column(BigInteger, primary_key=True, index=True)
-    did = Column(String(512),  primary_key=True, index=True, default='d01')
+    did = Column(String(512), primary_key=True, index=True, default='d01')
 
     devclass = Column(String(512), default='BATTERY')
 
@@ -121,6 +121,30 @@ class TEquipment(Base):
     soh = Column(FLOAT, default=0)
     soc = Column(FLOAT, default=0)
     Rimbalance = Column(FLOAT, default=0)
+
+
+class TCellPack(Base):
+    __tablename__ = "xc_cell_pack"
+    ts = Column(BigInteger, primary_key=True, index=True)  # 时间
+    did = Column(String(512), primary_key=True, index=True)  # 装备ID
+    dclz = Column(String(128))
+    remainLife = Column(FLOAT)  # 剩余寿命
+    voc = Column(FLOAT)  # 开路电压 【电池处于断路状态时的电压，即非工作电压】
+    workVoc = Column(FLOAT)  # 端电压 【电池处于闭路状态时的电池正负极之间的电压，即工作电压】
+    soc = Column(FLOAT)  # 容量 【state of charge】
+    soh = Column(FLOAT)  # 健康指标 【state of health】
+    imbalance = Column(FLOAT)  # 内阻不平衡度
+    current = Column(FLOAT)  # 冲放电电流
+    minTemp = Column(FLOAT)  # 最小温度
+    maxTemp = Column(FLOAT)  # 最大温度
+    cellMaxVoc = Column(FLOAT)  # 电池单元的最大开路电压
+    cellMinVoc = Column(FLOAT)  # 电池单元的最小开路电压
+    cellMaxVol = Column(FLOAT)  # 电池单元的最大端电压
+    cellMinVol = Column(FLOAT)  # 电池单元的最小端电压
+    cellAvgVol = Column(FLOAT)  # 电池单元的均值端电压
+    envTemp = Column(String(1024))  # 电池组的环境温度（存在多个测点）
+    cellVol = Column(String(1024))  # 电池单元端电压集合
+    cellSoc = Column(String(1024))  # 电池单元容量集合
 
 
 # create all tables
