@@ -4,9 +4,12 @@ from sqlalchemy.orm import sessionmaker
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./app.db"
 
+#pymysql  MySQLdb
+SQLALCHEMY_MYSQL_DATABASE_URL = "mysql+pymysql://root:123465@192.168.101.59:3306/phmmysql"
+
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
+    SQLALCHEMY_MYSQL_DATABASE_URL#,
+   # connect_args={"check_same_thread": False},
 )
 SessionLocal = sessionmaker(
     autocommit=False,

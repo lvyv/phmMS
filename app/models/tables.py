@@ -29,7 +29,7 @@ table data model module
 # Author: Awen <26896225@qq.com>
 # License: MIT
 
-from sqlalchemy import Column, Integer, String, FLOAT, INTEGER
+from sqlalchemy import Column, Integer, String, FLOAT, INTEGER, BigInteger
 from phmconfig.database import Base, create_tables
 
 
@@ -55,12 +55,12 @@ class TReqHistory(Base):
     __tablename__ = "req_history"
 
     id = Column(Integer, primary_key=True, index=True)
-    model = Column(String)
-    status = Column(String)
-    result = Column(String)
-    requestts = Column(Integer)
-    settledts = Column(Integer)
-    memo = Column(String, default='')
+    model = Column(String(512))
+    status = Column(String(512))
+    result = Column(String(8096))
+    requestts = Column(BigInteger)
+    settledts = Column(BigInteger)
+    memo = Column(String(512), default='')
 
 
 class TApiToken(Base):
@@ -81,8 +81,8 @@ class TApiToken(Base):
     __tablename__ = "api_token"
 
     id = Column(Integer, primary_key=True, index=True)
-    url = Column(String)
-    tk = Column(String)
+    url = Column(String(512))
+    tk = Column(String(512))
 
 
 class TEquipment(Base):
@@ -102,10 +102,10 @@ class TEquipment(Base):
     """
     __tablename__ = "public.xc_equipment"
 
-    ts = Column(Integer, primary_key=True, index=True)
-    did = Column(String,  primary_key=True, index=True, default='d01')
+    ts = Column(BigInteger, primary_key=True, index=True)
+    did = Column(String(512),  primary_key=True, index=True, default='d01')
 
-    devclass = Column(String, default='BATTERY')
+    devclass = Column(String(512), default='BATTERY')
 
     dis_voltage = Column(FLOAT, default=0)
     dis_current = Column(FLOAT, default=0)
