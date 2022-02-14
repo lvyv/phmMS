@@ -28,6 +28,7 @@ entrypoint of the app
 
 from utils.app_exceptions import AppExceptionCase
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from routers import battery, reqhistory, equipment, cellpack
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -42,6 +43,17 @@ import logging
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+
+# 支持跨域
+origins = ['*']
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
+
 app.mount('/static', StaticFiles(directory='../swagger_ui_dep/static'), name='static')
 logging.info(f'Worker Thread: {threading.current_thread().ident:6}     tables {tb.TABLES}.')
 
