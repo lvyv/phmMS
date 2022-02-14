@@ -127,7 +127,7 @@ class TCellPack(Base):
     __tablename__ = "xc_cell_pack"
     ts = Column(BigInteger, primary_key=True, index=True)  # 时间
     did = Column(String(512), primary_key=True, index=True)  # 装备ID
-    dclz = Column(String(128))
+    dclz = Column(String(128))    # 装备类型
     remainLife = Column(FLOAT)  # 剩余寿命
     voc = Column(FLOAT)  # 开路电压 【电池处于断路状态时的电压，即非工作电压】
     workVoc = Column(FLOAT)  # 端电压 【电池处于闭路状态时的电池正负极之间的电压，即工作电压】
