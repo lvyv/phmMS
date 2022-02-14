@@ -23,3 +23,10 @@ async def get_item(item_id: str, db: get_db = Depends()):
     so = CellPackService(db)
     result = so.get_item(item_id)
     return handle_result(result)
+
+
+@router.post("/eval")
+async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict, db: get_db = Depends()):
+    so = CellPackService(db)
+    result = so.health_eval(equipType, equipCode, metrics, payload)
+    return handle_result(result)
