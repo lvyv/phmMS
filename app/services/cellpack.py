@@ -18,6 +18,8 @@ class CellPackService(AppService):
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
         items = CellPackCRUD(self.db).get_records(code, start, end)
+        if items is None:
+            return ServiceResult(None)
         convertItems = CellPackConvertor.convert(items, metrics)
         return ServiceResult(convertItems)
 
