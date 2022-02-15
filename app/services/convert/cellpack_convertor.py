@@ -1,7 +1,15 @@
 import json
+from services.convert.convertor import IConvertor
 
 
-class CellPackConvertor:
+class CellPackConvertor(IConvertor):
+
+    def __init__(self):
+        IConvertor.__init__(self)
+        self.ownMetrics = ["ts", "remainLife", "voc", "workVoc", "soc",
+                           "soh", "imbalance", "current", "minTemp", "maxTemp",
+                           "cellMaxVoc", "cellMinVoc", "cellMaxVol", "cellMinVol", "cellAvgVol",
+                           "envTemp", "cellVol", "cellSoc"]
 
     @staticmethod
     def __parse_str_to_json(value):
@@ -12,7 +20,12 @@ class CellPackConvertor:
             return load_dict
 
     @staticmethod
-    def __get_metric_value(item, metric):
+    def __has_special_key(key):
+        if key in ["envTemp", "cellVol", "cellSoc"]:
+            return True
+        return False
+
+    def get_metric_value(self, item, metric):
         values = {
             "ts": item.ts,
             "remainLife": item.remainLife,
@@ -35,44 +48,13 @@ class CellPackConvertor:
         }
         return values.get(metric, None)
 
-    @staticmethod
-    def __get_metric_type(key):
-        if key in ["ts"]:
-            return "time"
-        return "number"
+    def get_own_metrics(self):
+        return self.ownMetrics
 
-    @staticmethod
-    def __has_special_key(key):
-        if key in ["envTemp", "cellVol", "cellSoc"]:
-            return True
-        return False
-
-    @staticmethod
-    def convert(items, metrics):
-        useMetrics = metrics.split(",")
-        useMetrics.insert(0, "ts")
+    def __convert_special(self, key, dataS):
         tmpDict = {}
-        for item in items:
-            for m in useMetrics:
-                if m in tmpDict.keys():
-                    tmpDict[m].append(CellPackConvertor.__get_metric_value(item, m))
-                else:
-                    tmpDict[m] = [CellPackConvertor.__get_metric_value(item, m)]
-        ret = []
-        for key in tmpDict.keys():
-            if CellPackConvertor.__has_special_key(key):
-                convert_items = CellPackConvertor.convert_special(key, tmpDict[key])
-                for it in convert_items:
-                    ret.append(it)
-            else:
-                ret.append({"name": key, "type": CellPackConvertor.__get_metric_type(key), "values": tmpDict[key]})
-        return ret
-
-    @staticmethod
-    def convert_special(key, datas):
-        tmpDict = {}
-        for data in datas:
-            items = CellPackConvertor.__parse_str_to_json(data)
+        for data in dataS:
+            items = self.__parse_str_to_json(data)
             i = 0
             for item in items:
                 combineKey = key + str(i)
@@ -85,4 +67,16 @@ class CellPackConvertor:
         ret = []
         for key in tmpDict.keys():
             ret.append({"name": key, "type": "number", "values": tmpDict[key]})
+        return ret
+
+    def convert(self, items, metrics):
+        IConvertor.convert(self, items, metrics)
+        ret = []
+        for key in self.tmpDict.keys():
+            if self.__has_special_key(key):
+                convert_items = self.__convert_special(key, self.tmpDict[key])
+                for it in convert_items:
+                    ret.append(it)
+            else:
+                ret.append({"name": key, "type": self.get_metric_type(key), "values": self.tmpDict[key]})
         return ret

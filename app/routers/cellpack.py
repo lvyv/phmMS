@@ -25,6 +25,7 @@ async def get_item(item_id: str, db: get_db = Depends()):
     return handle_result(result)
 
 
+# 电池评估只针对单个电池 或者 单个电池组
 @router.post("/eval")
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict, db: get_db = Depends()):
     so = CellPackService(db)
