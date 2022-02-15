@@ -29,7 +29,7 @@ table data model module
 # Author: Awen <26896225@qq.com>
 # License: MIT
 
-from sqlalchemy import Column, Integer, String, FLOAT, INTEGER, BigInteger
+from sqlalchemy import Column, Integer, String, FLOAT, INTEGER, BigInteger, Boolean
 from phmconfig.database import Base, create_tables
 
 
@@ -127,7 +127,7 @@ class TCellPack(Base):
     __tablename__ = "xc_cell_pack"
     ts = Column(BigInteger, primary_key=True, index=True)  # 时间
     did = Column(String(512), primary_key=True, index=True)  # 装备ID
-    dclz = Column(String(128))    # 装备类型
+    dclz = Column(String(128))  # 装备类型
     remainLife = Column(FLOAT)  # 剩余寿命
     voc = Column(FLOAT)  # 开路电压 【电池处于断路状态时的电压，即非工作电压】
     workVoc = Column(FLOAT)  # 端电压 【电池处于闭路状态时的电池正负极之间的电压，即工作电压】
@@ -145,6 +145,15 @@ class TCellPack(Base):
     envTemp = Column(String(1024))  # 电池组的环境温度（存在多个测点）
     cellVol = Column(String(1024))  # 电池单元端电压集合
     cellSoc = Column(String(1024))  # 电池单元容量集合
+
+
+class TSchedule(Base):  # 装备数据分析调度表
+    __tablename__ = "xc_schedule"
+    id = Column(Integer, primary_key=True, index=True)
+    did = Column(String(512))  # 设备ID
+    enable = Column(Boolean)  # 启用任务
+    initDelay = Column(Integer)  # 初始任务延迟时间
+    delay = Column(Integer)  # 定时延迟时间
 
 
 # create all tables

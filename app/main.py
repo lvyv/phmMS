@@ -29,7 +29,7 @@ entrypoint of the app
 from utils.app_exceptions import AppExceptionCase
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import battery, reqhistory, equipment, cellpack
+from routers import battery, reqhistory, equipment, cellpack, config_router
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from utils.request_exceptions import (
@@ -77,3 +77,4 @@ app.include_router(reqhistory.router)
 app.include_router(battery.router)
 app.include_router(equipment.router)
 app.include_router(cellpack.router)
+app.include_router(config_router.router)
