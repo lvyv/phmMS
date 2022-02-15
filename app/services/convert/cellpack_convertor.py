@@ -55,6 +55,8 @@ class CellPackConvertor(IConvertor):
         tmpDict = {}
         for data in dataS:
             items = self.__parse_str_to_json(data)
+            if items is None:
+                continue
             i = 0
             for item in items:
                 combineKey = key + str(i)
