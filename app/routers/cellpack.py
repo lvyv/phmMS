@@ -26,6 +26,9 @@ async def create_item(item: CellPackModel, db: get_db = Depends()):
 
 
 # 电池评估只针对单个电池 或者 单个电池组
+# payload:  {"range":{"from":"2022-02-13T22:09:59.457Z","to":"2022-02-14T04:09:59.457Z"}}
+# equipCode: 设备编码
+# equipType:  battery,cellpack
 @router.post("/eval")
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict, db: get_db = Depends()):
     so = CellPackService(db)

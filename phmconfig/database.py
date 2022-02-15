@@ -2,13 +2,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./app.db"
+import constants
 
-#pymysql  MySQLdb
-SQLALCHEMY_MYSQL_DATABASE_URL = "mysql+pymysql://root:123465@192.168.101.59:3306/phmmysql"
+#  "sqlite:///./app.db"
+#   "mysql+pymysql://root:123465@192.168.101.59:3306/phmmysql"
 
 engine = create_engine(
-    SQLALCHEMY_MYSQL_DATABASE_URL#,
+    constants.PHM_DATABASE_URL #,
    # connect_args={"check_same_thread": False},
 )
 SessionLocal = sessionmaker(

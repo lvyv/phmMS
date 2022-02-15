@@ -59,3 +59,7 @@ PHMMS_HOST = cfg['phmms_host']
 PHMMS_PORT = cfg['phmms_port']
 PHMMS_KEY = cfg['phmms_key']
 PHMMS_CER = cfg['phmms_cer']
+
+
+# 数据库地址
+PHM_DATABASE_URL = cfg['datasource_url']
