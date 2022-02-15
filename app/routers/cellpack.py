@@ -18,11 +18,11 @@ async def create_item(item: CellPackModel, db: get_db = Depends()):
     return handle_result(result)
 
 
-@router.get("/item/{item_id}")
-async def get_item(item_id: str, db: get_db = Depends()):
-    so = CellPackService(db)
-    result = so.get_item(item_id)
-    return handle_result(result)
+# @router.get("/item/{item_id}")
+# async def get_item(item_id: str, db: get_db = Depends()):
+#     so = CellPackService(db)
+#     result = so.get_item(item_id)
+#     return handle_result(result)
 
 
 # 电池评估只针对单个电池 或者 单个电池组
