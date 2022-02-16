@@ -6,6 +6,8 @@ class ScheduleModel(BaseModel):
     enable: bool
     initDelay: int
     delay: int
+    execUrl: str
+    execParams: str
 
     class Config:
         orm_mode = True

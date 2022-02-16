@@ -35,6 +35,7 @@ from app import __version__
 import models.tables as tb
 import phmconfig.constants as ct
 import logging
+from services.schedule.dynamic_task import DynamicTask
 
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)s: %(asctime)s %(filename)s %(message)s',
@@ -53,6 +54,7 @@ class TestMain(unittest.TestCase):
     https://IP:29081/docs，执行POST /subprocess，发送start/stop命令启停视频识别流水线。
     注意
     """
+
     def setUp(self):
         """Set up test fixtures, if any."""
 
@@ -64,14 +66,17 @@ class TestMain(unittest.TestCase):
         logging.info(f'********************  CASICLOUD AI METER services  ********************')
         logging.info(f'phmMS tables were created by import statement {tb.TABLES}.')
         logging.info(f'phmMS micro service starting at {ct.PHMMS_HOST}: {ct.PHMMS_PORT}')
+
+        DynamicTask().start()
+
         uvicorn.run('app.main:app',  # noqa 标准用法
-                host=ct.PHMMS_HOST,
-                port=ct.PHMMS_PORT,
-                ssl_keyfile=ct.PHMMS_KEY,
-                ssl_certfile=ct.PHMMS_CER,
-                log_level='warning',
-                workers=3
-                )
+                    host=ct.PHMMS_HOST,
+                    port=ct.PHMMS_PORT,
+                    ssl_keyfile=ct.PHMMS_KEY,
+                    ssl_certfile=ct.PHMMS_CER,
+                    log_level='warning',
+                    workers=3
+                    )
 
 
 if __name__ == "__main__":

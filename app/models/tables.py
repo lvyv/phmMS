@@ -154,6 +154,8 @@ class TSchedule(Base):  # 装备数据分析调度表
     enable = Column(Boolean)  # 启用任务
     initDelay = Column(Integer)  # 初始任务延迟时间
     delay = Column(Integer)  # 定时延迟时间
+    execUrl = Column(String(512))  # 执行调用的 URL
+    execParams = Column(String(1024))  # 执行调用的参数
 
 
 # create all tables

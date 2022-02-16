@@ -12,11 +12,15 @@ class ScheduleCRUD(AppCRUD):
             record.enable = item.enable
             record.initDelay = item.initDelay
             record.delay = item.delay
+            record.execUrl = item.execUrl
+            record.execParams = item.execParams
         else:
             record = TSchedule(did=item.did,
                                enable=item.enable,
                                initDelay=item.initDelay,
-                               delay=item.delay
+                               delay=item.delay,
+                               execUrl=item.execUrl,
+                               execParams=item.execParams
                                )
         self.db.add(record)
         self.db.commit()
