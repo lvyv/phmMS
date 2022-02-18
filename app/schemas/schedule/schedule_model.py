@@ -2,12 +2,13 @@ from pydantic import BaseModel
 
 
 class ScheduleModel(BaseModel):
-    did: str
+    dids: str
+    dtags: str
     enable: bool
     initDelay: int
     delay: int
     execUrl: str
-    execParams: str
+    startTime: int
 
     class Config:
         orm_mode = True

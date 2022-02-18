@@ -6,44 +6,36 @@ from schemas.schedule.schedule_model import ScheduleModel
 class ScheduleCRUD(AppCRUD):
 
     def create_record(self, item: ScheduleModel) -> TSchedule:
-        record = self.get_record(item.did)
-        if record:
-            record.did = item.did
-            record.enable = item.enable
-            record.initDelay = item.initDelay
-            record.delay = item.delay
-            record.execUrl = item.execUrl
-            record.execParams = item.execParams
-        else:
-            record = TSchedule(did=item.did,
-                               enable=item.enable,
-                               initDelay=item.initDelay,
-                               delay=item.delay,
-                               execUrl=item.execUrl,
-                               execParams=item.execParams
-                               )
+        record = TSchedule(dids=item.dids,
+                           dtags=item.dtags,
+                           enable=item.enable,
+                           initDelay=item.initDelay,
+                           delay=item.delay,
+                           execUrl=item.execUrl,
+                           startTime=item.startTime
+                           )
         self.db.add(record)
         self.db.commit()
         self.db.refresh(record)
         return record
 
-    def get_record(self, did: str) -> TSchedule:
-        record = self.db.query(TSchedule).filter(TSchedule.did == did).first()
+    def get_record(self, id: str) -> TSchedule:
+        record = self.db.query(TSchedule).filter(TSchedule.id == id).first()
         return record
+
+    def del_record(self, id: str) -> TSchedule:
+
+        record = self.get_record(id)
+        if record:
+            self.db.delete(record)
+            self.db.commit()
+            return record
+        return None
 
     def get_records(self) -> TSchedule:
         records = self.db.query(TSchedule).all()
         if records:
             return records
-        return None
-
-    def del_record(self, did: str) -> TSchedule:
-
-        record = self.get_record(did)
-        if record:
-            self.db.delete(record)
-            self.db.commit()
-            return record
         return None
 
     def del_records(self) -> TSchedule:

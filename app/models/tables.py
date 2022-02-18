@@ -149,13 +149,14 @@ class TCellPack(Base):
 
 class TSchedule(Base):  # 装备数据分析调度表
     __tablename__ = "xc_schedule"
-    id = Column(Integer, primary_key=True, index=True)
-    did = Column(String(512))  # 设备ID
-    enable = Column(Boolean)  # 启用任务
-    initDelay = Column(Integer)  # 初始任务延迟时间
-    delay = Column(Integer)  # 定时延迟时间
-    execUrl = Column(String(512))  # 执行调用的 URL
-    execParams = Column(String(1024))  # 执行调用的参数
+    id = Column(Integer, primary_key=True, index=True)   #主键
+    dids = Column(String(1024))          # 设备ID列表
+    dtags = Column(String(1024))        # 设备测点列表
+    enable = Column(Boolean)           # 启用任务
+    initDelay = Column(Integer)        # 初始任务延迟时间
+    delay = Column(Integer)            # 定时延迟时间
+    execUrl = Column(String(128))      # 执行调用的 URL
+    startTime = Column(BigInteger)     # 调度执行时间
 
 
 # create all tables

@@ -26,9 +26,9 @@ async def get_items(db: get_db = Depends()):
 
 
 @router.delete("/item")
-async def del_item(did: str, db: get_db = Depends()):
+async def del_item(id: str, db: get_db = Depends()):
     so = ScheduleService(db)
-    result = so.del_item(did)
+    result = so.del_item(id)
     return handle_result(result)
 
 

@@ -16,7 +16,7 @@ class DynamicTask(Thread):
         self.executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=100)
 
     def run(self):
-        time.sleep(5)   # 等待程序启动
+        time.sleep(5)  # 等待程序启动
         db = database.SessionLocal()
         so = ScheduleService(db)
         items = handle_result(so.get_items())
@@ -31,9 +31,13 @@ class DynamicTask(Thread):
             item.firstRun = False
             time.sleep(item.initDelay)
         if item.enable:
-            print(item.did, item.enable, item.initDelay, item.delay, item.execUrl, item.execParams)
+            print(item.dids, item.dtags, item.execUrl)
             with httpx.Client(timeout=None, verify=False) as client:
-                params = json.loads(item.execParams)
+                params = {"devices": item.dids,
+                          "tags": item.dtags,
+                          "startts": 0,
+                          "endts": 0
+                          }
                 r = client.post(item.execUrl, json=params)
                 logging.info(r)
             time.sleep(item.delay)
