@@ -31,17 +31,24 @@ class DynamicTask(Thread):
             item.firstRun = False
             time.sleep(item.initDelay)
         if item.enable:
-            print(item.dids, item.dtags, item.execUrl)
+            logging.info("Schedule Task =>" + item.dids + "<=>" + item.dtags + "<=>" + item.execUrl)
             with httpx.Client(timeout=None, verify=False) as client:
+                t1, t2 = self.getTime(item.startTime)
                 params = {"devices": item.dids,
                           "tags": item.dtags,
-                          "startts": 0,
-                          "endts": 0
+                          "startts": t1,
+                          "endts": t2
                           }
                 r = client.post(item.execUrl, json=params)
                 logging.info(r)
             time.sleep(item.delay)
             self.executor_.submit(self.runItem, item)
+
+    def getTime(self, startTime):
+        currentTime = int(round(time.time() * 1000))
+        if currentTime > startTime:
+            return startTime, currentTime
+        return 0, 0
 
     def stop(self):
         self.executor_.shutdown()
