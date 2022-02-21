@@ -46,3 +46,13 @@ class ScheduleCRUD(AppCRUD):
             self.db.commit()
             return records
         return None
+
+    def update_record(self, item: TSchedule) -> TSchedule:
+        record = self.get_record(item.id)
+        if record:
+            record.startTime = item.startTime
+            self.db.add(record)
+            self.db.commit()
+        else:
+            pass
+        return record

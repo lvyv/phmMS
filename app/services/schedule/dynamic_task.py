@@ -1,54 +1,106 @@
 import time
-from threading import Thread
 import database
 import httpx
 import logging
-import json
+import threading
 from services.schedule.schedule_service import ScheduleService
 from utils.service_result import handle_result
 import concurrent.futures
 
 
-class DynamicTask(Thread):
+class DynamicTask(object):
+
+    _instance_lock = threading.Lock()
 
     def __init__(self):
-        Thread.__init__(self)
-        self.executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=100)
+        self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=100)
+        self.__isStop = False
+        self.__items = None
 
-    def run(self):
-        time.sleep(5)  # 等待程序启动
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            with DynamicTask._instance_lock:
+                if not hasattr(cls, '_instance'):
+                    DynamicTask._instance = super().__new__(cls)
+        return DynamicTask._instance
+
+    def start(self):
+        self.__executor.submit(self.__exec)
+
+    def stop(self):
+        self.__isStop = True
+        self.__executor.shutdown()
+
+    def push(self, data):
+        # if self.__items is None:
+        #     data.firstRun = True
+        #     self.__items = []
+        #     self.__items.append(data)
+        # else:
+        #     for item in self.__items:
+        #         if item.id == data.id:
+        #             self.__items.remove(item)
+        #             break
+        #     data.firstRun = True
+        #     self.__items.append(data)
+        pass
+
+    def pop(self, data):
+        # for item in self.__items:
+        #     if item.id == data.id:
+        #         self.__items.remove(item)
+        #         break
+        pass
+
+    def __loadData(self):
         db = database.SessionLocal()
         so = ScheduleService(db)
-        items = handle_result(so.get_items())
-        if items is None:
-            return None
-        for item in items:
+        self.__items = handle_result(so.get_items())
+        if self.__items is None:
+            return
+        for item in self.__items:
             item.firstRun = True
-            self.executor_.submit(self.runItem, item)
 
-    def runItem(self, item):
-        if item.firstRun is True:
-            item.firstRun = False
-            time.sleep(item.initDelay)
+    @staticmethod
+    def __updateData(item):
+        db = database.SessionLocal()
+        so = ScheduleService(db)
+        so.update_item(item)
+        pass
+
+    def __exec(self):
+        time.sleep(5)  # 等待程序启动
+        self.__loadData()
+        while self.__isStop is False:
+            time.sleep(1)
+            if self.__items is None:
+                continue
+            currentTime = int(round(time.time() * 1000))
+            for item in self.__items:
+                if item.firstRun is True:
+                    if currentTime > item.initDelay * 1000 + item.startTime:
+                        item.firstRun = False
+                        item.startts = item.startTime
+                        item.endts = currentTime
+                        item.startTime = currentTime
+                        self.__executor.submit(self.__async_task, item)
+                else:
+                    if currentTime > item.delay * 1000 + item.startTime:
+                        item.startts = item.startTime
+                        item.endts = currentTime
+                        item.startTime = currentTime
+                        self.__executor.submit(self.__async_task, item)
+
+    @staticmethod
+    def __async_task(item):
         if item.enable:
-            logging.info("Schedule Task =>" + item.dids + "<=>" + item.dtags + "<=>" + item.execUrl)
+            logging.info("Schedule Task =>" + item.dids + "<=>" + item.dtags + "<==>" + item.execUrl)
             with httpx.Client(timeout=None, verify=False) as client:
-                t1, t2 = self.getTime(item.startTime)
                 params = {"devices": item.dids,
                           "tags": item.dtags,
-                          "startts": t1,
-                          "endts": t2
+                          "startts": item.startts,
+                          "endts": item.endts
                           }
                 r = client.post(item.execUrl, json=params)
                 logging.info(r)
-            time.sleep(item.delay)
-            self.executor_.submit(self.runItem, item)
-
-    def getTime(self, startTime):
-        currentTime = int(round(time.time() * 1000))
-        if currentTime > startTime:
-            return startTime, currentTime
-        return 0, 0
-
-    def stop(self):
-        self.executor_.shutdown()
+            DynamicTask.__updateData(item)

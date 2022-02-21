@@ -19,3 +19,8 @@ class ScheduleService(AppService):
     def del_items(self) -> ServiceResult:
         item = ScheduleCRUD(self.db).del_records()
         return ServiceResult(item)
+
+    def update_item(self, item) -> ServiceResult:
+        item = ScheduleCRUD(self.db).update_record(item)
+        return ServiceResult(item)
+
