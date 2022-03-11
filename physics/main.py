@@ -37,6 +37,7 @@ import httpx
 import json
 import logging
 import paho.mqtt.client as mqtt_client
+from fastapi.staticfiles import StaticFiles
 
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -51,6 +52,8 @@ app.add_middleware(
     allow_methods=['*'],
     allow_headers=['*']
 )
+
+app.mount('/static', StaticFiles(directory='../swagger_ui_dep/static'), name='static')
 
 # 线程池初始化
 executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=5)
