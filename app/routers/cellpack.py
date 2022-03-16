@@ -4,6 +4,7 @@ from schemas.vrla.cellpack_model import CellPackModel
 from utils.service_result import handle_result
 from phmconfig.database import get_db
 from services.healthIndicatorService import HealthIndicatorService
+from schemas.vrla.health_indicator_model import HealthIndicatorModel
 
 router = APIRouter(
     prefix="/api/v1/cellpack",
@@ -12,8 +13,9 @@ router = APIRouter(
 )
 
 
-@router.post("/item", response_model=CellPackModel)
-async def create_item(item: CellPackModel, db: get_db = Depends()):
+# 回写电池评估数据
+@router.post("/writeEval", response_model=CellPackModel)
+async def writeHealthEval(item: CellPackModel, db: get_db = Depends()):
     so = CellPackService(db)
     result = so.create_item(item)
     return handle_result(result)
@@ -35,4 +37,12 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
 async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_db = Depends()):
     so = HealthIndicatorService(db)
     result = so.health_indicator(equipType, equipCode, reqType)
+    return handle_result(result)
+
+
+# 回写健康指标数据
+@router.post("/writeHealthIndicator")
+async def writeHealthIndicator(item: HealthIndicatorModel, db: get_db = Depends()):
+    so = HealthIndicatorService(db)
+    result = so.create_item(item)
     return handle_result(result)

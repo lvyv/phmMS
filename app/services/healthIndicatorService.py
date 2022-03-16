@@ -15,7 +15,7 @@ class HealthIndicatorService(AppService):
 
     def health_indicator(self, clz, code, type) -> ServiceResult:
         codes = code.split(",")
-        if type == 0:
+        if type == '0' or 0:
             limit = 1
         else:
             limit = 50
