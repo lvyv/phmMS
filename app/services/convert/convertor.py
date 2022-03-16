@@ -39,3 +39,22 @@ class IConvertor:
                     self.tmpDict[m].append(self.get_metric_value(item, m))
                 else:
                     self.tmpDict[m] = [self.get_metric_value(item, m)]
+
+    @staticmethod
+    def convertHealthIndicator(items):
+        rets = []
+        tmpDict = {}
+        for item in items:
+            for i in item:
+                if i.did in tmpDict.keys():
+                    tmpDict[i.did]["soh"].append(i.soh)
+                else:
+                    ret = {
+                        "state": i.state,
+                        "soh": [i.soh],
+                        "equipCode": i.did
+                    }
+                    tmpDict[i.did] = ret
+        for m in tmpDict.keys():
+            rets.append(tmpDict[m])
+        return rets

@@ -149,14 +149,23 @@ class TCellPack(Base):
 
 class TSchedule(Base):  # 装备数据分析调度表
     __tablename__ = "xc_schedule"
-    id = Column(Integer, primary_key=True, index=True)   #主键
-    dids = Column(String(1024))          # 设备ID列表
-    dtags = Column(String(1024))        # 设备测点列表
-    enable = Column(Boolean)           # 启用任务
-    initDelay = Column(Integer)        # 初始任务延迟时间
-    delay = Column(Integer)            # 定时延迟时间
-    execUrl = Column(String(128))      # 执行调用的 URL
-    startTime = Column(BigInteger)     # 调度执行时间
+    id = Column(Integer, primary_key=True, index=True)  # 主键
+    dids = Column(String(1024))  # 设备ID列表
+    dtags = Column(String(1024))  # 设备测点列表
+    enable = Column(Boolean)  # 启用任务
+    initDelay = Column(Integer)  # 初始任务延迟时间
+    delay = Column(Integer)  # 定时延迟时间
+    execUrl = Column(String(128))  # 执行调用的 URL
+    startTime = Column(BigInteger)  # 调度执行时间
+
+
+class THealthIndicator(Base):
+    __tablename__ = "xc_health_indicator"
+    ts = Column(BigInteger, primary_key=True, index=True)  # 时间
+    did = Column(String(512), primary_key=True, index=True)  # 装备ID
+    dclz = Column(String(128))  # 装备类型
+    state = Column(Integer)  # 健康状态
+    soh = Column(FLOAT)  # 健康指标
 
 
 # create all tables
