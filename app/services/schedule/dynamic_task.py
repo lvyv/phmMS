@@ -32,25 +32,34 @@ class DynamicTask(object):
         self.__executor.shutdown()
 
     def push(self, data):
-        # if self.__items is None:
-        #     data.firstRun = True
-        #     self.__items = []
-        #     self.__items.append(data)
-        # else:
-        #     for item in self.__items:
-        #         if item.id == data.id:
-        #             self.__items.remove(item)
-        #             break
-        #     data.firstRun = True
-        #     self.__items.append(data)
+        if data is None:
+            return
+        if self.__items is None:
+            data.firstRun = True
+            self.__items = [data]
+        else:
+            for item in self.__items:
+                if item.id == data.id:
+                    self.__items.remove(item)
+                    break
+            data.firstRun = True
+            self.__items.append(data)
         pass
 
     def pop(self, data):
-        # for item in self.__items:
-        #     if item.id == data.id:
-        #         self.__items.remove(item)
-        #         break
+        if data is None:
+            return
+        for item in self.__items:
+            if item.id == data.id:
+                self.__items.remove(item)
+                break
         pass
+
+    def popAll(self, dataS):
+        if dataS is None:
+            return
+        for data in dataS:
+            self.pop(data)
 
     def __loadData(self):
         db = database.SessionLocal()
