@@ -29,7 +29,8 @@ class MqttClient:
         mqttClient.on_publish = self.on_publish
         mqttClient.on_log = self.on_log
         mqttClient.connect(self.host, self.port)
-        mqttClient.loop_forever()
+        mqttClient.loop_start()
+        # mqttClient.loop_forever()
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected with result code " + str(rc))
