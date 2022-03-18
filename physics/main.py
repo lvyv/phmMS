@@ -39,7 +39,6 @@ import logging
 import paho.mqtt.client as mqtt_client
 from fastapi.staticfiles import StaticFiles
 
-
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 app = FastAPI()
 
@@ -71,20 +70,24 @@ def post_process_vrla_soh(reqid, sohres):
             eqitem = items[did]
             eqi = {
                 "did": did,
-                "devclass": "BATTERY",  # FIXME
-                "dis_voltage": 0,
-                "dis_current": 0,
-                "dis_resistance": 0,
-                "dis_temperature": 0,
-                "dis_dischargecycles": 0,
-                "chg_voltage": 0,
-                "chg_current": 0,
-                "chg_resistance": 0,
-                "chg_temperature": 0,
-                "chg_dischargecycles": 0,
+                "dclz": "BATTERY",  # FIXME
+                "remainLife": 0,
+                "voc": 0,
+                "workVoc": 0,
+                "current": 0,
+                "minTemp": 0,
+                "maxTemp": 0,
+                "cellMaxVoc": 0,
+                "cellMinVoc": 0,
+                "cellMaxVol": 0,
+                "cellMinVol": 0,
+                "cellAvgVol": 0,
+                "envTemp": "[19, 20]",
+                "cellVol": "[20, 21, 22, 20, 21, 22]",
+                "cellSoc": "[20, 22, 22, 22, 22, 23]",
                 "soh": eqitem['soh'],
                 "soc": eqitem['extend']['soc'],
-                "Rimbalance": eqitem['extend']['Rimbalance'],
+                "imbalance": eqitem['extend']['Rimbalance'],
                 "ts": eqitem['ts']
             }
             r = client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
@@ -105,10 +108,10 @@ def soh_task(sohin, reqid):
     devids = json.loads(sohin.devices)
     devtype = bcf.DT_VRLA
     res = None
-    if devtype == bcf.DT_VRLA:          # 阀控铅酸电池
+    if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
         res = vrla_soh(devids)
-        post_process_vrla_soh(reqid, res)               # 写两个库表（req_history, public.xc_equipment），发mqtt
-    elif devtype == bcf.DT_CELLPACK:    # UPS电池组
+        post_process_vrla_soh(reqid, res)  # 写两个库表（req_history, public.xc_equipment），发mqtt
+    elif devtype == bcf.DT_CELLPACK:  # UPS电池组
         pass
     else:
         pass
@@ -122,10 +125,10 @@ def cluster_task(clusterin, reqid):
 
 # IF11:REST MODEL 外部接口-phmMD与phmMS之间接口
 class SohInputParams(BaseModel):
-    devices: str = '[]'     # json string
-    tags: str = '[]'        # json string
-    startts: int            # timestamp ms
-    endts: int              # timestamp ms
+    devices: str = '[]'  # json string
+    tags: str = '[]'  # json string
+    startts: int  # timestamp ms
+    endts: int  # timestamp ms
 
 
 @app.post("/api/v1/soh")
