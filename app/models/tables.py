@@ -85,44 +85,6 @@ class TApiToken(Base):
     tk = Column(String(512))
 
 
-class TEquipment(Base):
-    """
-    令牌表，暂存api访问令牌，便于使用。
-    该表主要字段：
-        id: 记录权限Token；
-        url: api的原型，https://ip:port/api/v1/phm/{soh}；
-        tk: 该api的访问令牌。
-
-    Attributes
-    ----------
-
-    Methods
-    -------
-
-    """
-    __tablename__ = "public.xc_equipment"
-
-    ts = Column(BigInteger, primary_key=True, index=True)
-    did = Column(String(512), primary_key=True, index=True, default='d01')
-
-    devclass = Column(String(512), default='BATTERY')
-
-    dis_voltage = Column(FLOAT, default=0)
-    dis_current = Column(FLOAT, default=0)
-    dis_resistance = Column(FLOAT, default=0)
-    dis_temperature = Column(FLOAT, default=0)
-    dis_dischargecycles = Column(INTEGER, default=0)
-
-    chg_voltage = Column(FLOAT, default=0)
-    chg_current = Column(FLOAT, default=0)
-    chg_resistance = Column(FLOAT, default=0)
-    chg_temperature = Column(FLOAT, default=0)
-    chg_dischargecycles = Column(INTEGER, default=0)
-    soh = Column(FLOAT, default=0)
-    soc = Column(FLOAT, default=0)
-    Rimbalance = Column(FLOAT, default=0)
-
-
 class TCellPack(Base):
     __tablename__ = "xc_cell_pack"
     ts = Column(BigInteger, primary_key=True, index=True)  # 时间
