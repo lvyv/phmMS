@@ -52,16 +52,17 @@ class PayloadProcess:
 
         for key in tmpDic.keys():
             item = tmpDic[key]
-            with httpx.Client(timeout=None, verify=False) as client:
-                model = HealthIndicatorModel(soh=item["soh"],
-                                             ts=item["ts"],
-                                             did=item["did"],
-                                             dclz='',
-                                             state=item["state"]
-                                             )
-                data = json.loads(json.dumps(model.__dict__))
-                r = client.post(f'https://localhost:29081/api/v1/cellpack/writeHealthIndicator', json=data)
-                print(r)
+            if "soh" in item.keys() and "state" in item.keys():
+                with httpx.Client(timeout=None, verify=False) as client:
+                    model = HealthIndicatorModel(soh=item["soh"],
+                                                 ts=item["ts"],
+                                                 did=item["did"],
+                                                 dclz='',
+                                                 state=item["state"]
+                                                 )
+                    data = json.loads(json.dumps(model.__dict__))
+                    r = client.post(f'https://localhost:29081/api/v1/cellpack/writeHealthIndicator', json=data)
+                    print(r)
 
     @staticmethod
     def getEquipCode(topic):
