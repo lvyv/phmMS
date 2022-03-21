@@ -76,3 +76,37 @@ class IConvertor:
         for key in tmpDict.keys():
             rets.append({"name": key, "type": ClusterDisplayUtil.get_metric_type(key), "values": tmpDict[key]})
         return rets
+
+    def convertClusterDisplayPolyline(self, items, codes, metrics):
+        devs = codes.split(",")
+        tags = metrics.split(",")
+        # TODO fix 含特殊测点
+        userMetrics = ClusterDisplayUtil.get_use_metrics(ClusterDisplayUtil.DISPLAY_POLYLINE)
+        for dev in devs:
+            for tag in tags:
+                userMetrics.append(dev + "#" + tag)
+        rets = []
+        tmpDict = {}
+        # TODO fix 时间选择
+        initTs = False
+        for dev in devs:
+            for item in items:
+                if item.did == dev:
+                    for m in userMetrics:
+                        mtr = m.split("#")
+                        if len(mtr) == 2:
+                            if mtr[0] == dev:
+                                if m in tmpDict.keys():
+                                    tmpDict[m].append(self.get_metric_value(item, mtr[1]))
+                                else:
+                                    tmpDict[m] = [self.get_metric_value(item, mtr[1])]
+                        else:
+                            if initTs is False:
+                                if m in tmpDict.keys():
+                                    tmpDict[m].append(self.get_metric_value(item, m))
+                                else:
+                                    tmpDict[m] = [self.get_metric_value(item, m)]
+            initTs = True
+        for key in tmpDict.keys():
+            rets.append({"name": key, "type": ClusterDisplayUtil.get_metric_type(key), "values": tmpDict[key]})
+        return rets

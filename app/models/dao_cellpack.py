@@ -45,3 +45,11 @@ class CellPackCRUD(AppCRUD):
         if records:
             return records
         return None
+
+    def get_records_by_devs(self, dids: [], start: int, end: int) -> TCellPack:
+        records = self.db.query(TCellPack).filter(and_(TCellPack.did.in_(dids),
+                                                       TCellPack.ts.between(start, end)
+                                                       )).all()
+        if records:
+            return records
+        return None

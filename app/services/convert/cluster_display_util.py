@@ -12,7 +12,7 @@ class ClusterDisplayUtil:
             # "SCATTER": ["ts", "did"],
             "2D": ["x", "y", "color", "size", "shape", "name"],
             "3D": ["x", "y", "z", "color", "size", "shape", "name"],
-            #  "POLYLINE": ["ts"],
+            "POLYLINE": ["ts"],
             "AGG2D": ["x", "y", "color", "shape", "name"],
             "AGG3D": ["x", "y", "z", "color", "shape", "name"]
         }

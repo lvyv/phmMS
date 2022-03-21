@@ -1,5 +1,6 @@
 import json
 
+from models.dao_cellpack import CellPackCRUD
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.convertor_factory import ConvertorFactory
 from services.main import AppService
@@ -23,7 +24,10 @@ class ClusterDisplayService(AppService):
             # CellPackCRUD(self.db).get_records(code, start, end)
             pass
         elif displayType == ClusterDisplayUtil.DISPLAY_POLYLINE:
-            pass
+            devs = code.split(",")
+            items = CellPackCRUD(self.db).get_records_by_devs(devs, start, end)
+            if items is None:
+                return ServiceResult(None)
         elif displayType == ClusterDisplayUtil.DISPLAY_2D:
             devs = code.split(",")
             tags = metrics.split(",")
@@ -46,7 +50,14 @@ class ClusterDisplayService(AppService):
         convertor = ConvertorFactory.get_convertor(clz)
         if convertor is None:
             return ServiceResult(None)
-
-        # 2D 3D AGG2D AGG3D
-        convertItems = convertor.convertClusterDisplay(displayType, items)
+        if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
+                           ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
+            # 2D 3D AGG2D AGG3D
+            convertItems = convertor.convertClusterDisplay(displayType, items)
+        elif displayType in [ClusterDisplayUtil.DISPLAY_SCATTER]:
+            pass
+        elif displayType in [ClusterDisplayUtil.DISPLAY_POLYLINE]:
+            convertItems = convertor.convertClusterDisplayPolyline(items, code, metrics)
+        else:
+            return ServiceResult(None)
         return ServiceResult(convertItems)
