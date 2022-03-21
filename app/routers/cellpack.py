@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends
-from services.cellpack import CellPackService
 from schemas.vrla.cellpack_model import CellPackModel
+from schemas.vrla.cluster_model import Cluster2DModel
+from schemas.vrla.health_indicator_model import HealthIndicatorModel
 from utils.service_result import handle_result
 from phmconfig.database import get_db
+from services.cellpack import CellPackService
 from services.healthIndicatorService import HealthIndicatorService
-from schemas.vrla.health_indicator_model import HealthIndicatorModel
+from services.clusterDisplayService import ClusterDisplayService
+
 
 router = APIRouter(
     prefix="/api/v1/cellpack",
@@ -45,4 +48,22 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
 async def writeHealthIndicator(item: HealthIndicatorModel, db: get_db = Depends()):
     so = HealthIndicatorService(db)
     result = so.create_item(item)
+    return handle_result(result)
+
+
+# 聚类接口
+# payload:  {"range":{"from":"2022-02-13T22:09:59.457Z","to":"2022-02-14T04:09:59.457Z"}}
+@router.post("/cluster")
+async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayType: str, payload: dict,
+                         db: get_db = Depends()):
+    so = ClusterDisplayService(db)
+    result = so.clusterDisplay(equipType, equipCode, metrics, displayType, payload)
+    return handle_result(result)
+
+
+# 回写聚类接口
+@router.post("/writeCluster/2D", response_model=Cluster2DModel)
+async def writeClusterDisplay(item: Cluster2DModel, db: get_db = Depends()):
+    so = ClusterDisplayService(db)
+    result = so.create_item_2D(item)
     return handle_result(result)

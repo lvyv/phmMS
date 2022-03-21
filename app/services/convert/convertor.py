@@ -1,3 +1,6 @@
+from services.convert.cluster_display_util import ClusterDisplayUtil
+
+
 class IConvertor:
     def __init__(self):
         self.tmpDict = {}
@@ -57,4 +60,19 @@ class IConvertor:
                     tmpDict[i.did] = ret
         for m in tmpDict.keys():
             rets.append(tmpDict[m])
+        return rets
+
+    @staticmethod
+    def convertClusterDisplay(displayType, items):
+        rets = []
+        tmpDict = {}
+        useMetrics = ClusterDisplayUtil.get_use_metrics(displayType)
+        for item in items:
+            for m in useMetrics:
+                if m in tmpDict.keys():
+                    tmpDict[m].append(ClusterDisplayUtil.get_metric_value(item, m))
+                else:
+                    tmpDict[m] = [ClusterDisplayUtil.get_metric_value(item, m)]
+        for key in tmpDict.keys():
+            rets.append({"name": key, "type": ClusterDisplayUtil.get_metric_type(key), "values": tmpDict[key]})
         return rets

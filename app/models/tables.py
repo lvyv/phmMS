@@ -45,6 +45,7 @@ class TReqHistory(Base):
         requestts: 客户端调用的时间戳。
         settledts: Ai模型执行完成的时间戳。
         memo: 放设备id。
+        metrics: 存放设备测点。
     Attributes
     ----------
 
@@ -60,7 +61,9 @@ class TReqHistory(Base):
     result = Column(String(8096))
     requestts = Column(BigInteger)
     settledts = Column(BigInteger)
-    memo = Column(String(512), default='')
+    memo = Column(String(2048), default='')
+    metrics = Column(String(2048), default='')
+    displayType = Column(String(64))
 
 
 class TApiToken(Base):
@@ -128,6 +131,18 @@ class THealthIndicator(Base):
     dclz = Column(String(128))  # 装备类型
     state = Column(Integer)  # 健康状态
     soh = Column(FLOAT)  # 健康指标
+
+
+class TCluster2D(Base):
+    __tablename__ = "xc_cluster_2D"
+    ts = Column(BigInteger, primary_key=True, index=True)  # 时间
+    reqId = Column(Integer)  # 执行请求ID 关联历史记录表
+    x = Column(FLOAT)  # x 轴坐标
+    y = Column(FLOAT)  # y 轴坐标
+    color = Column(String(16))  # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
+    size = Column(FLOAT)  # 大小
+    shape = Column(String(16))  # 形状 eg: "circle", "star","square", "cross", "diamond"
+    name = Column(String(64))  # 装备ID
 
 
 # create all tables

@@ -60,7 +60,8 @@ class VRLABatteryService(AppService):
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
-            'memo': json.dumps(devs)
+            'memo': json.dumps(devs),
+            'metrics': json.dumps(tags)
         }
         item = ReqItemCreate(**external_data)
         soh_item = RequestHistoryCRUD(self.db).create_record(item)
@@ -79,7 +80,7 @@ class VRLABatteryService(AppService):
         except httpx.ConnectTimeout:
             return ServiceResult(AppException.HttpRequestTimeout())
 
-    async def cluster(self, devs: list, tags: list, startts: int, endts: int) -> ServiceResult:
+    async def cluster(self, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
         """
         聚类计算。
         :param devs:
@@ -94,7 +95,9 @@ class VRLABatteryService(AppService):
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
-            'memo': json.dumps(devs)
+            'memo': json.dumps(devs),
+            'metrics': json.dumps(tags),
+            'displayType': displayType
         }
         item = ReqItemCreate(**external_data)
         cluster_item = RequestHistoryCRUD(self.db).create_record(item)
@@ -106,7 +109,7 @@ class VRLABatteryService(AppService):
                     "startts": startts,
                     "endts": endts
                 }
-                params = {"reqid": cluster_item.id}
+                params = {"reqid": cluster_item.id, "displayType": displayType}
                 r = await client.post(f'{ct.URL_CLUSTER}', json=payload, params=params)
                 logging.debug(r)
                 return ServiceResult(r.content)

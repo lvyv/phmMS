@@ -50,10 +50,10 @@ router = APIRouter(
 
 # 1.健康评估模型，即根据输入设备的MVs，定义和解算SOH。
 class SohInputParams(BaseModel):
-    devices: str = '["d1", "d2"]'     # json string
-    tags: str = '["t1", "t2"]'        # json string
-    startts: int            # timestamp ms
-    endts: int              # timestamp ms
+    devices: str = '["d1", "d2"]'  # json string
+    tags: str = '["t1", "t2"]'  # json string
+    startts: int  # timestamp ms
+    endts: int  # timestamp ms
 
 
 @router.post("/soh")
@@ -77,25 +77,18 @@ async def call_soh(sohin: SohInputParams, db: get_db = Depends()):
 
 
 # 2.工况判别模型，即主要利用聚类方法实现MVs的聚类分析。
-@router.post("/opmode/{device_id}")
-async def call_opmode(device_id: str, sts: int, dts: int, taglist: str, db: get_db = Depends()):
-    """
-    工况判别模型
-
-    :param device_id:
-    :type: string
-    :param sts:
-    :type: int
-    :param dts:
-    :type: int
-    :param taglist:
-    :type: string
-    :param db:
-    :type:
-    :return:
-    :rtype:  ServiceResult
-    """
-    logging.info(f'{device_id}{sts}{dts}{taglist}')
-    bs = VRLABatteryService(db)
-    res = await bs.cluster([], [], 0, 0)
+@router.post("/cluster")
+async def cluster(sohin: SohInputParams, displayType: str, db: get_db = Depends()):
+    try:
+        bs = VRLABatteryService(db)
+        res = await bs.cluster(json.loads(sohin.devices), json.loads(sohin.tags), sohin.startts,
+                               sohin.endts, displayType)
+    except json.decoder.JSONDecodeError:
+        res = ServiceResult(AppException.HttpRequestParamsIllegal)
     return handle_result(res)
+
+
+# 定义自相关接口
+@router.post("relation")
+async def relation():
+    pass

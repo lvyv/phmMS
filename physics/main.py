@@ -118,7 +118,8 @@ def soh_task(sohin, reqid):
     return res
 
 
-def cluster_task(clusterin, reqid):
+def cluster_task(clusterin, reqid, displayType):
+    # TODO 聚类接口
     res = None
     return res
 
@@ -139,7 +140,7 @@ async def calculate_soh(sohin: SohInputParams, reqid: int):
 
 
 @app.post("/api/v1/cluster")
-async def calculate_cluster(sohin: SohInputParams, reqid: int):
+async def calculate_cluster(sohin: SohInputParams, reqid: int, displayType: str):
     """模拟耗时的机器学习任务"""
-    executor_.submit(cluster_task, sohin, reqid)
+    executor_.submit(cluster_task, sohin, reqid, displayType)
     return {'task': reqid, 'status': 'submitted to work thread.'}

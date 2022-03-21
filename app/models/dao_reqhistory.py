@@ -30,6 +30,9 @@ data access层，负责处理模型调用的历史记录。
 # License: MIT
 
 import time
+
+from sqlalchemy import and_, desc
+
 from services.main import AppCRUD
 from models.tables import TReqHistory
 from schemas.reqhistory import ReqItemCreate
@@ -45,7 +48,9 @@ class RequestHistoryCRUD(AppCRUD):
                              status=item.status,
                              result=item.result,
                              requestts=item.requestts,
-                             memo=item.memo)
+                             memo=item.memo,
+                             metrics=item.metrics,
+                             displayType=item.displayType)
         self.db.add(reqdao)
         self.db.commit()
         self.db.refresh(reqdao)
@@ -63,4 +68,14 @@ class RequestHistoryCRUD(AppCRUD):
         reqdao = self.db.query(TReqHistory).filter(TReqHistory.id == reqid).first()
         if reqdao:
             return reqdao
-        return None     # noqa
+        return None
+
+    def get_record_by_condition(self, equipCode: str, metrics: str, displayType: str) -> TReqHistory:
+        # TODO fix 查询数据失败
+        reqdao = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
+                                                        TReqHistory.metrics == metrics,
+                                                        TReqHistory.displayType == displayType))\
+            .order_by(desc(TReqHistory.id)).first()
+        if reqdao:
+            return reqdao
+        return None
