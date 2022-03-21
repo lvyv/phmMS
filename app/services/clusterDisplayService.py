@@ -21,8 +21,10 @@ class ClusterDisplayService(AppService):
         end = PayloadUtil.get_end_time(payload)
 
         if displayType == ClusterDisplayUtil.DISPLAY_SCATTER:
-            # CellPackCRUD(self.db).get_records(code, start, end)
-            pass
+            devs = code.split(",")
+            items = CellPackCRUD(self.db).get_records_latest(devs)
+            if items is None:
+                return ServiceResult(None)
         elif displayType == ClusterDisplayUtil.DISPLAY_POLYLINE:
             devs = code.split(",")
             items = CellPackCRUD(self.db).get_records_by_devs(devs, start, end)
@@ -55,7 +57,7 @@ class ClusterDisplayService(AppService):
             # 2D 3D AGG2D AGG3D
             convertItems = convertor.convertClusterDisplay(displayType, items)
         elif displayType in [ClusterDisplayUtil.DISPLAY_SCATTER]:
-            pass
+            convertItems = convertor.convertClusterDisplayScatter(items, code, metrics)
         elif displayType in [ClusterDisplayUtil.DISPLAY_POLYLINE]:
             convertItems = convertor.convertClusterDisplayPolyline(items, code, metrics)
         else:

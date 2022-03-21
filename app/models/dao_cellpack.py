@@ -1,7 +1,8 @@
 from services.main import AppCRUD
 from models.tables import TCellPack
 from schemas.vrla.cellpack_model import CellPackModel
-from sqlalchemy import and_
+from sqlalchemy import and_, desc
+
 
 class CellPackCRUD(AppCRUD):
 
@@ -33,7 +34,7 @@ class CellPackCRUD(AppCRUD):
         return record
 
     def get_record(self, did: str) -> TCellPack:
-        record = self.db.query(TCellPack).filter(TCellPack.did == did).first()
+        record = self.db.query(TCellPack).filter(TCellPack.did == did).order_by(desc(TCellPack.ts)).first()
         if record:
             return record
         return None
@@ -53,3 +54,13 @@ class CellPackCRUD(AppCRUD):
         if records:
             return records
         return None
+
+    def get_records_latest(self, dids: []) -> TCellPack:
+        items = []
+        for did in dids:
+            record = self.get_record(did)
+            if record:
+                items.append(record)
+        if len(items) == 0:
+            return None
+        return items

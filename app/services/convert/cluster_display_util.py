@@ -9,7 +9,7 @@ class ClusterDisplayUtil:
     @staticmethod
     def get_use_metrics(displayType):
         values = {
-            # "SCATTER": ["ts", "did"],
+            "SCATTER": ["ts", "did"],
             "2D": ["x", "y", "color", "size", "shape", "name"],
             "3D": ["x", "y", "z", "color", "size", "shape", "name"],
             "POLYLINE": ["ts"],

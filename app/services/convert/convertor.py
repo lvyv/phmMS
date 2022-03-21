@@ -110,3 +110,27 @@ class IConvertor:
         for key in tmpDict.keys():
             rets.append({"name": key, "type": ClusterDisplayUtil.get_metric_type(key), "values": tmpDict[key]})
         return rets
+
+    # TODO 散点图支持一个测点
+    def convertClusterDisplayScatter(self, items, codes, metrics):
+        devs = codes.split(",")
+        tags = metrics.split(",")
+        userMetrics = ClusterDisplayUtil.get_use_metrics(ClusterDisplayUtil.DISPLAY_SCATTER)
+        userMetrics.append(tags[0])
+        rets = []
+        tmpDict = {}
+        for item in items:
+            for m in userMetrics:
+                if m in tmpDict.keys():
+                    if m == "did":
+                        tmpDict[m].append(item.did)
+                    else:
+                        tmpDict[m].append(self.get_metric_value(item, m))
+                else:
+                    if m == "did":
+                        tmpDict[m] = [item.did]
+                    else:
+                        tmpDict[m] = [self.get_metric_value(item, m)]
+        for key in tmpDict.keys():
+            rets.append({"name": key, "type": ClusterDisplayUtil.get_metric_type(key), "values": tmpDict[key]})
+        return rets
