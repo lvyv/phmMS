@@ -2,6 +2,7 @@ import json
 import time
 from schemas.vrla.health_indicator_model import HealthIndicatorModel
 import httpx
+import constants
 
 
 # {
@@ -61,7 +62,7 @@ class PayloadProcess:
                                                  state=item["state"]
                                                  )
                     data = json.loads(json.dumps(model.__dict__))
-                    r = client.post(f'https://localhost:29081/api/v1/cellpack/writeHealthIndicator', json=data)
+                    r = client.post(constants.URL_POST_HEALTH_INDICATOR, json=data)
                     print(r)
 
     @staticmethod

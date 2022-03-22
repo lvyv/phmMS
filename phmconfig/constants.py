@@ -63,3 +63,6 @@ PHMMS_CER = cfg['phmms_cer']
 
 # 数据库地址
 PHM_DATABASE_URL = cfg['datasource_url']
+
+# 写健康指标URL地址
+URL_POST_HEALTH_INDICATOR = cfg['url_post_health_indicator']

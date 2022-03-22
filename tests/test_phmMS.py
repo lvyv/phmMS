@@ -70,12 +70,11 @@ class TestMain(unittest.TestCase):
         """Test app.main:app"""
         logging.info(f'********************  CASICLOUD AI METER services  ********************')
         logging.info(f'phmMS tables were created by import statement {tb.TABLES}.')
-        logging.info(f'phmMS micro service starting at {ct.PHMMS_HOST}: {ct.PHMMS_PORT}')
-
+        logging.info(f'dynamic task start up.')
         DynamicTask().start()
-
+        logging.info(f'mqtt client start up.')
         threading.Thread(target=startMqtt()).start()
-
+        logging.info(f'phmMS micro service starting at {ct.PHMMS_HOST}: {ct.PHMMS_PORT}')
         uvicorn.run('app.main:app',  # noqa 标准用法
                     host=ct.PHMMS_HOST,
                     port=ct.PHMMS_PORT,
