@@ -16,7 +16,7 @@ class ReqItemBase(BaseModel):
     settledts: int = 0
     memo: str = ''
     metrics: str = ''
-    displayType: str
+    displayType: str = ''
 
 
 class ReqItemCreate(ReqItemBase):
