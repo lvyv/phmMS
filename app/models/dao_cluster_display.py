@@ -25,3 +25,9 @@ class Cluster2DCRUD(AppCRUD):
                                                         TCluster2D.ts.between(start, end)
                                                         )).all()
         return records
+
+    def get_records_byIds(self, reqIds: [], start: int, end: int) -> TCluster2D:
+        records = self.db.query(TCluster2D).filter(and_(TCluster2D.reqId.in_(reqIds),
+                                                        TCluster2D.ts.between(start, end)
+                                                        )).all()
+        return records

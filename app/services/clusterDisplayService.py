@@ -33,12 +33,21 @@ class ClusterDisplayService(AppService):
         elif displayType == ClusterDisplayUtil.DISPLAY_2D:
             devs = code.split(",")
             tags = metrics.split(",")
-            hisRecord = RequestHistoryCRUD(self.db).get_record_by_condition(json.dumps(devs),
-                                                                            json.dumps(tags), displayType)
-            if hisRecord is None:
+            # hisRecord = RequestHistoryCRUD(self.db).get_record_by_condition(json.dumps(devs),
+            #                                                                 json.dumps(tags), displayType)
+            # if hisRecord is None:
+            #     pass
+            # else:
+            #     items = Cluster2DCRUD(self.db).get_records(hisRecord.id, start, end)
+            hisRecords = RequestHistoryCRUD(self.db).get_records_by_condition(json.dumps(devs),
+                                                                              json.dumps(tags), displayType)
+            hisRecordId = []
+            for his in hisRecords:
+                hisRecordId.append(his.id)
+            if len(hisRecordId) == 0:
                 pass
             else:
-                items = Cluster2DCRUD(self.db).get_records(hisRecord.id, start, end)
+                items = Cluster2DCRUD(self.db).get_records_byIds(hisRecordId, start, end)
         elif displayType == ClusterDisplayUtil.DISPLAY_3D:
             pass
         elif displayType == ClusterDisplayUtil.DISPLAY_AGG2D:

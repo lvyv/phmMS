@@ -43,6 +43,7 @@ class RequestHistoryCRUD(AppCRUD):
     """
     电池模型请求数据访问。
     """
+
     def create_record(self, item: ReqItemCreate) -> TReqHistory:
         reqdao = TReqHistory(model=item.model,
                              status=item.status,
@@ -74,8 +75,15 @@ class RequestHistoryCRUD(AppCRUD):
         # TODO fix 查询数据失败
         reqdao = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                         TReqHistory.metrics == metrics,
-                                                        TReqHistory.displayType == displayType))\
+                                                        TReqHistory.displayType == displayType)) \
             .order_by(desc(TReqHistory.id)).first()
         if reqdao:
             return reqdao
         return None
+
+    def get_records_by_condition(self, equipCode: str, metrics: str, displayType: str) -> TReqHistory:
+        records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
+                                                         TReqHistory.metrics == metrics,
+                                                         TReqHistory.displayType == displayType)) \
+            .all()
+        return records
