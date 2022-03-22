@@ -4,7 +4,7 @@ from schemas.vrla.cluster_model import Cluster2DModel
 from schemas.vrla.health_indicator_model import HealthIndicatorModel
 from utils.service_result import handle_result
 from phmconfig.database import get_db
-from services.cellpack import CellPackService
+from services.cellpackService import CellPackService
 from services.healthIndicatorService import HealthIndicatorService
 from services.clusterDisplayService import ClusterDisplayService
 

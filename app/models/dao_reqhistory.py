@@ -35,7 +35,7 @@ from sqlalchemy import and_, desc
 
 from services.main import AppCRUD
 from models.tables import TReqHistory
-from schemas.reqhistory import ReqItemCreate
+from schemas.reqhistory_model import ReqItemCreate
 from phmconfig import constants as ct
 
 

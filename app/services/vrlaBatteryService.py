@@ -33,7 +33,7 @@ import logging
 import httpx
 import time
 import json
-from schemas.reqhistory import ReqItemCreate
+from schemas.reqhistory_model import ReqItemCreate
 from services.main import AppService
 from models.dao_reqhistory import RequestHistoryCRUD
 from utils.service_result import ServiceResult

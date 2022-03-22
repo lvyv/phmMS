@@ -30,7 +30,7 @@ controller层，负责模型回调路由分发.
 # License: MIT
 
 from fastapi import APIRouter, Depends
-from services.reqhistory import ReqHistoryService
+from services.reqhistoryService import ReqHistoryService
 from utils.service_result import handle_result
 from phmconfig.database import get_db
 import logging

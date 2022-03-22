@@ -30,7 +30,7 @@ controller层，负责电池模型调用路由分发.
 # License: MIT
 
 from fastapi import APIRouter, Depends
-from services.battery import VRLABatteryService
+from services.vrlaBatteryService import VRLABatteryService
 from utils.service_result import handle_result, ServiceResult
 from utils.app_exceptions import AppException
 from phmconfig.database import get_db
