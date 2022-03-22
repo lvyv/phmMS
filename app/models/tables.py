@@ -134,7 +134,7 @@ class THealthIndicator(Base):
 
 
 class TCluster2D(Base):
-    __tablename__ = "xc_cluster_2D"
+    __tablename__ = "xc_cluster_2d"
     ts = Column(BigInteger, primary_key=True, index=True)  # 时间
     reqId = Column(Integer)  # 执行请求ID 关联历史记录表
     x = Column(FLOAT)  # x 轴坐标
