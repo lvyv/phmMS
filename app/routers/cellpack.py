@@ -67,3 +67,6 @@ async def writeClusterDisplay(item: Cluster2DModel, db: get_db = Depends()):
     so = ClusterDisplayService(db)
     result = so.create_item_2D(item)
     return handle_result(result)
+
+
+# 自相关接口

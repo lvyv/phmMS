@@ -116,7 +116,9 @@ class IConvertor:
         devs = codes.split(",")
         tags = metrics.split(",")
         userMetrics = ClusterDisplayUtil.get_use_metrics(ClusterDisplayUtil.DISPLAY_SCATTER)
-        userMetrics.append(tags[0])
+        # userMetrics.append(tags[0])
+        for tag in tags:
+            userMetrics.append(tag)
         rets = []
         tmpDict = {}
         for item in items:
