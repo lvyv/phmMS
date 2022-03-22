@@ -28,15 +28,12 @@ unit test module
 
 # Author: Awen <26896225@qq.com>
 # License: MIT
-import threading
 import unittest
 import uvicorn
 from app import __version__
 import models.tables as tb
 import phmconfig.constants as ct
 import logging
-from services.schedule.dynamic_task import DynamicTask
-from mqtt.mqttclient import MqttClient
 
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)s: %(asctime)s %(filename)s %(message)s',
@@ -45,10 +42,6 @@ logging.basicConfig(level=logging.INFO,
 
 def test_version():
     assert __version__ == "0.1.0"
-
-
-def startMqtt():
-    MqttClient().start()
 
 
 class TestMain(unittest.TestCase):
@@ -70,10 +63,6 @@ class TestMain(unittest.TestCase):
         """Test app.main:app"""
         logging.info(f'********************  CASICLOUD AI METER services  ********************')
         logging.info(f'phmMS tables were created by import statement {tb.TABLES}.')
-        logging.info(f'dynamic task start up.')
-        DynamicTask().start()
-        logging.info(f'mqtt client start up.')
-        threading.Thread(target=startMqtt()).start()
         logging.info(f'phmMS micro service starting at {ct.PHMMS_HOST}: {ct.PHMMS_PORT}')
         uvicorn.run('app.main:app',  # noqa 标准用法
                     host=ct.PHMMS_HOST,
@@ -81,7 +70,7 @@ class TestMain(unittest.TestCase):
                     ssl_keyfile=ct.PHMMS_KEY,
                     ssl_certfile=ct.PHMMS_CER,
                     log_level='warning',
-                    workers=3
+                    workers=1
                     )
 
 

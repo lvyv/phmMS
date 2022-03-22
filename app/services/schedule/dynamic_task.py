@@ -11,11 +11,14 @@ import concurrent.futures
 class DynamicTask(object):
 
     _instance_lock = threading.Lock()
+    init_first = False
 
     def __init__(self):
-        self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=100)
-        self.__isStop = False
-        self.__items = None
+        if DynamicTask.init_first is False:
+            DynamicTask.init_first = True
+            self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=100)
+            self.__isStop = False
+            self.__items = None
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, '_instance'):

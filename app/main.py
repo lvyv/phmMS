@@ -25,7 +25,8 @@ entrypoint of the app
 
 三层架构应用程序的主入口.
 """
-
+from mqtt.mqttclient import MqttClient
+from services.schedule.dynamic_task import DynamicTask
 from utils.app_exceptions import AppExceptionCase
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -56,6 +57,15 @@ app.add_middleware(
 
 app.mount('/static', StaticFiles(directory='../swagger_ui_dep/static'), name='static')
 logging.info(f'Worker Thread: {threading.current_thread().ident:6}     tables {tb.TABLES}.')
+
+
+def startMqtt():
+    MqttClient().start()
+
+logging.info(f'dynamic task start up.')
+DynamicTask().start()
+logging.info(f'mqtt client start up.')
+threading.Thread(target=startMqtt()).start()
 
 
 @app.exception_handler(StarletteHTTPException)
