@@ -37,7 +37,8 @@ setup(
         'phmconfig',
         'physics',
         'physics.config',
-        'physics.vrla'
+        'physics.vrla',
+        'physics.vibration'
     ],
     install_requires=[
         'blinker',
@@ -60,6 +61,11 @@ setup(
         'numpy',
         'scipy',
         'pymysql',
+        'pandas',
+        'hdbscan',
+        'sklearn',
+        'scikit-learn',
+        'adjustText'
     ],
     download_url='',
     package_data={

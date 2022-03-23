@@ -58,16 +58,6 @@ app.add_middleware(
 app.mount('/static', StaticFiles(directory='../swagger_ui_dep/static'), name='static')
 logging.info(f'Worker Thread: {threading.current_thread().ident:6}     tables {tb.TABLES}.')
 
-
-def startMqtt():
-    MqttClient().start()
-
-logging.info(f'dynamic task start up.')
-DynamicTask().start()
-logging.info(f'mqtt client start up.')
-threading.Thread(target=startMqtt()).start()
-
-
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request, e):
     return await http_exception_handler(request, e)
@@ -87,3 +77,13 @@ app.include_router(reqhistory_router.router)
 app.include_router(schedule_model_router.router)
 app.include_router(cellpack_router.router)
 app.include_router(config_router.router)
+
+
+def startMqtt():
+    MqttClient().start()
+
+
+logging.info(f'dynamic task start up.')
+DynamicTask().start()
+logging.info(f'mqtt client start up.')
+threading.Thread(target=startMqtt()).start()
