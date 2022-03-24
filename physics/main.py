@@ -25,18 +25,19 @@ entrypoint of the app
 
 模型微服务入口.
 """
+import threading
+import time
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from physics.vrla.soh import evaluate_soh as vrla_soh
 from phmconfig import basiccfg as bcf
-from phmconfig.config import ConfigSet
 import concurrent.futures
 import httpx
 import json
 import logging
-import paho.mqtt.client as mqtt_client
+from physics.mqttclient import  MqttClient
 from fastapi.staticfiles import StaticFiles
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -56,6 +57,13 @@ app.mount('/static', StaticFiles(directory='../swagger_ui_dep/static'), name='st
 
 # 线程池初始化
 executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=5)
+
+
+def startMqtt():
+    MqttClient().start()
+
+
+threading.Thread(target=startMqtt()).start()
 
 
 def post_process_vrla_soh(reqid, sohres):
@@ -90,16 +98,32 @@ def post_process_vrla_soh(reqid, sohres):
                 "imbalance": eqitem['extend']['Rimbalance'],
                 "ts": eqitem['ts']
             }
-            r = client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
-
-        # 3.推送MQTT
-        cfg = ConfigSet.get_cfg()
-        mqttclient = mqtt_client.Client(cfg['mqtt_cid'])
-        mqttclient.username_pw_set(cfg['mqtt_usr'], cfg['mqtt_pwd'])
-        mqttclient.connect(cfg['mqtt_svr'], cfg['mqtt_port'])
-        mqttclient.publish(cfg['mqtt_tp'], json.dumps({"reqid": reqid, "sohres": sohres}))
-
+            client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
+        MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))
         logging.info(r)
+
+
+def post_process_vrla_cluster(reqid, sohres, displayType):
+    with httpx.Client(timeout=None, verify=False) as client:
+        params = {'reqid': reqid, 'res': json.dumps(sohres)}
+        r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
+        logging.info(r)
+        items = json.loads(params['res'])
+        for did in items.keys():
+            eqi = {
+                "reqId": reqid,
+                "x": 2,
+                "y": 3,
+                "color": "red",
+                "size": 10,
+                "shape": "circle",
+                "name": did,
+                "ts": int(time.time() * 1000)
+            }
+            url = bcf.URL_POST_CLUSTER_PREFIX + displayType
+            r = client.post(url, json=eqi)
+            logging.info(r)
+        MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))
 
 
 # time intensive tasks
@@ -110,7 +134,7 @@ def soh_task(sohin, reqid):
     res = None
     if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
         res = vrla_soh(devids)
-        post_process_vrla_soh(reqid, res)  # 写两个库表（req_history, public.xc_equipment），发mqtt
+        post_process_vrla_soh(reqid, res)
     elif devtype == bcf.DT_CELLPACK:  # UPS电池组
         pass
     else:
@@ -120,7 +144,18 @@ def soh_task(sohin, reqid):
 
 def cluster_task(clusterin, reqid, displayType):
     # TODO 聚类接口
+    devids = json.loads(clusterin.devices)
+    devtype = bcf.DT_VRLA
     res = None
+    if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
+        res = {}
+        for dev in devids:
+            res.update({dev: {"result": "success"}})
+        post_process_vrla_cluster(reqid, res, displayType)
+    elif devtype == bcf.DT_CELLPACK:  # UPS电池组
+        pass
+    else:
+        pass
     return res
 
 

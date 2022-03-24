@@ -69,7 +69,7 @@ class TestMain(unittest.TestCase):
                 ssl_keyfile=bcf.PHMMD_KEY,
                 ssl_certfile=bcf.PHMMD_CER,
                 log_level='warning',
-                workers=3
+                workers=1
                 )
 
 

@@ -47,6 +47,9 @@ URL_POST_EQUIPMENT = cfg['url_post_equipment']
 # 更新历史请求记录
 URL_RESULT_WRITEBACK = cfg['url_result_writeback']
 
+# 回写聚类指标数据
+URL_POST_CLUSTER_PREFIX = cfg['url_post_cluster_prefix']
+
 # 设备类型
 DT_VRLA = 'vrla'
 DT_CELLPACK = 'cellpack'
