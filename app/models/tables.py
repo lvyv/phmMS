@@ -133,13 +133,13 @@ class THealthIndicator(Base):
     soh = Column(FLOAT)  # 健康指标
 
 
-class TCluster2D(Base):
-    __tablename__ = "xc_cluster_2d"
+class TCluster(Base):
+    __tablename__ = "xc_cluster"
     ts = Column(BigInteger, primary_key=True, index=True)  # 时间
     reqId = Column(Integer)  # 执行请求ID 关联历史记录表
     x = Column(FLOAT)  # x 轴坐标
     y = Column(FLOAT)  # y 轴坐标
-    # z = Column(FLOAT)  # z 轴坐标
+    z = Column(FLOAT)  # z 轴坐标
     color = Column(String(16))  # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
     size = Column(FLOAT)  # 大小
     shape = Column(String(16))  # 形状 eg: "circle", "star","square", "cross", "diamond"

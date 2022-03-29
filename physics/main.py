@@ -117,13 +117,14 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
                 "reqId": reqid,
                 "x": items[did][3],
                 "y": items[did][4],
+                "z": 0,
                 "color": items[did][2],
                 "size": items[did][1],
                 "shape": items[did][5],
                 "name": items[did][0],
                 "ts": int(time.time() * 1000)
             }
-            url = bcf.URL_POST_CLUSTER_PREFIX + displayType
+            url = bcf.URL_POST_CLUSTER_PREFIX
             r = client.post(url, json=eqi)
             logging.info(r)
         MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))

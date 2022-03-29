@@ -4,15 +4,15 @@ from models.dao_cellpack import CellPackCRUD
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.convertor_factory import ConvertorFactory
 from services.main import AppService
-from models.dao_cluster_display import Cluster2DCRUD
+from models.dao_cluster_display import ClusterCRUD
 from models.dao_reqhistory import RequestHistoryCRUD
 from utils.payload_util import PayloadUtil
 from utils.service_result import ServiceResult
 
 
 class ClusterDisplayService(AppService):
-    def create_item_2D(self, pi) -> ServiceResult:
-        item = Cluster2DCRUD(self.db).create_record(pi)
+    def create_item(self, pi) -> ServiceResult:
+        item = ClusterCRUD(self.db).create_record(pi)
         return ServiceResult(item)
 
     def clusterDisplay(self, clz, code, metrics, displayType, payload) -> ServiceResult:
@@ -47,7 +47,7 @@ class ClusterDisplayService(AppService):
             if len(hisRecordId) == 0:
                 pass
             else:
-                items = Cluster2DCRUD(self.db).get_records_byIds(hisRecordId, start, end)
+                items = ClusterCRUD(self.db).get_records_byIds(hisRecordId, start, end)
         elif displayType == ClusterDisplayUtil.DISPLAY_3D:
             pass
         elif displayType == ClusterDisplayUtil.DISPLAY_AGG2D:

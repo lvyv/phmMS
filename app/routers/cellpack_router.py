@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from schemas.vrla.cellpack_model import CellPackModel
-from schemas.vrla.cluster_model import Cluster2DModel
+from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.health_indicator_model import HealthIndicatorModel
 from utils.service_result import handle_result
 from phmconfig.database import get_db
@@ -62,10 +62,10 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
 
 
 # 回写聚类接口
-@router.post("/writeCluster/2D", response_model=Cluster2DModel)
-async def writeClusterDisplay(item: Cluster2DModel, db: get_db = Depends()):
+@router.post("/writeCluster", response_model=ClusterModel)
+async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
     so = ClusterDisplayService(db)
-    result = so.create_item_2D(item)
+    result = so.create_item(item)
     return handle_result(result)
 
 
