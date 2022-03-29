@@ -5,14 +5,34 @@ from adjustText import adjust_text
 from matplotlib import patches as mpatches
 from physics.vibration import cluster, mds
 import logging
+import httpx
+from phmconfig import basiccfg
 
 
-def model_invoke():
+# 从数据资源下载下载装备数据
+def download_zb_data(devs, metrics, start, end):
+    with httpx.Client(timeout=None, verify=False) as client:
+        r = client.post(basiccfg.URL_GET_ZB_DATA, params={"devs": devs, "metrics": metrics, "start": start, "end": end})
+        dataS = r.json()
+        return dataS
+    return None
+
+
+# 数据通过模型清洗
+def model_invoke(dataS):
     sr = 20480  # sample rate
     ws = 2048  # window size
     try:
+
         datumn = []
-        agelist = [28, 12, 52]
+        keys = dataS.keys()
+        agelist = []
+        for key in keys:
+            ks = dataS[key].keys()
+            for k in ks:
+                datumn.append(dataS[key][k])
+            agelist.append(len(ks))
+
         objpos = len(datumn)  # This position should be used to plot object sample.
         frequencies, spectrum = cluster.ts2fft(datumn, sr, ws)
         clusternew_, dfnew = cluster.cluster_vectors(spectrum, False)
@@ -23,7 +43,7 @@ def model_invoke():
         for idx, elems in enumerate(dfnew['vectors']):
             for el in elems:
                 df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
-        logging.info(f'3.MDS pos computed.')
+        logging.info(f'1.MDS pos computed.')
         # plot mds scatter chart
         plt.figure(1)
         plt.axes([0., 0., 1., 1.])
@@ -70,16 +90,28 @@ def model_invoke():
         for txt in list(range(objpos, len(datumn))):
             plt.text(pos[txt, 0], pos[txt, 1], f'PT: {txt}', c='#000000')
         plt.show()
-        logging.info('4.MDS plot finished.')
+        logging.info('2.MDS plot finished.')
         df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
         df2['pos_x'] = pos[:, 0]
         df2['pos_y'] = pos[:, 1]
         df2['shape'] = 0
         df2.loc[objpos:, 'shape'] = 1
         json.loads(df2.to_json())
-        logging.info('5.Return to main procedure.')
+        logging.info('3.Return to main procedure.')
         out = df2.to_json()  # return a valid json string
     except requests.exceptions.ConnectionError as ce:
         logging.error(ce)
     return out
 
+
+def model_convert(inDatas):
+    outDatas = {}
+    keys = inDatas.keys()
+    for key in keys:
+        innerKeys = inDatas[key].keys()
+        for innerKey in innerKeys:
+            if innerKey in outDatas.keys():
+                outDatas[innerKey].append(inDatas[key][innerKey])
+            else:
+                outDatas[innerKey] = [inDatas[key][innerKey]]
+    return outDatas

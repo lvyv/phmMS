@@ -139,6 +139,7 @@ class TCluster2D(Base):
     reqId = Column(Integer)  # 执行请求ID 关联历史记录表
     x = Column(FLOAT)  # x 轴坐标
     y = Column(FLOAT)  # y 轴坐标
+    # z = Column(FLOAT)  # z 轴坐标
     color = Column(String(16))  # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
     size = Column(FLOAT)  # 大小
     shape = Column(String(16))  # 形状 eg: "circle", "star","square", "cross", "diamond"

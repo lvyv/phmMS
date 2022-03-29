@@ -39,6 +39,8 @@ import json
 import logging
 from physics.mqttclient import  MqttClient
 from fastapi.staticfiles import StaticFiles
+from physics.test import mock_zb_router
+from physics.vibration import phm
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 app = FastAPI()
@@ -108,16 +110,17 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
         params = {'reqid': reqid, 'res': json.dumps(sohres)}
         r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
         logging.info(r)
-        items = json.loads(params['res'])
+        items = phm.model_convert(json.loads(sohres))
+
         for did in items.keys():
             eqi = {
                 "reqId": reqid,
-                "x": 2,
-                "y": 3,
-                "color": "red",
-                "size": 10,
-                "shape": "circle",
-                "name": did,
+                "x": items[did][3],
+                "y": items[did][4],
+                "color": items[did][2],
+                "size": items[did][1],
+                "shape": items[did][5],
+                "name": items[did][0],
                 "ts": int(time.time() * 1000)
             }
             url = bcf.URL_POST_CLUSTER_PREFIX + displayType
@@ -148,9 +151,8 @@ def cluster_task(clusterin, reqid, displayType):
     devtype = bcf.DT_VRLA
     res = None
     if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
-        res = {}
-        for dev in devids:
-            res.update({dev: {"result": "success"}})
+        dataS = phm.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
+        res = phm.model_invoke(dataS)
         post_process_vrla_cluster(reqid, res, displayType)
     elif devtype == bcf.DT_CELLPACK:  # UPS电池组
         pass
@@ -179,3 +181,6 @@ async def calculate_cluster(sohin: SohInputParams, reqid: int, displayType: str)
     """模拟耗时的机器学习任务"""
     executor_.submit(cluster_task, sohin, reqid, displayType)
     return {'task': reqid, 'status': 'submitted to work thread.'}
+
+
+app.include_router(mock_zb_router.router)
