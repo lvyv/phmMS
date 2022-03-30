@@ -115,15 +115,18 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
         for did in items.keys():
             eqi = {
                 "reqId": reqid,
-                "x": items[did][3],
-                "y": items[did][4],
-                "z": 0,
-                "color": items[did][2],
-                "size": items[did][1],
-                "shape": items[did][5],
+                "x": items[did][4],
+                "y": items[did][5],
                 "name": items[did][0],
-                "ts": int(time.time() * 1000)
+                "size": items[did][1],
+                "color": items[did][2],
+                "shape": items[did][3],
+                "ts": int(time.time() * 1000),
+                "z": 0
             }
+            if displayType in ["AGG3D", "3D"]:
+                eqi["z"] = items[did][6]
+
             url = bcf.URL_POST_CLUSTER_PREFIX
             r = client.post(url, json=eqi)
             logging.info(r)
@@ -153,7 +156,10 @@ def cluster_task(clusterin, reqid, displayType):
     res = None
     if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
         dataS = phm.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
-        res = phm.model_invoke(dataS)
+        if displayType in ["AGG3D", "3D"]:
+            res = phm.model_invoke(dataS, 3)
+        else:
+            res = phm.model_invoke(dataS, 2)
         post_process_vrla_cluster(reqid, res, displayType)
     elif devtype == bcf.DT_CELLPACK:  # UPS电池组
         pass

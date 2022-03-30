@@ -30,15 +30,10 @@ class ClusterDisplayService(AppService):
             items = CellPackCRUD(self.db).get_records_by_devs(devs, start, end)
             if items is None:
                 return ServiceResult(None)
-        elif displayType == ClusterDisplayUtil.DISPLAY_2D:
+        elif displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
+                             ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
             devs = code.split(",")
             tags = metrics.split(",")
-            # hisRecord = RequestHistoryCRUD(self.db).get_record_by_condition(json.dumps(devs),
-            #                                                                 json.dumps(tags), displayType)
-            # if hisRecord is None:
-            #     pass
-            # else:
-            #     items = Cluster2DCRUD(self.db).get_records(hisRecord.id, start, end)
             hisRecords = RequestHistoryCRUD(self.db).get_records_by_condition(json.dumps(devs),
                                                                               json.dumps(tags), displayType)
             hisRecordId = []
@@ -48,12 +43,6 @@ class ClusterDisplayService(AppService):
                 pass
             else:
                 items = ClusterCRUD(self.db).get_records_byIds(hisRecordId, start, end)
-        elif displayType == ClusterDisplayUtil.DISPLAY_3D:
-            pass
-        elif displayType == ClusterDisplayUtil.DISPLAY_AGG2D:
-            pass
-        elif displayType == ClusterDisplayUtil.DISPLAY_AGG3D:
-            pass
         else:
             items = None
         if items is None:

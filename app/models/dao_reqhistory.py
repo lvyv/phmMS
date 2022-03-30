@@ -60,7 +60,7 @@ class RequestHistoryCRUD(AppCRUD):
     def update_record(self, reqid, result) -> TReqHistory:
         reqdao = self.db.query(TReqHistory).filter(TReqHistory.id == reqid).first()
         reqdao.status = ct.REQ_STATUS_SETTLED
-        reqdao.result = result
+        reqdao.result = ct.REQ_STATUS_SETTLED
         reqdao.settledts = int(time.time() * 1000)
         self.db.commit()
         return reqdao

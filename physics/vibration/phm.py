@@ -19,7 +19,7 @@ def download_zb_data(devs, metrics, start, end):
 
 
 # 数据通过模型清洗
-def model_invoke(dataS):
+def model_invoke(dataS, dimension):
     sr = 20480  # sample rate
     ws = 2048  # window size
     try:
@@ -37,7 +37,7 @@ def model_invoke(dataS):
         frequencies, spectrum = cluster.ts2fft(datumn, sr, ws)
         clusternew_, dfnew = cluster.cluster_vectors(spectrum, False)
         df2 = mds.dev_age_compute(spectrum, frequencies, agelist)  # should label at data reading phase.seg
-        pos = mds.compute_mds_pos(spectrum)
+        pos = mds.compute_mds_pos(spectrum, dimension)
         # set color for each points in df2
         df2.loc[:, 'color'] = '#000000'
         for idx, elems in enumerate(dfnew['vectors']):
@@ -92,10 +92,12 @@ def model_invoke(dataS):
         plt.show()
         logging.info('2.MDS plot finished.')
         df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
-        df2['pos_x'] = pos[:, 0]
-        df2['pos_y'] = pos[:, 1]
         df2['shape'] = 0
         df2.loc[objpos:, 'shape'] = 1
+        df2['pos_x'] = pos[:, 0]
+        df2['pos_y'] = pos[:, 1]
+        if dimension == 3:
+            df2['pos_z'] = pos[:, 2]
         json.loads(df2.to_json())
         logging.info('3.Return to main procedure.')
         out = df2.to_json()  # return a valid json string

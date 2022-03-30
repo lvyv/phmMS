@@ -67,10 +67,10 @@ def dev_age_compute(vectors, freqs, segment):
     return df
 
 
-def compute_mds_pos(vectors):
+def compute_mds_pos(vectors, dimension):
     similarities = euclidean_distances(vectors)
     # vecs = np.array([list(vec) for vec in vectors])
-    mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9,
+    mds = manifold.MDS(n_components=dimension, max_iter=3000, eps=1e-9,
                        dissimilarity="precomputed", n_jobs=1)
     pos = mds.fit(similarities).embedding_
 
@@ -78,7 +78,7 @@ def compute_mds_pos(vectors):
     # pos *= np.sqrt((vecs ** 2).sum()) / np.sqrt((pos ** 2).sum())
 
     # Rotate the data
-    clf = PCA(n_components=2)
+    clf = PCA(n_components=dimension)
     # vecs = clf.fit_transform(vecs)
 
     pos = clf.fit_transform(pos)
