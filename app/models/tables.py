@@ -29,7 +29,7 @@ table data model module
 # Author: Awen <26896225@qq.com>
 # License: MIT
 
-from sqlalchemy import Column, Integer, String, FLOAT, INTEGER, BigInteger, Boolean
+from sqlalchemy import Column, Integer, String, FLOAT, INTEGER, BigInteger, Boolean, TEXT
 from phmconfig.database import Base, create_tables
 
 
@@ -58,7 +58,7 @@ class TReqHistory(Base):
     id = Column(Integer, primary_key=True, index=True)
     model = Column(String(512))
     status = Column(String(512))
-    result = Column(String(8096))
+    result = Column(TEXT)
     requestts = Column(BigInteger)
     settledts = Column(BigInteger)
     memo = Column(String(2048), default='')
