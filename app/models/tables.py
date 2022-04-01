@@ -90,8 +90,9 @@ class TApiToken(Base):
 
 class TCellPack(Base):
     __tablename__ = "xc_cell_pack"
-    ts = Column(BigInteger, primary_key=True, index=True)  # 时间
-    did = Column(String(512), primary_key=True, index=True)  # 装备ID
+    id = Column(Integer, primary_key=True, index=True)  # 主键
+    ts = Column(BigInteger)  # 时间
+    did = Column(String(512))  # 装备ID
     dclz = Column(String(128))  # 装备类型
     remainLife = Column(FLOAT)  # 剩余寿命
     voc = Column(FLOAT)  # 开路电压 【电池处于断路状态时的电压，即非工作电压】
@@ -126,8 +127,9 @@ class TSchedule(Base):  # 装备数据分析调度表
 
 class THealthIndicator(Base):
     __tablename__ = "xc_health_indicator"
-    ts = Column(BigInteger, primary_key=True, index=True)  # 时间
-    did = Column(String(512), primary_key=True, index=True)  # 装备ID
+    id = Column(Integer, primary_key=True, index=True)  # 主键
+    ts = Column(BigInteger)  # 时间
+    did = Column(String(512))  # 装备ID
     dclz = Column(String(128))  # 装备类型
     state = Column(Integer)  # 健康状态
     soh = Column(FLOAT)  # 健康指标
@@ -135,7 +137,8 @@ class THealthIndicator(Base):
 
 class TCluster(Base):
     __tablename__ = "xc_cluster"
-    ts = Column(BigInteger, primary_key=True, index=True)  # 时间
+    id = Column(Integer, primary_key=True, index=True)  # 主键
+    ts = Column(BigInteger)  # 时间
     reqId = Column(Integer)  # 执行请求ID 关联历史记录表
     x = Column(FLOAT)  # x 轴坐标
     y = Column(FLOAT)  # y 轴坐标
