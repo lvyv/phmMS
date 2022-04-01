@@ -14,7 +14,7 @@ class ClusterDisplayUtil:
             "3D": ["x", "y", "z", "color", "size", "shape", "name"],
             "POLYLINE": ["ts"],
             "AGG2D": ["x", "y", "color", "shape", "name"],
-            "AGG3D": ["x", "y", "z", "color", "shape", "name"]
+            "AGG3D": ["x", "y", "z", "color", "name"]
         }
         return values.get(displayType, None)
 
