@@ -70,7 +70,7 @@ threading.Thread(target=startMqtt()).start()
 
 def post_process_vrla_soh(reqid, sohres):
     with httpx.Client(timeout=None, verify=False) as client:
-        params = {'reqid': reqid, 'res': json.dumps(sohres)}
+        params = {'reqid': reqid, 'res': "settled"}
         # 1.写回请求响应数据库表
         r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
 
@@ -107,7 +107,7 @@ def post_process_vrla_soh(reqid, sohres):
 
 def post_process_vrla_cluster(reqid, sohres, displayType):
     with httpx.Client(timeout=None, verify=False) as client:
-        params = {'reqid': reqid, 'res': json.dumps(sohres)}
+        params = {'reqid': reqid, 'res': "settled"}
         r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
         logging.info(r)
         items = phm.model_convert(json.loads(sohres))
@@ -129,6 +129,7 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
 
             url = bcf.URL_POST_CLUSTER_PREFIX
             r = client.post(url, json=eqi)
+            time.sleep(0.1)
             logging.info(r)
         MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))
 
