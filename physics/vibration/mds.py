@@ -58,7 +58,7 @@ def dev_age_compute(vectors, freqs, segment):
         devs = devs + [iii for idx in range(devnums)]
     df['dev'] = devs
 
-    age_factor = 20
+    age_factor = 5
     ptsize = []
     for iii, devnums in enumerate(segment):
         ptsize = ptsize + list(range(devnums))
