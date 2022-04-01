@@ -39,7 +39,8 @@ setup(
         'physics.config',
         'physics.vrla',
         'physics.vibration',
-        'physics.test'
+        'physics.test',
+        'physics.common'
     ],
     install_requires=[
         'blinker',

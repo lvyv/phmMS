@@ -9,6 +9,7 @@ from physics.vibration import cluster, mds
 import logging
 import httpx
 from phmconfig import basiccfg
+from physics.common.cluster_utils import cluster_shape2
 
 
 # 从数据资源下载下载装备数据
@@ -50,7 +51,13 @@ def model_invoke(dataS, dimension):
         logging.info('2.MDS plot finished.')
         df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
         df2['shape'] = 0
-        df2.loc[objpos:, 'shape'] = 1
+        # df2.loc[objpos:, 'shape'] = 1
+
+        start = 0
+        for i, item in enumerate(agelist):
+            df2.loc[start:, 'shape'] = cluster_shape2[i % len(cluster_shape2)]
+            start += item
+
         df2['pos_x'] = pos[:, 0]
         df2['pos_y'] = pos[:, 1]
         if dimension == 3:
