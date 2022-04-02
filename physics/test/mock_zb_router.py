@@ -39,9 +39,9 @@ async def getZbData(devs, metrics, start, end):
             "metric2": list(c2[0:1024]),
             "metric3": list(c3[0:1024]),
             "metric4": list(c4[0:1024]),
-            "metric5": list(c5[0:1024]),
-            "metric6": list(c6[0:1024]),
-            "metric7": list(c7[0:1024]),
-            "metric8": list(c8[0:1024])
+            # "metric5": list(c5[0:1024]),
+            # "metric6": list(c6[0:1024]),
+            # "metric7": list(c7[0:1024]),
+            # "metric8": list(c8[0:1024])
         }
     return dataS

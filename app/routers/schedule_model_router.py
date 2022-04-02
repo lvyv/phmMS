@@ -86,9 +86,3 @@ async def cluster(sohin: SohInputParams, displayType: str, db: get_db = Depends(
     except json.decoder.JSONDecodeError:
         res = ServiceResult(AppException.HttpRequestParamsIllegal)
     return handle_result(res)
-
-
-# 定义自相关接口
-@router.post("relation")
-async def relation():
-    pass

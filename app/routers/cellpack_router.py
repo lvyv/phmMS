@@ -8,7 +8,6 @@ from services.cellpackService import CellPackService
 from services.healthIndicatorService import HealthIndicatorService
 from services.clusterDisplayService import ClusterDisplayService
 
-
 router = APIRouter(
     prefix="/api/v1/cellpack",
     tags=["电池组历史统计微服务"],
@@ -69,4 +68,8 @@ async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
     return handle_result(result)
 
 
-# 自相关接口
+# 自相关接口  只能同步操作
+@router.post("relation")
+async def trendRelation(equipType: str, equipCode: str, metrics: str,
+                        leftTag: int, rightTag: int, step: int, unit: int, payload: dict):
+    pass
