@@ -69,7 +69,7 @@ async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
 
 
 # 自相关接口  只能同步操作
-@router.post("relation")
+@router.post("/relation")
 async def trendRelation(equipType: str, equipCode: str, metrics: str,
                         leftTag: int, rightTag: int, step: int, unit: int, payload: dict):
     pass

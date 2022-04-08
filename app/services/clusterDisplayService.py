@@ -35,7 +35,9 @@ class ClusterDisplayService(AppService):
         elif displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                              ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
             devs = code.split(",")
+            devs.sort()
             tags = metrics.split(",")
+            tags.sort()
             hisRecordId = []
             if self.getLast is True:
                 hisRecord = RequestHistoryCRUD(self.db).get_record_by_condition(json.dumps(devs),

@@ -55,6 +55,10 @@ class VRLABatteryService(AppService):
         :return:
         """
         dev_type = ct.DEV_VRLA
+
+        devs.sort()
+        tags.sort()
+
         external_data = {
             'model': dev_type,
             'status': ct.REQ_STATUS_PENDING,
@@ -90,6 +94,11 @@ class VRLABatteryService(AppService):
         :return:
         """
         dev_type = ct.DEV_VRLA
+
+        # FIX
+        devs.sort()
+        tags.sort()
+
         external_data = {
             'model': dev_type,
             'status': ct.REQ_STATUS_PENDING,

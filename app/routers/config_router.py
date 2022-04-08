@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter, Depends
 from services.schedule.schedule_service import ScheduleService
 from schemas.schedule.schedule_model import ScheduleModel
@@ -15,6 +17,14 @@ router = APIRouter(
 @router.post("/item")
 async def create_item(item: ScheduleModel, db: get_db = Depends()):
     so = ScheduleService(db)
+    # fix
+    dids = item.dids.split(',')
+    dids.sort()
+    tags = item.dtags.split(',')
+    tags.sort()
+    item.dids = json.dumps(dids)
+    item.dtags = json.dumps(tags)
+
     result = so.create_item(item)
     ret = handle_result(result)
     DynamicTask().push(ret)
