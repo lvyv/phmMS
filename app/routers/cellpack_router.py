@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from schemas.vrla.cellpack_model import CellPackModel
 from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.health_indicator_model import HealthIndicatorModel
+from schemas.vrla.self_relation_model import SelfRelationModel
 from utils.service_result import handle_result
 from phmconfig.database import get_db
 from services.cellpackService import CellPackService
@@ -76,4 +77,11 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str,
                         payload: dict, db: get_db = Depends()):
     so = SelfRelationService(db)
     result = so.selfRelation(equipType, equipCode, metrics, leftTag, rightTag, step, unit, payload)
+    return handle_result(result)
+
+
+@router.post("/writeRelation")
+async def writeClusterDisplay(item: SelfRelationModel, db: get_db = Depends()):
+    so = SelfRelationService(db)
+    result = so.create_item(item)
     return handle_result(result)

@@ -34,6 +34,7 @@ import httpx
 import time
 import json
 from schemas.reqhistory_model import ReqItemCreate
+from services.convert.self_relation_util import SelfRelationUtil
 from services.main import AppService
 from models.dao_reqhistory import RequestHistoryCRUD
 from utils.service_result import ServiceResult
@@ -45,6 +46,7 @@ class VRLABatteryService(AppService):
     """
     电池模型业务逻辑服务。
     """
+
     async def soh(self, devs: list, tags: list, startts: int, endts: int) -> ServiceResult:
         """
         健康指标计算。
@@ -120,6 +122,41 @@ class VRLABatteryService(AppService):
                 }
                 params = {"reqid": cluster_item.id, "displayType": displayType}
                 r = await client.post(f'{ct.URL_CLUSTER}', json=payload, params=params)
+                logging.debug(r)
+                return ServiceResult(r.content)
+        except httpx.ConnectTimeout:
+            return ServiceResult(AppException.HttpRequestTimeout())
+
+    async def relation(self, devs: list, tags: list, startts: int, endts: int,
+                       leftTag: int, rightTag: int, step: int, unit: int) -> ServiceResult:
+
+        dev_type = ct.DEV_VRLA
+        # FIX
+        devs.sort()
+        tags.sort()
+
+        external_data = {
+            'model': dev_type,
+            'status': ct.REQ_STATUS_PENDING,
+            'result': ct.REQ_STATUS_PENDING,
+            'requestts': int(time.time() * 1000),
+            'memo': json.dumps(devs),
+            'metrics': json.dumps(tags),
+            'displayType': SelfRelationUtil.DISPLAY_SELF_RELATION
+        }
+        item = ReqItemCreate(**external_data)
+        cluster_item = RequestHistoryCRUD(self.db).create_record(item)
+        try:
+            async with httpx.AsyncClient(timeout=ct.REST_REQUEST_TIMEOUT, verify=False) as client:
+                payload = {
+                    "devices": json.dumps(devs),
+                    "tags": json.dumps(tags),
+                    "startts": startts,
+                    "endts": endts
+                }
+                params = {"reqid": cluster_item.id, "leftTag": leftTag,
+                          "rightTag": rightTag, "step": step, "unit": unit}
+                r = await client.post(f'{ct.URL_RELATION}', json=payload, params=params)
                 logging.debug(r)
                 return ServiceResult(r.content)
         except httpx.ConnectTimeout:

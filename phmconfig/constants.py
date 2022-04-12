@@ -50,6 +50,7 @@ REST_REQUEST_TIMEOUT = 10
 # 后台ai模型的地址
 URL_SOH = cfg['url_soh']
 URL_CLUSTER = cfg['url_cluster']
+URL_RELATION = cfg['url_relation']
 # 后台ai模型mock的地址
 # AIURL_SOH = 'https://127.0.0.1:29083/api/v1/soh'
 

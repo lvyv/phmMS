@@ -86,3 +86,14 @@ async def cluster(sohin: SohInputParams, displayType: str, db: get_db = Depends(
     except json.decoder.JSONDecodeError:
         res = ServiceResult(AppException.HttpRequestParamsIllegal)
     return handle_result(res)
+
+
+@router.post("/relation")
+async def cluster(sohin: SohInputParams, leftTag: int, rightTag: int, step: int, unit: int, db: get_db = Depends()):
+    try:
+        bs = VRLABatteryService(db)
+        res = await bs.relation(json.loads(sohin.devices), json.loads(sohin.tags), sohin.startts,
+                                sohin.endts, leftTag, rightTag, step, unit)
+    except json.decoder.JSONDecodeError:
+        res = ServiceResult(AppException.HttpRequestParamsIllegal)
+    return handle_result(res)

@@ -50,6 +50,8 @@ URL_RESULT_WRITEBACK = cfg['url_result_writeback']
 # 回写聚类指标数据
 URL_POST_CLUSTER_PREFIX = cfg['url_post_cluster_prefix']
 
+URL_POST_SELF_RELATION = cfg['url_post_self_relation']
+
 URL_GET_ZB_DATA = cfg['url_get_zb_data']
 
 # 设备类型

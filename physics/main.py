@@ -37,7 +37,7 @@ import concurrent.futures
 import httpx
 import json
 import logging
-from physics.mqttclient import  MqttClient
+from physics.mqttclient import MqttClient
 from fastapi.staticfiles import StaticFiles
 from physics.test import mock_zb_router
 from physics.vibration import phm
@@ -134,6 +134,27 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
         MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))
 
 
+def post_process_vrla_relation(reqid, sohres):
+    with httpx.Client(timeout=None, verify=False) as client:
+        params = {'reqid': reqid, 'res': "settled"}
+        # 1.写回请求响应数据库表
+        r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
+
+        # 2.写回指标统计数据库表
+        items = json.loads(json.dumps(sohres))
+        for did in items.keys():
+            eqitem = items[did]
+            eqi = {
+                "reqId": reqid,
+                "lag": (int(time.time() * 1000)) % 50,
+                "value": 5,
+                "ts": int(time.time() * 1000),
+            }
+            client.post(f'{bcf.URL_POST_SELF_RELATION}', json=eqi)
+        MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))
+        logging.info(r)
+
+
 # time intensive tasks
 def soh_task(sohin, reqid):
     # 查询传入的设备号是什么样的设备类型（要求传入的设备号都是同样的设备类型）
@@ -169,6 +190,22 @@ def cluster_task(clusterin, reqid, displayType):
     return res
 
 
+def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
+    devids = json.loads(relationin.devices)
+    devtype = bcf.DT_VRLA
+    res = None
+    if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
+        res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
+               "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
+        post_process_vrla_relation(reqid, res)
+        pass
+    elif devtype == bcf.DT_CELLPACK:  # UPS电池组
+        pass
+    else:
+        pass
+    return res
+
+
 # IF11:REST MODEL 外部接口-phmMD与phmMS之间接口
 class SohInputParams(BaseModel):
     devices: str = '[]'  # json string
@@ -188,6 +225,12 @@ async def calculate_soh(sohin: SohInputParams, reqid: int):
 async def calculate_cluster(sohin: SohInputParams, reqid: int, displayType: str):
     """模拟耗时的机器学习任务"""
     executor_.submit(cluster_task, sohin, reqid, displayType)
+    return {'task': reqid, 'status': 'submitted to work thread.'}
+
+
+@app.post("/api/v1/relation")
+async def calculate_relation(sohin: SohInputParams, reqid: int, leftTag: int, rightTag: int, step: int, unit: int):
+    executor_.submit(relation_task, sohin, reqid, leftTag, rightTag, step, unit)
     return {'task': reqid, 'status': 'submitted to work thread.'}
 
 
