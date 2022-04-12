@@ -75,7 +75,7 @@ def post_process_vrla_soh(reqid, sohres):
         r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
 
         # 2.写回指标统计数据库表
-        items = json.loads(params['res'])
+        items = json.loads(json.dumps(sohres))
         for did in items.keys():
             eqitem = items[did]
             eqi = {

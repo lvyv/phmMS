@@ -149,5 +149,14 @@ class TCluster(Base):
     name = Column(String(64))  # 装备ID
 
 
+class TSelfRelation(Base):
+    __tablename__ = "xc_self_relation"
+    id = Column(Integer, primary_key=True, index=True)  # 主键
+    ts = Column(BigInteger)
+    reqId = Column(Integer)
+    lag = Column(Integer)
+    value = Column(FLOAT)
+
+
 # create all tables
 TABLES = create_tables()

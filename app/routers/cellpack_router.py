@@ -7,6 +7,7 @@ from phmconfig.database import get_db
 from services.cellpackService import CellPackService
 from services.healthIndicatorService import HealthIndicatorService
 from services.clusterDisplayService import ClusterDisplayService
+from services.selfRelationService import SelfRelationService
 
 router = APIRouter(
     prefix="/api/v1/cellpack",
@@ -68,8 +69,11 @@ async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
     return handle_result(result)
 
 
-# 自相关接口  只能同步操作
+# 自相关接口  针对单个设备，单个测点进行
 @router.post("/relation")
 async def trendRelation(equipType: str, equipCode: str, metrics: str,
-                        leftTag: int, rightTag: int, step: int, unit: int, payload: dict):
-    pass
+                        leftTag: int, rightTag: int, step: int, unit: int,
+                        payload: dict, db: get_db = Depends()):
+    so = SelfRelationService(db)
+    result = so.selfRelation(equipType, equipCode, metrics, leftTag, rightTag, step, unit, payload)
+    return handle_result(result)

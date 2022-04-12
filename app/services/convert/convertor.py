@@ -1,4 +1,5 @@
 from services.convert.cluster_display_util import ClusterDisplayUtil
+from services.convert.self_relation_util import SelfRelationUtil
 
 
 class IConvertor:
@@ -135,4 +136,19 @@ class IConvertor:
                         tmpDict[m] = [self.get_metric_value(item, m)]
         for key in tmpDict.keys():
             rets.append({"name": key, "type": ClusterDisplayUtil.get_metric_type(key), "values": tmpDict[key]})
+        return rets
+
+    @staticmethod
+    def convertSelfRelation(items):
+        rets = []
+        tmpDict = {}
+        useMetrics = SelfRelationUtil.get_use_metrics(SelfRelationUtil.DISPLAY_SELF_RELATION)
+        for item in items:
+            for m in useMetrics:
+                if m in tmpDict.keys():
+                    tmpDict[m].append(SelfRelationUtil.get_metric_value(item, m))
+                else:
+                    tmpDict[m] = [SelfRelationUtil.get_metric_value(item, m)]
+        for key in tmpDict.keys():
+            rets.append({"name": key, "type": SelfRelationUtil.get_metric_type(key), "values": tmpDict[key]})
         return rets
