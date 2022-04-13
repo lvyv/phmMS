@@ -65,3 +65,14 @@ class CellPackCRUD(AppCRUD):
         if len(items) == 0:
             return None
         return items
+
+    def get_records_by_limit(self, dids, limit) -> TCellPack:
+        items = []
+        for did in dids:
+            item = self.db.query(TCellPack).filter(TCellPack.did == did)\
+                .order_by(desc(TCellPack.ts)).limit(limit).all()
+            if item:
+                items.append(item)
+        if len(items) == 0:
+            return None
+        return items

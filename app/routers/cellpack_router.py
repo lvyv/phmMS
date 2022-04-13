@@ -40,7 +40,7 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
 @router.post("/healthIndicator")
 async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_db = Depends()):
     so = HealthIndicatorService(db)
-    result = so.health_indicator(equipType, equipCode, reqType)
+    result = so.health_indicator2(equipType, equipCode, reqType)
     return handle_result(result)
 
 
