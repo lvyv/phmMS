@@ -21,14 +21,6 @@ class ClusterCRUD(AppCRUD):
         self.db.refresh(reqdao)
         return reqdao
 
-    def get_records(self, reqId: int, start: int, end: int) -> TCluster:
-        records = self.db.query(TCluster).filter(and_(TCluster.reqId == reqId,
-                                                      TCluster.ts.between(start, end)
-                                                      )).all()
-        return records
-
-    def get_records_byIds(self, reqIds: [], start: int, end: int) -> TCluster:
-        records = self.db.query(TCluster).filter(and_(TCluster.reqId.in_(reqIds),
-                                                      TCluster.ts.between(start, end)
-                                                      )).all()
+    def get_records(self, reqIds: []) -> TCluster:
+        records = self.db.query(TCluster).filter(TCluster.reqId.in_(reqIds)).all()
         return records

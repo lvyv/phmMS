@@ -16,14 +16,6 @@ class SelfRelationCRUD(AppCRUD):
         self.db.refresh(reqdao)
         return reqdao
 
-    def get_records(self, reqId: int, start: int, end: int) -> TSelfRelation:
-        records = self.db.query(TSelfRelation).filter(and_(TSelfRelation.reqId == reqId,
-                                                           TSelfRelation.ts.between(start, end)
-                                                           )).all()
-        return records
-
-    def get_records_byIds(self, reqIds: [], start: int, end: int) -> TSelfRelation:
-        records = self.db.query(TSelfRelation).filter(and_(TSelfRelation.reqId.in_(reqIds),
-                                                           TSelfRelation.ts.between(start, end)
-                                                           )).all()
+    def get_records(self, reqIds: []) -> TSelfRelation:
+        records = self.db.query(TSelfRelation).filter(TSelfRelation.reqId.in_(reqIds)).all()
         return records

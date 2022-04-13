@@ -19,15 +19,15 @@ class SelfRelationService(AppService):
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
         hisRecordId = []
-        hisRecords = RequestHistoryCRUD(self.db).get_records_by_condition(json.dumps([code]),
-                                                                          json.dumps([metrics]),
-                                                                          SelfRelationUtil.DISPLAY_SELF_RELATION)
+        hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps([code]),
+                                                             json.dumps([metrics]),
+                                                             SelfRelationUtil.DISPLAY_SELF_RELATION, start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)
         if len(hisRecordId) == 0:
             pass
         else:
-            items = SelfRelationCRUD(self.db).get_records_byIds(hisRecordId, start, end)
+            items = SelfRelationCRUD(self.db).get_records(hisRecordId)
         if items is None:
             return ServiceResult(None)
         convertor = ConvertorFactory.get_convertor(clz)

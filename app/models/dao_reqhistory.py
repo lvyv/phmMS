@@ -31,7 +31,7 @@ data access层，负责处理模型调用的历史记录。
 
 import time
 
-from sqlalchemy import and_, desc
+from sqlalchemy import and_, desc, or_
 
 from services.main import AppCRUD
 from models.tables import TReqHistory
@@ -45,7 +45,7 @@ class RequestHistoryCRUD(AppCRUD):
     """
 
     def create_record(self, item: ReqItemCreate) -> TReqHistory:
-        reqdao = TReqHistory(model=item.model,
+        record = TReqHistory(model=item.model,
                              status=item.status,
                              result=item.result,
                              requestts=item.requestts,
@@ -54,38 +54,40 @@ class RequestHistoryCRUD(AppCRUD):
                              displayType=item.displayType,
                              startTs=item.startTs,
                              endTs=item.endTs)
-        self.db.add(reqdao)
+        self.db.add(record)
         self.db.commit()
-        self.db.refresh(reqdao)
-        return reqdao
+        self.db.refresh(record)
+        return record
 
     def update_record(self, reqid, result) -> TReqHistory:
-        reqdao = self.db.query(TReqHistory).filter(TReqHistory.id == reqid).first()
-        reqdao.status = ct.REQ_STATUS_SETTLED
-        reqdao.result = result
-        reqdao.settledts = int(time.time() * 1000)
+        record = self.db.query(TReqHistory).filter(TReqHistory.id == reqid).first()
+        record.status = ct.REQ_STATUS_SETTLED
+        record.result = result
+        record.settledts = int(time.time() * 1000)
         self.db.commit()
-        return reqdao
+        return record
 
-    def get_record(self, reqid: int) -> TReqHistory:
-        reqdao = self.db.query(TReqHistory).filter(TReqHistory.id == reqid).first()
-        if reqdao:
-            return reqdao
-        return None
-
-    def get_record_by_condition(self, equipCode: str, metrics: str, displayType: str) -> TReqHistory:
-        # TODO fix 查询数据失败
-        reqdao = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
+    def get_record_last(self, equipCode: str, metrics: str, displayType: str) -> TReqHistory:
+        record = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                         TReqHistory.metrics == metrics,
                                                         TReqHistory.displayType == displayType)) \
             .order_by(desc(TReqHistory.id)).first()
-        if reqdao:
-            return reqdao
+        if record:
+            return record
         return None
 
-    def get_records_by_condition(self, equipCode: str, metrics: str, displayType: str) -> TReqHistory:
+    def get_records(self, equipCode: str, metrics: str, displayType: str, start: int, end: int) -> TReqHistory:
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.metrics == metrics,
-                                                         TReqHistory.displayType == displayType)) \
-            .all()
+                                                         TReqHistory.displayType == displayType,
+                                                         or_(TReqHistory.startTs.between(start, end),
+                                                             TReqHistory.endTs.between(start, end),
+                                                             and_(TReqHistory.startTs >= start,
+                                                                  TReqHistory.endTs <= end),
+                                                             and_(TReqHistory.startTs <= start,
+                                                                  TReqHistory.endTs >= end)
+                                                             )
+                                                         )).all()
         return records
+
+

@@ -11,7 +11,6 @@ from utils.service_result import ServiceResult
 
 
 class ClusterDisplayService(AppService):
-    getLast = False
 
     def create_item(self, pi) -> ServiceResult:
         item = ClusterCRUD(self.db).create_record(pi)
@@ -39,19 +38,14 @@ class ClusterDisplayService(AppService):
             tags = metrics.split(",")
             tags.sort()
             hisRecordId = []
-            if self.getLast is True:
-                hisRecord = RequestHistoryCRUD(self.db).get_record_by_condition(json.dumps(devs),
-                                                                                json.dumps(tags), displayType)
-                hisRecordId.append(hisRecord.id)
-            else:
-                hisRecords = RequestHistoryCRUD(self.db).get_records_by_condition(json.dumps(devs),
-                                                                                  json.dumps(tags), displayType)
-                for his in hisRecords:
-                    hisRecordId.append(his.id)
+            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs),
+                                                                 json.dumps(tags), displayType, start, end)
+            for his in hisRecords:
+                hisRecordId.append(his.id)
             if len(hisRecordId) == 0:
                 pass
             else:
-                items = ClusterCRUD(self.db).get_records_byIds(hisRecordId, start, end)
+                items = ClusterCRUD(self.db).get_records(hisRecordId)
         else:
             items = None
         if items is None:

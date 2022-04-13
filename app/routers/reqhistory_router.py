@@ -48,9 +48,3 @@ async def update_item(reqid: str, res: str, db: get_db = Depends()):
     result = reqs.update_item(reqid, res)
     logging.info(f'the submitted task:{reqid} got result - {res} ')
     return handle_result(result)
-
-
-# @router.get("/item/{item_id}")
-# async def get_item(item_id: int, db: get_db = Depends()):
-#     result = ReqHistoryService(db).get_item(item_id)
-#     return handle_result(result)
