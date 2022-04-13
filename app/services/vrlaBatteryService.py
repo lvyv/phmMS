@@ -67,7 +67,9 @@ class VRLABatteryService(AppService):
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
             'memo': json.dumps(devs),
-            'metrics': json.dumps(tags)
+            'metrics': json.dumps(tags),
+            'startTs': startts,
+            'endTs': endts
         }
         item = ReqItemCreate(**external_data)
         soh_item = RequestHistoryCRUD(self.db).create_record(item)
@@ -108,7 +110,9 @@ class VRLABatteryService(AppService):
             'requestts': int(time.time() * 1000),
             'memo': json.dumps(devs),
             'metrics': json.dumps(tags),
-            'displayType': displayType
+            'displayType': displayType,
+            'startTs': startts,
+            'endTs': endts
         }
         item = ReqItemCreate(**external_data)
         cluster_item = RequestHistoryCRUD(self.db).create_record(item)
@@ -142,7 +146,9 @@ class VRLABatteryService(AppService):
             'requestts': int(time.time() * 1000),
             'memo': json.dumps(devs),
             'metrics': json.dumps(tags),
-            'displayType': SelfRelationUtil.DISPLAY_SELF_RELATION
+            'displayType': SelfRelationUtil.DISPLAY_SELF_RELATION,
+            'startTs': startts,
+            'endTs': endts
         }
         item = ReqItemCreate(**external_data)
         cluster_item = RequestHistoryCRUD(self.db).create_record(item)

@@ -98,7 +98,8 @@ def post_process_vrla_soh(reqid, sohres):
                 "soh": eqitem['soh'],
                 "soc": eqitem['extend']['soc'],
                 "imbalance": eqitem['extend']['Rimbalance'],
-                "ts": eqitem['ts']
+                "ts": eqitem['ts'],
+                "state": 1
             }
             client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
         MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))

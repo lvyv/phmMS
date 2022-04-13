@@ -26,7 +26,8 @@ class CellPackCRUD(AppCRUD):
                            cellAvgVol=item.cellAvgVol,
                            envTemp=item.envTemp,
                            cellVol=item.cellVol,
-                           cellSoc=item.cellSoc
+                           cellSoc=item.cellSoc,
+                           state=item.state
                            )
         self.db.add(record)
         self.db.commit()

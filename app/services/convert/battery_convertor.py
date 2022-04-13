@@ -6,7 +6,7 @@ class BatteryConvertor(IConvertor):
     def __init__(self):
         IConvertor.__init__(self)
         self.ownMetrics = ["ts", "remainLife", "voc", "workVoc", "soc",
-                           "soh", "imbalance", "current", "minTemp", "maxTemp"]
+                           "soh", "imbalance", "current", "minTemp", "maxTemp", "state"]
 
     def get_metric_value(self, item, metric):
         values = {
@@ -19,7 +19,8 @@ class BatteryConvertor(IConvertor):
             "imbalance": item.imbalance,
             "current": item.current,
             "minTemp": item.minTemp,
-            "maxTemp": item.maxTemp
+            "maxTemp": item.maxTemp,
+            "state": item.state
         }
         return values.get(metric, None)
 

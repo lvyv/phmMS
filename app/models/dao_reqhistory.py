@@ -51,7 +51,9 @@ class RequestHistoryCRUD(AppCRUD):
                              requestts=item.requestts,
                              memo=item.memo,
                              metrics=item.metrics,
-                             displayType=item.displayType)
+                             displayType=item.displayType,
+                             startTs=item.startTs,
+                             endTs=item.endTs)
         self.db.add(reqdao)
         self.db.commit()
         self.db.refresh(reqdao)

@@ -11,3 +11,4 @@ class BatteryModel(BaseDataModel):
     current: float        # 冲放电电流
     minTemp: float        # 最小温度
     maxTemp: float        # 最大温度
+    state:  int           # 健康状态

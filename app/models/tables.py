@@ -33,6 +33,28 @@ from sqlalchemy import Column, Integer, String, FLOAT, INTEGER, BigInteger, Bool
 from phmconfig.database import Base, create_tables
 
 
+class TApiToken(Base):
+    """
+    令牌表，暂存api访问令牌，便于使用。
+    该表主要字段：
+        id: 记录权限Token；
+        url: api的原型，https://ip:port/api/v1/phm/{soh}；
+        tk: 该api的访问令牌。
+
+    Attributes
+    ----------
+
+    Methods
+    -------
+
+    """
+    __tablename__ = "api_token"
+
+    id = Column(Integer, primary_key=True, index=True)
+    url = Column(String(512))
+    tk = Column(String(512))
+
+
 class TReqHistory(Base):
     """
     在phmMS收到REST调用时，创建一条记录，保存该异步请求，之后调用phmMD。
@@ -64,28 +86,8 @@ class TReqHistory(Base):
     memo = Column(String(2048), default='')
     metrics = Column(String(2048), default='')
     displayType = Column(String(64))
-
-
-class TApiToken(Base):
-    """
-    令牌表，暂存api访问令牌，便于使用。
-    该表主要字段：
-        id: 记录权限Token；
-        url: api的原型，https://ip:port/api/v1/phm/{soh}；
-        tk: 该api的访问令牌。
-
-    Attributes
-    ----------
-
-    Methods
-    -------
-
-    """
-    __tablename__ = "api_token"
-
-    id = Column(Integer, primary_key=True, index=True)
-    url = Column(String(512))
-    tk = Column(String(512))
+    startTs = Column(BigInteger)
+    endTs = Column(BigInteger)
 
 
 class TCellPack(Base):
@@ -111,6 +113,7 @@ class TCellPack(Base):
     envTemp = Column(String(1024))  # 电池组的环境温度（存在多个测点）
     cellVol = Column(String(1024))  # 电池单元端电压集合
     cellSoc = Column(String(1024))  # 电池单元容量集合
+    state = Column(Integer)  # 健康状态
 
 
 class TSchedule(Base):  # 装备数据分析调度表
@@ -143,9 +146,9 @@ class TCluster(Base):
     x = Column(FLOAT)  # x 轴坐标
     y = Column(FLOAT)  # y 轴坐标
     z = Column(FLOAT)  # z 轴坐标
-    color = Column(String(16))  # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
+    color = Column(String(64))  # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
     size = Column(FLOAT)  # 大小
-    shape = Column(String(16))  # 形状 eg: "circle", "star","square", "cross", "diamond"
+    shape = Column(String(64))  # 形状 eg: "circle", "star","square", "cross", "diamond"
     name = Column(String(64))  # 装备ID
 
 

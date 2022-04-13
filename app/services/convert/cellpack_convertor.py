@@ -9,7 +9,7 @@ class CellPackConvertor(IConvertor):
         self.ownMetrics = ["ts", "remainLife", "voc", "workVoc", "soc",
                            "soh", "imbalance", "current", "minTemp", "maxTemp",
                            "cellMaxVoc", "cellMinVoc", "cellMaxVol", "cellMinVol", "cellAvgVol",
-                           "envTemp", "cellVol", "cellSoc"]
+                           "envTemp", "cellVol", "cellSoc", "state"]
 
     @staticmethod
     def __parse_str_to_json(value):
@@ -44,7 +44,8 @@ class CellPackConvertor(IConvertor):
             "cellAvgVol": item.cellAvgVol,
             "envTemp": item.envTemp,
             "cellVol": item.cellVol,
-            "cellSoc": item.cellSoc
+            "cellSoc": item.cellSoc,
+            "state": item.state
         }
         return values.get(metric, None)
 
