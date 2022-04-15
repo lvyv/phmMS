@@ -5,20 +5,9 @@ from adjustText import adjust_text
 from matplotlib import patches as mpatches
 from mpl_toolkits.mplot3d import Axes3D
 
-from vrla import cluster, mds
+from common import cluster, mds
 import logging
-import httpx
-from phmconfig import basiccfg
-from physics.common.cluster_utils import cluster_shape2
-
-
-# 从数据资源下载下载装备数据
-def download_zb_data(devs, metrics, start, end):
-    with httpx.Client(timeout=None, verify=False) as client:
-        r = client.post(basiccfg.URL_GET_ZB_DATA, params={"devs": devs, "metrics": metrics, "start": start, "end": end})
-        dataS = r.json()
-        return dataS
-    return None
+from physics.common.cluster_utils import cluster_shape
 
 
 # 数据通过模型清洗
@@ -55,7 +44,7 @@ def model_invoke(dataS, dimension):
 
         start = 0
         for i, item in enumerate(agelist):
-            df2.loc[start:, 'shape'] = cluster_shape2[i % len(cluster_shape2)]
+            df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
             start += item
 
         df2['pos_x'] = pos[:, 0]

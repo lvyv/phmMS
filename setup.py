@@ -36,9 +36,8 @@ setup(
         'app.utils',
         'phmconfig',
         'physics',
-        'physics.config',
+        'physics.transport',
         'physics.vrla',
-        'physics.vibration',
         'physics.test',
         'physics.common'
     ],

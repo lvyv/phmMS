@@ -37,10 +37,11 @@ import concurrent.futures
 import httpx
 import json
 import logging
-from physics.mqttclient import MqttClient
+from transport.mqttclient import MqttClient
 from fastapi.staticfiles import StaticFiles
 from physics.test import mock_zb_router
 from vrla import phm
+from physics.transport import dataCenter
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 app = FastAPI()
@@ -163,6 +164,7 @@ def soh_task(sohin, reqid):
     devtype = bcf.DT_VRLA
     res = None
     if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
+        dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
         res = vrla_soh(devids)
         post_process_vrla_soh(reqid, res)
     elif devtype == bcf.DT_CELLPACK:  # UPS电池组
@@ -178,7 +180,7 @@ def cluster_task(clusterin, reqid, displayType):
     devtype = bcf.DT_VRLA
     res = None
     if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
-        dataS = phm.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
+        dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
         if displayType in ["AGG3D", "3D"]:
             res = phm.model_invoke(dataS, 3)
         else:
@@ -196,6 +198,7 @@ def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
     devtype = bcf.DT_VRLA
     res = None
     if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
+        dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
         res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
                "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
         post_process_vrla_relation(reqid, res)

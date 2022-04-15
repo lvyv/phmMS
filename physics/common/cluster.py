@@ -32,6 +32,7 @@ import numpy as np
 import pandas as pd
 import hdbscan
 from scipy import signal
+from physics.common.cluster_utils import cluster_color
 
 
 def ts2fft(datumn, samplerate, nperseg):
@@ -102,12 +103,7 @@ def cluster_vectors(vectors, predict=True):
     --------
     >>>
     """
-    # 聚类数量和对应颜色空间
-    # https://jdherman.github.io/colormap/
-    cm = np.array(['#ff3c00', '#df3421', '#be2d42', '#9d2563', '#7c1d84', '#5b15a5', '#3a0ec6', '#1906e7',
-                   '#0108f8', '#0129d7', '#014ab6', '#006b95', '#008c74', '#00ad53', '#00ce32', '#00ef11',
-                   '#0def0c', '#26ce25', '#3fad3e', '#588c56', '#716b6f', '#8a4a87', '#a329a0', '#bc08b9',
-                   '#c212ac', '#c22b94', '#c2437b', '#c25c63', '#c2754a', '#c38d31', '#c3a619', '#c3be00'])
+    cm = np.array(cluster_color)
     dat = np.array([list(vec) for vec in vectors])
     clusterer = hdbscan.HDBSCAN(min_cluster_size=10, prediction_data=predict).fit(dat)
     cids = np.unique(clusterer.labels_)
