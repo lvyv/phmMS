@@ -5,7 +5,7 @@ from adjustText import adjust_text
 from matplotlib import patches as mpatches
 from mpl_toolkits.mplot3d import Axes3D
 
-from physics.vibration import cluster, mds
+from vrla import cluster, mds
 import logging
 import httpx
 from phmconfig import basiccfg

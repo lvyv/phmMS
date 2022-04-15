@@ -40,7 +40,7 @@ import logging
 from physics.mqttclient import MqttClient
 from fastapi.staticfiles import StaticFiles
 from physics.test import mock_zb_router
-from physics.vibration import phm
+from vrla import phm
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 app = FastAPI()
