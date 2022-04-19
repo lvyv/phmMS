@@ -20,6 +20,25 @@ def get_data_and_age(dataS):
     return dataList, ageList
 
 
+def compute_df_color(df2, dfnew):
+    df2.loc[:, 'color'] = '#000000'
+    for idx, elems in enumerate(dfnew['vectors']):
+        for el in elems:
+            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
+
+
+def drop_df_data(df2):
+    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
+
+
+def compute_df_shape(df2, ageList):
+    df2['shape'] = 0
+    start = 0
+    for i, item in enumerate(ageList):
+        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
+        start += item
+
+
 #    frequencies, spectrum = cluster.ts2fft(dataList, 20480, 2048)
 
 # 2D聚类  name, size, color, shape, x, y
@@ -27,21 +46,9 @@ def calculate_cluster_2d(dataList, ageList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
     df2 = mds.dev_age_compute(dataList, ageList)
     pos = mds.compute_mds_pos(dataList, 2)
-
-    df2.loc[:, 'color'] = '#000000'
-    for idx, elems in enumerate(dfnew['vectors']):
-        for el in elems:
-            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
-
-    # model_draw(len(dataList), pos, df2, dfnew, ageList, dataList, 2)
-
-    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
-
-    df2['shape'] = 0
-    start = 0
-    for i, item in enumerate(ageList):
-        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
-        start += item
+    compute_df_color(df2, dfnew)
+    drop_df_data(df2)
+    compute_df_shape(df2, ageList)
 
     df2['pos_x'] = pos[:, 0]
     df2['pos_y'] = pos[:, 1]
@@ -55,20 +62,9 @@ def calculate_cluster_3d(dataList, ageList):
     df2 = mds.dev_age_compute(dataList, ageList)
     pos = mds.compute_mds_pos(dataList, 3)
 
-    df2.loc[:, 'color'] = '#000000'
-    for idx, elems in enumerate(dfnew['vectors']):
-        for el in elems:
-            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
-
-    # model_draw(len(dataList), pos, df2, dfnew, ageList, dataList, 3)
-
-    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
-
-    df2['shape'] = 0
-    start = 0
-    for i, item in enumerate(ageList):
-        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
-        start += item
+    compute_df_color(df2, dfnew)
+    drop_df_data(df2)
+    compute_df_shape(df2, ageList)
 
     df2['pos_x'] = pos[:, 0]
     df2['pos_y'] = pos[:, 1]
@@ -83,20 +79,9 @@ def calculate_cluster_agg2d(dataList, ageList):
     df2 = mds.dev_age_compute(dataList, ageList)
     pos = mds.compute_mds_pos(dataList, 2)
 
-    df2.loc[:, 'color'] = '#000000'
-    for idx, elems in enumerate(dfnew['vectors']):
-        for el in elems:
-            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
-
-    # model_draw(len(dataList), pos, df2, dfnew, ageList, dataList, 2)
-
-    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
-
-    df2['shape'] = 0
-    start = 0
-    for i, item in enumerate(ageList):
-        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
-        start += item
+    compute_df_color(df2, dfnew)
+    drop_df_data(df2)
+    compute_df_shape(df2, ageList)
 
     df2['pos_x'] = pos[:, 0]
     df2['pos_y'] = pos[:, 1]
@@ -110,20 +95,10 @@ def calculate_cluster_agg3d(dataList, ageList):
     df2 = mds.dev_age_compute(dataList, ageList)
     pos = mds.compute_mds_pos(dataList, 2)
 
-    df2.loc[:, 'color'] = '#000000'
-    for idx, elems in enumerate(dfnew['vectors']):
-        for el in elems:
-            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
+    compute_df_color(df2, dfnew)
+    drop_df_data(df2)
+    compute_df_shape(df2, ageList)
 
-    # model_draw(len(dataList), pos, df2, dfnew, ageList, dataList, 2)
-
-    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
-
-    df2['shape'] = 0
-    start = 0
-    for i, item in enumerate(ageList):
-        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
-        start += item
     # TODO FIX x坐标取时间
     df2['pos_x'] = pos[:, 0]
     df2['pos_y'] = pos[:, 0]
