@@ -172,10 +172,10 @@ def evaluate_soh(did):
 # 		"metric2": [2, 3, 4, 5]
 # 	}
 # }
-def calculate_soh(dataS):
+def calculate_soh(dataS, didS):
     devs = dataS.keys()
     results = {}
-    for dev in devs:
+    for dev in didS:
         ts = int(time.time() * 1000)
         soh, extend = evaluate_soh(dev)
         results.update({dev: {'soh': soh, 'extend': extend, 'ts': ts}})

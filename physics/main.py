@@ -182,7 +182,7 @@ def post_process_vrla_relation(reqid, sohres):
 # time intensive tasks
 def soh_task(sohin, reqid):
     dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
-    res = phm.calculate_soh(dataS)
+    res = phm.calculate_soh(dataS, json.loads(sohin.devices))
     post_process_vrla_soh(reqid, res)
 
 
