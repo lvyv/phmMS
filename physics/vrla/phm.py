@@ -6,48 +6,145 @@ from common import cluster, mds
 import logging
 from physics.common.cluster_utils import cluster_shape
 from physics.test.drawModel import model_draw
+from services.convert.cluster_display_util import ClusterDisplayUtil
+
+
+def get_data_and_age(dataS):
+    dataList = []
+    ageList = []
+    for key in dataS.keys():
+        ks = dataS[key].keys()
+        for k in ks:
+            dataList.append(dataS[key][k])
+        ageList.append(len(ks))
+    return dataList, ageList
+
+
+#    frequencies, spectrum = cluster.ts2fft(dataList, 20480, 2048)
+
+# 2D聚类  name, size, color, shape, x, y
+def calculate_cluster_2d(dataList, ageList):
+    _, dfnew = cluster.cluster_vectors(dataList, False)
+    df2 = mds.dev_age_compute(dataList, ageList)
+    pos = mds.compute_mds_pos(dataList, 2)
+
+    df2.loc[:, 'color'] = '#000000'
+    for idx, elems in enumerate(dfnew['vectors']):
+        for el in elems:
+            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
+
+    # model_draw(len(dataList), pos, df2, dfnew, ageList, dataList, 2)
+
+    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
+
+    df2['shape'] = 0
+    start = 0
+    for i, item in enumerate(ageList):
+        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
+        start += item
+
+    df2['pos_x'] = pos[:, 0]
+    df2['pos_y'] = pos[:, 1]
+
+    return df2.to_json()
+
+
+# 3D聚类 name, size, color, shape, x, y, z
+def calculate_cluster_3d(dataList, ageList):
+    _, dfnew = cluster.cluster_vectors(dataList, False)
+    df2 = mds.dev_age_compute(dataList, ageList)
+    pos = mds.compute_mds_pos(dataList, 3)
+
+    df2.loc[:, 'color'] = '#000000'
+    for idx, elems in enumerate(dfnew['vectors']):
+        for el in elems:
+            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
+
+    # model_draw(len(dataList), pos, df2, dfnew, ageList, dataList, 3)
+
+    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
+
+    df2['shape'] = 0
+    start = 0
+    for i, item in enumerate(ageList):
+        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
+        start += item
+
+    df2['pos_x'] = pos[:, 0]
+    df2['pos_y'] = pos[:, 1]
+    df2['pos_z'] = pos[:, 2]
+
+    return df2.to_json()
+
+
+# 时序聚类 name,  *,  color, shape, x, y
+def calculate_cluster_agg2d(dataList, ageList):
+    _, dfnew = cluster.cluster_vectors(dataList, False)
+    df2 = mds.dev_age_compute(dataList, ageList)
+    pos = mds.compute_mds_pos(dataList, 2)
+
+    df2.loc[:, 'color'] = '#000000'
+    for idx, elems in enumerate(dfnew['vectors']):
+        for el in elems:
+            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
+
+    # model_draw(len(dataList), pos, df2, dfnew, ageList, dataList, 2)
+
+    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
+
+    df2['shape'] = 0
+    start = 0
+    for i, item in enumerate(ageList):
+        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
+        start += item
+
+    df2['pos_x'] = pos[:, 0]
+    df2['pos_y'] = pos[:, 1]
+
+    return df2.to_json()
+
+
+# 聚类时间演化 name, *, color, *, x, y, *
+def calculate_cluster_agg3d(dataList, ageList):
+    _, dfnew = cluster.cluster_vectors(dataList, False)
+    df2 = mds.dev_age_compute(dataList, ageList)
+    pos = mds.compute_mds_pos(dataList, 2)
+
+    df2.loc[:, 'color'] = '#000000'
+    for idx, elems in enumerate(dfnew['vectors']):
+        for el in elems:
+            df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
+
+    # model_draw(len(dataList), pos, df2, dfnew, ageList, dataList, 2)
+
+    df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
+
+    df2['shape'] = 0
+    start = 0
+    for i, item in enumerate(ageList):
+        df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
+        start += item
+    # TODO FIX x坐标取时间
+    df2['pos_x'] = pos[:, 0]
+    df2['pos_y'] = pos[:, 0]
+    df2['pos_z'] = pos[:, 1]
+    return df2.to_json()
 
 
 def calculate_cluster(dataS, display):
     try:
-        if display in ["3D", "AGG3D"]:
-            dimension = 3
+        out = None
+        dataList, ageList = get_data_and_age(dataS)
+        if display == ClusterDisplayUtil.DISPLAY_2D:
+            out = calculate_cluster_2d(dataList, ageList)
+        elif display == ClusterDisplayUtil.DISPLAY_3D:
+            out = calculate_cluster_3d(dataList, ageList)
+        elif display == ClusterDisplayUtil.DISPLAY_AGG2D:
+            out = calculate_cluster_agg2d(dataList, ageList)
+        elif display == ClusterDisplayUtil.DISPLAY_AGG3D:
+            out = calculate_cluster_agg3d(dataList, ageList)
         else:
-            dimension = 2
-
-        datumn = []
-        agelist = []
-        for key in dataS.keys():
-            ks = dataS[key].keys()
-            for k in ks:
-                datumn.append(dataS[key][k])
-            agelist.append(len(ks))
-
-        objpos = len(datumn)
-        frequencies, spectrum = cluster.ts2fft(datumn, 20480, 2048)
-        clusternew_, dfnew = cluster.cluster_vectors(spectrum, False)
-        df2 = mds.dev_age_compute(spectrum, frequencies, agelist)
-        pos = mds.compute_mds_pos(spectrum, dimension)
-        df2.loc[:, 'color'] = '#000000'
-        for idx, elems in enumerate(dfnew['vectors']):
-            for el in elems:
-                df2.loc[el, 'color'] = dfnew.loc[idx, 'color']
-        logging.info(f'1.MDS pos computed.')
-        model_draw(objpos, pos, df2, dfnew, agelist, datumn, dimension)
-        logging.info('2.MDS plot finished.')
-        df2.drop(df2.columns[list(range(len(df2.T) - 3))], axis=1, inplace=True)
-        df2['shape'] = 0
-        start = 0
-        for i, item in enumerate(agelist):
-            df2.loc[start:, 'shape'] = cluster_shape[i % len(cluster_shape)]
-            start += item
-        df2['pos_x'] = pos[:, 0]
-        df2['pos_y'] = pos[:, 1]
-        if dimension == 3:
-            df2['pos_z'] = pos[:, 2]
-        json.loads(df2.to_json())
-        logging.info('3.Return to main procedure.')
-        out = df2.to_json()
+            pass
     except requests.exceptions.ConnectionError as ce:
         logging.error(ce)
     return out

@@ -34,7 +34,7 @@ from sklearn.metrics import euclidean_distances
 from sklearn.decomposition import PCA
 
 
-def dev_age_compute(vectors, freqs, segment):
+def dev_age_compute(vectors, segment, freq=None):
     """
     This function label all the frequence domain vectors.
     ----------
@@ -51,7 +51,10 @@ def dev_age_compute(vectors, freqs, segment):
     out: DataFrame object
         Dataframe's columns are frequency components, dev, and age.
     """
-    df = pd.DataFrame(vectors, columns=freqs)
+    if freq is None:
+        df = pd.DataFrame(vectors)
+    else:
+        df = pd.DataFrame(vectors, columns=freq)
 
     devs = []
     for iii, devnums in enumerate(segment):

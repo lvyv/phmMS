@@ -41,6 +41,7 @@ from fastapi.staticfiles import StaticFiles
 from physics.test import mock_zb_router
 from vrla import phm
 from physics.transport import dataCenter
+from services.convert.cluster_display_util import ClusterDisplayUtil
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 app = FastAPI()
@@ -81,12 +82,12 @@ def publish_data_to_iot(reqid, data):
 
 def post_process_vrla_soh(reqid, sohres):
     with httpx.Client(timeout=None, verify=False) as client:
-
         write_back_history_result(client, reqid)
 
-        # 写回指标统计数据库表
+        # 数据转换
         items = phm.soh_convert(sohres)
 
+        # 写回指标统计数据库表
         for did in items.keys():
             eqitem = items[did]
             eqi = {
@@ -129,16 +130,24 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
         for did in items.keys():
             eqi = {
                 "reqId": reqid,
+                "ts": int(time.time() * 1000),
+                "name": items[did][0],
+                "size": 0,                    # items[did][1],
+                "color": items[did][2],
+                "shape": 0,                   # items[did][3],
                 "x": items[did][4],
                 "y": items[did][5],
-                "name": items[did][0],
-                "size": items[did][1],
-                "color": items[did][2],
-                "shape": items[did][3],
-                "ts": int(time.time() * 1000),
-                "z": 0
+                "z": 0                        # items[did][6]
             }
-            if displayType in ["AGG3D", "3D"]:
+
+            if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D]:
+                eqi["size"] = items[did][1]
+
+            if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
+                               ClusterDisplayUtil.DISPLAY_AGG2D]:
+                eqi["shape"] = items[did][3]
+
+            if displayType in [ClusterDisplayUtil.DISPLAY_3D, ClusterDisplayUtil.DISPLAY_AGG3D]:
                 eqi["z"] = items[did][6]
 
             client.post(bcf.URL_POST_CLUSTER_PREFIX, json=eqi)
