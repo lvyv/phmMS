@@ -8,8 +8,13 @@ from physics.common.cluster_utils import cluster_shape
 from physics.test.drawModel import model_draw
 
 
-def calculate_cluster(dataS, dimension):
+def calculate_cluster(dataS, display):
     try:
+        if display in ["3D", "AGG3D"]:
+            dimension = 3
+        else:
+            dimension = 2
+
         datumn = []
         agelist = []
         for key in dataS.keys():

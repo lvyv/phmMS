@@ -179,10 +179,7 @@ def soh_task(sohin, reqid):
 
 def cluster_task(clusterin, reqid, displayType):
     dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
-    if displayType in ["AGG3D", "3D"]:
-        res = phm.calculate_cluster(dataS, 3)
-    else:
-        res = phm.calculate_cluster(dataS, 2)
+    res = phm.calculate_cluster(dataS, displayType)
     post_process_vrla_cluster(reqid, res, displayType)
 
 
