@@ -31,7 +31,6 @@ import time
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from physics.vrla.soh import evaluate_soh as vrla_soh
 from phmconfig import basiccfg as bcf
 import concurrent.futures
 import httpx
@@ -69,19 +68,30 @@ def startMqtt():
 threading.Thread(target=startMqtt()).start()
 
 
+def write_back_history_result(client, reqid):
+    # 回写历史状态
+    params = {'reqid': reqid, 'res': "settled"}
+    client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
+
+
+def publish_data_to_iot(reqid, data):
+    # 发布遥测数据到IOT
+    MqttClient().publish(json.dumps({"reqid": reqid, "sohres": data}))
+
+
 def post_process_vrla_soh(reqid, sohres):
     with httpx.Client(timeout=None, verify=False) as client:
-        params = {'reqid': reqid, 'res': "settled"}
-        # 1.写回请求响应数据库表
-        r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
 
-        # 2.写回指标统计数据库表
-        items = json.loads(json.dumps(sohres))
+        write_back_history_result(client, reqid)
+
+        # 写回指标统计数据库表
+        items = phm.soh_convert(sohres)
+
         for did in items.keys():
             eqitem = items[did]
             eqi = {
                 "did": did,
-                "dclz": "BATTERY",  # FIXME
+                "dclz": "BATTERY",
                 "remainLife": 0,
                 "voc": 0,
                 "workVoc": 0,
@@ -103,17 +113,19 @@ def post_process_vrla_soh(reqid, sohres):
                 "state": 1
             }
             client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
-        MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))
-        logging.info(r)
+
+        publish_data_to_iot(reqid, sohres)
 
 
 def post_process_vrla_cluster(reqid, sohres, displayType):
     with httpx.Client(timeout=None, verify=False) as client:
-        params = {'reqid': reqid, 'res': "settled"}
-        r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
-        logging.info(r)
-        items = phm.model_convert(json.loads(sohres))
 
+        write_back_history_result(client, reqid)
+
+        # 数据转换
+        items = phm.cluster_convert(sohres)
+
+        # 将数据写入数据库
         for did in items.keys():
             eqi = {
                 "reqId": reqid,
@@ -129,85 +141,55 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
             if displayType in ["AGG3D", "3D"]:
                 eqi["z"] = items[did][6]
 
-            url = bcf.URL_POST_CLUSTER_PREFIX
-            r = client.post(url, json=eqi)
+            client.post(bcf.URL_POST_CLUSTER_PREFIX, json=eqi)
             time.sleep(0.1)
-            logging.info(r)
-        MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))
+
+        publish_data_to_iot(reqid, sohres)
 
 
 def post_process_vrla_relation(reqid, sohres):
     with httpx.Client(timeout=None, verify=False) as client:
-        params = {'reqid': reqid, 'res': "settled"}
-        # 1.写回请求响应数据库表
-        r = client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
 
-        # 2.写回指标统计数据库表
-        items = json.loads(json.dumps(sohres))
+        write_back_history_result(client, reqid)
+
+        # 数据转换
+        items = phm.relate_convert(sohres)
+
+        # 写回指标统计数据库表
         for did in items.keys():
             eqitem = items[did]
-            eqi = {
-                "reqId": reqid,
-                "lag": (int(time.time() * 1000)) % 50,
-                "value": 5,
-                "ts": int(time.time() * 1000),
-            }
-            client.post(f'{bcf.URL_POST_SELF_RELATION}', json=eqi)
-        MqttClient().publish(json.dumps({"reqid": reqid, "sohres": sohres}))
-        logging.info(r)
+            for index, item in enumerate(eqitem["lag"]):
+                eqi = {
+                    "reqId": reqid,
+                    "lag": item,
+                    "value": eqitem["value"][index],
+                    "ts": int(time.time() * 1000),
+                }
+                client.post(f'{bcf.URL_POST_SELF_RELATION}', json=eqi)
+
+        publish_data_to_iot(reqid, sohres)
 
 
 # time intensive tasks
 def soh_task(sohin, reqid):
-    # 查询传入的设备号是什么样的设备类型（要求传入的设备号都是同样的设备类型）
-    devids = json.loads(sohin.devices)
-    devtype = bcf.DT_VRLA
-    res = None
-    if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
-        dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
-        res = vrla_soh(devids)
-        post_process_vrla_soh(reqid, res)
-    elif devtype == bcf.DT_CELLPACK:  # UPS电池组
-        pass
-    else:
-        pass
-    return res
+    dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
+    res = phm.calculate_soh(dataS)
+    post_process_vrla_soh(reqid, res)
 
 
 def cluster_task(clusterin, reqid, displayType):
-    # TODO 聚类接口
-    devids = json.loads(clusterin.devices)
-    devtype = bcf.DT_VRLA
-    res = None
-    if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
-        dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
-        if displayType in ["AGG3D", "3D"]:
-            res = phm.model_invoke(dataS, 3)
-        else:
-            res = phm.model_invoke(dataS, 2)
-        post_process_vrla_cluster(reqid, res, displayType)
-    elif devtype == bcf.DT_CELLPACK:  # UPS电池组
-        pass
+    dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
+    if displayType in ["AGG3D", "3D"]:
+        res = phm.calculate_cluster(dataS, 3)
     else:
-        pass
-    return res
+        res = phm.calculate_cluster(dataS, 2)
+    post_process_vrla_cluster(reqid, res, displayType)
 
 
 def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
-    devids = json.loads(relationin.devices)
-    devtype = bcf.DT_VRLA
-    res = None
-    if devtype == bcf.DT_VRLA:  # 阀控铅酸电池
-        dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
-        res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
-               "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
-        post_process_vrla_relation(reqid, res)
-        pass
-    elif devtype == bcf.DT_CELLPACK:  # UPS电池组
-        pass
-    else:
-        pass
-    return res
+    dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
+    res = phm.calculate_relate(dataS, leftTag, rightTag, step, unit)
+    post_process_vrla_relation(reqid, res)
 
 
 # IF11:REST MODEL 外部接口-phmMD与phmMS之间接口

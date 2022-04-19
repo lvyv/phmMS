@@ -1,5 +1,6 @@
 import requests
 import json
+import time
 
 from common import cluster, mds
 import logging
@@ -7,8 +8,7 @@ from physics.common.cluster_utils import cluster_shape
 from physics.test.drawModel import model_draw
 
 
-# 数据通过模型清洗
-def model_invoke(dataS, dimension):
+def calculate_cluster(dataS, dimension):
     try:
         datumn = []
         agelist = []
@@ -48,7 +48,8 @@ def model_invoke(dataS, dimension):
     return out
 
 
-def model_convert(inDatas):
+def cluster_convert(dataS):
+    inDatas = json.loads(dataS)
     outDatas = {}
     keys = inDatas.keys()
     for key in keys:
@@ -61,3 +62,49 @@ def model_convert(inDatas):
     return outDatas
 
 
+def calculate_relate(inData, leftTag, rightTag, step, unit):
+    res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
+           "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
+    return res
+
+
+def relate_convert(dataS):
+    inDatas = json.loads(json.dumps(dataS))
+    return inDatas
+
+
+def evaluate_soh(did):
+    """
+    计算soh和扩展指标的值并返回。
+    :param did:
+    :return:
+    """
+    logging.info(did)
+    return 0.99, {"soc": 0.8, "Rimbalance": 0.1}
+
+
+# {
+# 	"dev1": {
+# 		"ts": [1, 2, 3, 4],
+# 		"metric1": [1, 2, 3, 5],
+# 		"metric2": [2, 3, 4, 5]
+# 	},
+# 	"dev2": {
+# 		"ts": [1, 2, 3, 4],
+# 		"metric1": [1, 2, 3, 4],
+# 		"metric2": [2, 3, 4, 5]
+# 	}
+# }
+def calculate_soh(dataS):
+    devs = dataS.keys()
+    results = {}
+    for dev in devs:
+        ts = int(time.time() * 1000)
+        soh, extend = evaluate_soh(dev)
+        results.update({dev: {'soh': soh, 'extend': extend, 'ts': ts}})
+    return results
+
+
+def soh_convert(dataS):
+    inDatas = json.loads(json.dumps(dataS))
+    return inDatas
