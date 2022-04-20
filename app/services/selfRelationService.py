@@ -18,9 +18,15 @@ class SelfRelationService(AppService):
 
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
+
+        devs = code.split(",")
+        devs.sort()
+        tags = metrics.split(",")
+        tags.sort()
+
         hisRecordId = []
-        hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps([code]),
-                                                             json.dumps([metrics]),
+        hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs),
+                                                             json.dumps(tags),
                                                              SelfRelationUtil.DISPLAY_SELF_RELATION, start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)
