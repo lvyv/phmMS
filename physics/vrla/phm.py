@@ -5,7 +5,7 @@ import time
 from common import cluster, mds
 import logging
 from physics.common.cluster_utils import cluster_shape
-from physics.test.drawModel import model_draw
+from statsmodels.tsa.api import stattools
 from services.convert.cluster_display_util import ClusterDisplayUtil
 
 
@@ -140,8 +140,15 @@ def cluster_convert(dataS):
 
 
 def calculate_relate(inData, leftTag, rightTag, step, unit):
-    res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
-           "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
+    x, _ = get_data_and_age(inData)
+    acf = stattools.acf(x[0], adjusted=True)
+    res = {"B001": {"lag": [], "value": []}}
+    for index, item in enumerate(acf):
+        res["B001"]["lag"].append(index)
+        res["B001"]["value"].append(item)
+    #
+    # res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
+    #        "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
     return res
 
 

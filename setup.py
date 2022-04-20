@@ -39,7 +39,8 @@ setup(
         'physics.transport',
         'physics.vrla',
         'physics.test',
-        'physics.common'
+        'physics.common',
+        'physics.math'
     ],
     install_requires=[
         'blinker',
@@ -66,7 +67,8 @@ setup(
         'hdbscan',
         'sklearn',
         'scikit-learn',
-        'adjustText'
+        'adjustText',
+        'statsmodels'
     ],
     download_url='',
     package_data={
