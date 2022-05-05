@@ -2,7 +2,7 @@ import requests
 import json
 import time
 
-from common import cluster, mds
+from physics.common import cluster, mds
 import logging
 from physics.common.cluster_utils import cluster_shape
 from statsmodels.tsa.api import stattools
