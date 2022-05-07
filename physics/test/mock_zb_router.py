@@ -24,7 +24,7 @@ router = APIRouter(
 # 		"metric2": [2, 3, 4, 5]
 # 	}
 # }
-@router.post("/zbData")
+@router.post("/zbData2")
 async def getZbData(devs, metrics, start, end):
     dataS = {}
     # json.loads(devs)
@@ -45,3 +45,63 @@ async def getZbData(devs, metrics, start, end):
             # "metric8": list(c8[0:1024])
         }
     return dataS
+
+
+@router.post("/zbMetric")
+async def getZbMetric(equipCode):
+    ret = {
+        "result": {
+            "equipCode": equipCode,
+            "equipName": "电池1",
+            "equipTypeCode": "N0001",
+            "measurePoints": [
+                {
+                    "pointCode": "M0001",
+                    "pointName": "SOC"
+                },
+                {
+                    "pointCode": "M0002",
+                    "pointName": "SOH"
+                },
+                {
+                    "pointCode": "M0003",
+                    "pointName": "内阻"
+                },
+                {
+                    "pointCode": "M0004",
+                    "pointName": "电压"
+                }
+            ]
+        }
+    }
+    return ret
+
+
+@router.post("/zbData")
+async def getZbData2(metricName, startTime, endTime, interval):
+    ret = {
+        "code": "0000",
+        "result": [
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.5,
+                "timestamp": 1601863976
+            },
+            {
+                "metric_name": "M0002",
+                "metric_value": 0.75,
+                "timestamp": 1601863976
+            },
+            {
+                "metric_name": "M0003",
+                "metric_value": 0.85,
+                "timestamp": 1601863976
+            },
+            {
+                "metric_name": "M0004",
+                "metric_value": 1.5,
+                "timestamp": 1601863976
+            }
+        ]
+    }
+    return ret

@@ -42,6 +42,7 @@ from physics.test import mock_zb_router
 from physics.vrla import phm
 from physics.transport import dataCenter
 from services.convert.cluster_display_util import ClusterDisplayUtil
+from phmconfig.timeUtils import TimeUtils
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 app = FastAPI()
@@ -132,12 +133,12 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
                 "reqId": reqid,
                 "ts": int(time.time() * 1000),
                 "name": items[did][0],
-                "size": 0,                    # items[did][1],
+                "size": 0,  # items[did][1],
                 "color": items[did][2],
-                "shape": 0,                   # items[did][3],
+                "shape": 0,  # items[did][3],
                 "x": items[did][4],
                 "y": items[did][5],
-                "z": 0                        # items[did][6]
+                "z": 0  # items[did][6]
             }
 
             if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D]:
@@ -224,6 +225,32 @@ async def calculate_cluster(sohin: SohInputParams, reqid: int, displayType: str)
 async def calculate_relation(sohin: SohInputParams, reqid: int, leftTag: int, rightTag: int, step: int, unit: int):
     executor_.submit(relation_task, sohin, reqid, leftTag, rightTag, step, unit)
     return {'task': reqid, 'status': 'submitted to work thread.'}
+
+
+def get_metric_task(equipCode):
+    datas = dataCenter.download_zb_metric_from(equipCode)
+    dataCenter.process_zb_metric_from(datas)
+    return datas
+
+
+@app.post("/api/v1/get_metric")
+async def mock_metrics(equipCode):
+    executor_.submit(get_metric_task, equipCode)
+    return {"status": "submitted to work thread."}
+
+
+def get_metric_data_task(metricCode, startTime, endTime):
+    start = TimeUtils.convert_time_str(int(startTime))
+    end = TimeUtils.convert_time_str(int(endTime))
+    interval = TimeUtils.get_time_interval(int(startTime), int(endTime))
+    datas = dataCenter.download_zb_history_data_from(metricCode, start, end, interval)
+    return datas
+
+
+@app.post("/api/v1/get_data")
+async def mock_metric_data(metricCode, startTime, endTime):
+    executor_.submit(get_metric_data_task, metricCode, startTime, endTime)
+    return {"status": "submitted to work thread."}
 
 
 app.include_router(mock_zb_router.router)
