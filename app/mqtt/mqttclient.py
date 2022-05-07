@@ -7,13 +7,13 @@ class MqttClient:
 
     def __init__(self):
         self.cfg = ConfigSet.get_cfg()
-        self.using = self.cfg['ms_mqtt_using']
-        self.clientId = self.cfg['ms_mqtt_cid']
-        self.username = self.cfg['ms_mqtt_usr']
-        self.password = self.cfg['ms_mqtt_pwd']
-        self.host = self.cfg['ms_mqtt_svr']
-        self.port = self.cfg['ms_mqtt_port']
-        self.topic = self.cfg['ms_mqtt_tp']
+        self.using = self.cfg['mqtt_use_auth']
+        self.clientId = self.cfg['mqtt_cid']
+        self.username = self.cfg['mqtt_usr']
+        self.password = self.cfg['mqtt_pwd']
+        self.host = self.cfg['mqtt_svr']
+        self.port = self.cfg['mqtt_port']
+        self.topic = self.cfg['mqtt_tp']
 
     def start(self):
         if self.using is True:

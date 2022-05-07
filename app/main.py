@@ -25,7 +25,6 @@ entrypoint of the app
 
 三层架构应用程序的主入口.
 """
-from mqtt.mqttclient import MqttClient
 from services.schedule.dynamic_task import DynamicTask
 from utils.app_exceptions import AppExceptionCase
 from fastapi import FastAPI
@@ -78,12 +77,6 @@ app.include_router(schedule_model_router.router)
 app.include_router(cellpack_router.router)
 app.include_router(config_router.router)
 
-
-def startMqtt():
-    MqttClient().start()
-
-
 logging.info(f'dynamic task start up.')
 DynamicTask().start()
-logging.info(f'mqtt client start up.')
-threading.Thread(target=startMqtt()).start()
+

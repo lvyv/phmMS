@@ -62,7 +62,7 @@ class PayloadProcess:
                                                  state=item["state"]
                                                  )
                     data = json.loads(json.dumps(model.__dict__))
-                    r = client.post(constants.URL_POST_HEALTH_INDICATOR, json=data)
+                    r = client.post(constants.URL_MS_WRITE_HEALTH_INDICATOR, json=data)
                     print(r)
 
     @staticmethod

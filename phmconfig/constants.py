@@ -20,10 +20,10 @@
 
 """
 =========================
-constants module
+basic phmconfig module
 =========================
 
-定义所有常量。
+定义健康管理模型的各种公共配置。
 """
 
 # Author: Awen <26896225@qq.com>
@@ -32,38 +32,66 @@ constants module
 from phmconfig.config import ConfigSet
 
 cfg = ConfigSet.get_cfg()
-# 所有后端的科学计算模型，phmMD类型
-DEV_VRLA = 'vrla'
-DEV_CELLPACK = 'cellpack'
-DEV_CANNED_MOTOR_PUMP = 'canned motor pump'
-DEV_CENTRIFUGAL_PUMP = 'centrifugal pump'
-DEV_AC_FAN = 'air conditioner fan'
-DEV_CHILLER = 'chiller'
 
-# 各种状态常量
-REQ_STATUS_PENDING = 'pending'
-REQ_STATUS_SETTLED = 'settled'
-
-# 后台ai模型的地址
-REST_REQUEST_TIMEOUT = 10
-
-# 后台ai模型的地址
-URL_SOH = cfg['url_soh']
-URL_CLUSTER = cfg['url_cluster']
-URL_RELATION = cfg['url_relation']
-# 后台ai模型mock的地址
-# AIURL_SOH = 'https://127.0.0.1:29083/api/v1/soh'
-
-
+# --------------------- MS -------------------------------------
 # phmMS启动的地址、端口、证书等
 PHMMS_HOST = cfg['phmms_host']
 PHMMS_PORT = cfg['phmms_port']
 PHMMS_KEY = cfg['phmms_key']
 PHMMS_CER = cfg['phmms_cer']
 
+# ------------------------------------ MD -----------------
+# phmMD启动的地址、端口、证书等
+PHMMD_HOST = cfg['phmmd_host']
+PHMMD_PORT = cfg['phmmd_port']
+PHMMD_KEY = cfg['phmmd_key']
+PHMMD_CER = cfg['phmmd_cer']
+
+# ----------------------------- DB -----------------------
 
 # 数据库地址
 PHM_DATABASE_URL = cfg['datasource_url']
 
+#  --------------------------- COMMON -------------------------
+# 所有后端的科学计算模型，phmMD类型
+DEV_VRLA = 'vrla'
+# 各种状态常量
+REQ_STATUS_PENDING = 'pending'
+REQ_STATUS_SETTLED = 'settled'
+# 后台ai模型的地址
+REST_REQUEST_TIMEOUT = 10
+
+# ------------------------- api ------------------------------
+
+# prefix
+PHMMS_CONTAINER_NAME = cfg["phmms_container_name"]
+PHMMS_URL_PREFIX = "https://" + PHMMS_CONTAINER_NAME + ":" + str(PHMMS_PORT)
+# 写评估数据
+URL_MD_WRITE_EVAL = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeEval"
 # 写健康指标URL地址
-URL_POST_HEALTH_INDICATOR = cfg['url_post_health_indicator']
+URL_MS_WRITE_HEALTH_INDICATOR = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeHealthIndicator"
+# 写聚类数据
+URL_MD_WRITE_CLUSTER = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeCluster"
+# 写自相关数据
+URL_MD_WRITE_SELF_RELATION = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeRelation"
+# 写更新历史请求记录
+URL_MD_WRITE_REQ_HISTORY = PHMMS_URL_PREFIX + "/api/v1/reqhistory/item"
+
+# prefix
+PHMMD_CONTAINER_NAME = cfg["phmmd_container_name"]
+PHMMD_URL_PREFIX = "https://" + PHMMD_CONTAINER_NAME + ":" + str(PHMMD_PORT)
+# 调用评估
+URL_MS_CALL_SOH = PHMMD_URL_PREFIX + "/api/v1/soh"
+# 调用聚类
+URL_MS_CALL_CLUSTER = PHMMD_URL_PREFIX + "/api/v1/cluster"
+# 调用自相关
+URL_MS_CALL_RELATION = PHMMD_URL_PREFIX + "/api/v1/relation"
+
+
+# 数据资源
+URL_SJZY_API_PREFIX = cfg["url_sjzy_host"]
+# 从数据资源获取装备所有测点
+API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT = URL_SJZY_API_PREFIX + "/api/equip/query_info_with_measure_point"
+# 从数据资源获取装备的测点数据
+API_QUERY_HISTORY_DATA = URL_SJZY_API_PREFIX + "/api/devices/query_history_data"
+

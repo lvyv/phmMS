@@ -31,7 +31,7 @@ import time
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from phmconfig import basiccfg as bcf
+from phmconfig import constants as bcf
 import concurrent.futures
 import httpx
 import json
@@ -72,7 +72,7 @@ threading.Thread(target=startMqtt()).start()
 def write_back_history_result(client, reqid):
     # 回写历史状态
     params = {'reqid': reqid, 'res': "settled"}
-    client.put(f'{bcf.URL_RESULT_WRITEBACK}', params=params)
+    client.put(f'{bcf.URL_MD_WRITE_REQ_HISTORY}', params=params)
 
 
 def publish_data_to_iot(reqid, data):
@@ -113,7 +113,7 @@ def post_process_vrla_soh(reqid, sohres):
                 "ts": eqitem['ts'],
                 "state": 1
             }
-            client.post(f'{bcf.URL_POST_EQUIPMENT}', json=eqi)
+            client.post(f'{bcf.URL_MD_WRITE_EVAL}', json=eqi)
 
         publish_data_to_iot(reqid, sohres)
 
@@ -150,7 +150,7 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
             if displayType in [ClusterDisplayUtil.DISPLAY_3D, ClusterDisplayUtil.DISPLAY_AGG3D]:
                 eqi["z"] = items[did][6]
 
-            client.post(bcf.URL_POST_CLUSTER_PREFIX, json=eqi)
+            client.post(bcf.URL_MD_WRITE_CLUSTER, json=eqi)
             time.sleep(0.1)
 
         publish_data_to_iot(reqid, sohres)
@@ -174,7 +174,7 @@ def post_process_vrla_relation(reqid, sohres):
                     "value": eqitem["value"][index],
                     "ts": int(time.time() * 1000),
                 }
-                client.post(f'{bcf.URL_POST_SELF_RELATION}', json=eqi)
+                client.post(f'{bcf.URL_MD_WRITE_SELF_RELATION}', json=eqi)
 
         publish_data_to_iot(reqid, sohres)
 

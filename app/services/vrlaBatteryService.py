@@ -82,7 +82,7 @@ class VRLABatteryService(AppService):
                     "endts": endts
                 }
                 params = {"reqid": soh_item.id}
-                r = await client.post(f'{ct.URL_SOH}', json=payload, params=params)
+                r = await client.post(f'{ct.URL_MS_CALL_SOH}', json=payload, params=params)
                 logging.debug(r)
                 return ServiceResult(r.content)
         except httpx.ConnectTimeout:
@@ -125,7 +125,7 @@ class VRLABatteryService(AppService):
                     "endts": endts
                 }
                 params = {"reqid": cluster_item.id, "displayType": displayType}
-                r = await client.post(f'{ct.URL_CLUSTER}', json=payload, params=params)
+                r = await client.post(f'{ct.URL_MS_CALL_CLUSTER}', json=payload, params=params)
                 logging.debug(r)
                 return ServiceResult(r.content)
         except httpx.ConnectTimeout:
@@ -162,7 +162,7 @@ class VRLABatteryService(AppService):
                 }
                 params = {"reqid": cluster_item.id, "leftTag": leftTag,
                           "rightTag": rightTag, "step": step, "unit": unit}
-                r = await client.post(f'{ct.URL_RELATION}', json=payload, params=params)
+                r = await client.post(f'{ct.URL_MS_CALL_RELATION}', json=payload, params=params)
                 logging.debug(r)
                 return ServiceResult(r.content)
         except httpx.ConnectTimeout:

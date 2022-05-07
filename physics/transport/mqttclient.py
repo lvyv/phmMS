@@ -13,7 +13,7 @@ class MqttClient:
         if MqttClient.init is False:
             MqttClient.init = True
             self.cfg = ConfigSet.get_cfg()
-            self.using = self.cfg['ms_mqtt_using']
+            self.using = self.cfg['mqtt_use_auth']
             self.clientId = self.cfg['mqtt_cid']
             self.username = self.cfg['mqtt_usr']
             self.password = self.cfg['mqtt_pwd']
