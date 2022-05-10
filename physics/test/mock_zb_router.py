@@ -25,7 +25,7 @@ router = APIRouter(
 # 	}
 # }
 @router.post("/zbData2")
-async def getZbData(devs, metrics, start, end):
+async def getZbData2(devs, metrics, start, end):
     dataS = {}
     # json.loads(devs)
     # json.loads(metrics)
@@ -78,9 +78,9 @@ async def getZbMetric(equipCode):
 
 
 @router.post("/zbData")
-async def getZbData2(metricName, startTime, endTime, interval):
+async def getZbData(metricName, startTime, endTime, interval):
     ret = {
-        "code": "0000",
+        "code": "success",
         "result": [
             {
                 "metric_name": "M0001",

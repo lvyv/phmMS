@@ -244,6 +244,7 @@ def get_metric_data_task(metricCode, startTime, endTime):
     end = TimeUtils.convert_time_str(int(endTime))
     interval = TimeUtils.get_time_interval(int(startTime), int(endTime))
     datas = dataCenter.download_zb_history_data_from(metricCode, start, end, interval)
+    dataCenter.process_zb_history_data_from(datas)
     return datas
 
 

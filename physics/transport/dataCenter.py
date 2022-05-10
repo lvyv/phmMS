@@ -72,8 +72,22 @@ def download_zb_history_data_from(metricName, startTime, endTime, interval):
         return dataS
     return None
 
+
 # 返回数据
 #  apiVersion | message | requestId | code | result
 #  code : success->成功  other->异常
 #  result: 数据列表
 #  metric_name | metric_value | timestamp | quality
+
+# 2022-05-10 16:14:52  -> 1652170492000  | 2022-05-11 16:14:52 -> 1652256892000
+
+def process_zb_history_data_from(data):
+    if data is None:
+        return None
+    code = data["code"]
+    if code == "success":
+        for item in data["result"]:
+            name = item["metric_name"]
+            value = item["metric_value"]
+            timestamp = item["timestamp"]
+    pass
