@@ -11,7 +11,10 @@ class DashboardManagerService:
             with httpx.Client(timeout=None, verify=False) as client:
                 # url = constants.API_QUERY_HISTORY_DATA
                 url = constants.URL_MS_GET_DASHBOARD_LIST + "/api/search"
-                r = client.get(url, params={"query": query})
+                if query is not None:
+                    r = client.get(url, params={"query": query})
+                else:
+                    r = client.get(url)
                 dataS = r.json()
                 return dataS
 
