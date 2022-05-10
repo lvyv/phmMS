@@ -3,6 +3,7 @@ from schemas.vrla.cellpack_model import CellPackModel
 from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.health_indicator_model import HealthIndicatorModel
 from schemas.vrla.self_relation_model import SelfRelationModel
+from services.dashboardManagerService import DashboardManagerService
 from utils.service_result import handle_result
 from phmconfig.database import get_db
 from services.cellpackService import CellPackService
@@ -85,3 +86,8 @@ async def writeClusterDisplay(item: SelfRelationModel, db: get_db = Depends()):
     so = SelfRelationService(db)
     result = so.create_item(item)
     return handle_result(result)
+
+
+@router.get("/dashboards")
+async def get_trend_dashboard(query, filter):
+    return DashboardManagerService.getDashboardList(query, filter)
