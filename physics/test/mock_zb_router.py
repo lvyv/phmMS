@@ -93,14 +93,94 @@ async def getZbData(metricName, startTime, endTime, interval):
                 "timestamp": 1601863976
             },
             {
-                "metric_name": "M0003",
+                "metric_name": "M0001",
                 "metric_value": 0.85,
-                "timestamp": 1601863976
+                "timestamp": 1601864976
             },
             {
-                "metric_name": "M0004",
+                "metric_name": "M0002",
                 "metric_value": 1.5,
-                "timestamp": 1601863976
+                "timestamp": 1601864976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.5,
+                "timestamp": 1601873976
+            },
+            {
+                "metric_name": "M0002",
+                "metric_value": 0.75,
+                "timestamp": 1601873976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.85,
+                "timestamp": 1601874976
+            },
+            {
+                "metric_name": "M0002",
+                "metric_value": 1.5,
+                "timestamp": 1601874976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.52,
+                "timestamp": 1601883976
+            },
+            {
+                "metric_name": "M0002",
+                "metric_value": 0.85,
+                "timestamp": 1601883976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.95,
+                "timestamp": 1601884976
+            },
+            {
+                "metric_name": "M0002",
+                "metric_value": 1.25,
+                "timestamp": 1601884976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.75,
+                "timestamp": 1601893976
+            },
+            {
+                "metric_name": "M0002",
+                "metric_value": 0.75,
+                "timestamp": 1601893976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.85,
+                "timestamp": 1601894976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 2.5,
+                "timestamp": 1601894976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.5,
+                "timestamp": 1601903976
+            },
+            {
+                "metric_name": "M0002",
+                "metric_value": 0.75,
+                "timestamp": 1601903976
+            },
+            {
+                "metric_name": "M0001",
+                "metric_value": 0.85,
+                "timestamp": 1601904976
+            },
+            {
+                "metric_name": "M0002",
+                "metric_value": 1.5,
+                "timestamp": 1601904976
             }
         ]
     }

@@ -161,5 +161,16 @@ class TSelfRelation(Base):
     value = Column(FLOAT)
 
 
+class TMetricMapping(Base):
+    __tablename__ = "xc_metric_mapping"
+    id = Column(Integer, primary_key=True, index=True)
+    metric_code = Column(TEXT)
+    metric_name = Column(TEXT)
+    metric_alias = Column(TEXT)
+    equip_code = Column(TEXT)
+    equip_type = Column(TEXT)
+    equip_name = Column(TEXT)
+
+
 # create all tables
 TABLES = create_tables()

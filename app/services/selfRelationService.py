@@ -31,7 +31,7 @@ class SelfRelationService(AppService):
         for his in hisRecords:
             hisRecordId.append(his.id)
         if len(hisRecordId) == 0:
-            pass
+            items = None
         else:
             items = SelfRelationCRUD(self.db).get_records(hisRecordId)
         if items is None:

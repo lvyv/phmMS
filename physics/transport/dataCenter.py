@@ -1,8 +1,13 @@
+import json
+
 import httpx
 from phmconfig import constants
 
-
 # 从数据资源下载下载装备数据
+from timeUtils import TimeUtils
+
+
+# 模拟数据
 def download_zb_data(devs, metrics, start, end):
     with httpx.Client(timeout=None, verify=False) as client:
         r = client.post(constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData2",
@@ -91,3 +96,77 @@ def process_zb_history_data_from(data):
             value = item["metric_value"]
             timestamp = item["timestamp"]
     pass
+
+
+# devs:设备编号
+# metrics: 测点名称  注意不是测点编码
+# start end : 时间戳ms
+def download_zb_data_inner(devs, metrics, start, end):
+    devices = json.loads(devs)
+    measurePoints = json.loads(metrics)
+    startStr = TimeUtils.convert_time_str(start)
+    endStr = TimeUtils.convert_time_str(end)
+    interval = TimeUtils.get_time_interval(start, end)
+    metricNames = ",".join(item for item in measurePoints)
+    datas = download_zb_history_data_from(metricNames, startStr, endStr, interval)
+    retDatas = convert_2D_3D_data(datas)
+    # convert_2DAgg_data(datas)
+    return retDatas
+
+
+# ---聚类的数据结构
+# 2D 3D
+# 设备1  时间戳  测点1 测点2
+# 设备1  时间戳  测点1 测点2
+# 设备2  时间戳  测点1 测点2
+def convert_2D_3D_data(data):
+    if data is None:
+        return None
+    code = data["code"]
+    tmpDic = {}
+    dataList = []
+    if code == "success":
+        for item in data["result"]:
+            name = item["metric_name"]
+            value = item["metric_value"]
+            timestamp = item["timestamp"]
+            if timestamp in tmpDic.keys():
+                tmpDic[timestamp].append(value)
+            else:
+                tmpDic[timestamp] = [value]
+    ret = {"dev1": {}}
+    for key in tmpDic.keys():
+        dataList.append(tmpDic[key])
+        ret["dev1"][key] = tmpDic[key]
+    return ret
+
+
+# 时序聚类 （2D）
+# 设备1 时间段 测点1 测点2
+# 设备2 时间段 测点1 测点2
+def convert_2DAgg_data(data):
+    if data is None:
+        return None
+    code = data["code"]
+    tmpDic = {}
+    dataList = []
+    if code == "success":
+        for item in data["result"]:
+            name = item["metric_name"]
+            value = item["metric_value"]
+            timestamp = item["timestamp"]
+            if name in tmpDic.keys():
+                tmpDic[name].append(value)
+            else:
+                tmpDic[name] = [value]
+    ret = {"dev1": {}}
+    for key in tmpDic.keys():
+        dataList.append(tmpDic[key])
+        ret["dev1"][key] = tmpDic[key]
+    return ret
+
+
+# 聚类时间演化 （3D） x戳表示时间  2D聚类
+# 设备1  时间戳  测点1 测点2
+# 设备1  时间戳  测点1 测点2
+# 设备2  时间戳  测点1 测点2
