@@ -128,16 +128,6 @@ class TSchedule(Base):  # 装备数据分析调度表
     startTime = Column(BigInteger)  # 调度执行时间
 
 
-class THealthIndicator(Base):
-    __tablename__ = "xc_health_indicator"
-    id = Column(Integer, primary_key=True, index=True)  # 主键
-    ts = Column(BigInteger)  # 时间
-    did = Column(String(512))  # 装备ID
-    dclz = Column(String(128))  # 装备类型
-    state = Column(Integer)  # 健康状态
-    soh = Column(FLOAT)  # 健康指标
-
-
 class TCluster(Base):
     __tablename__ = "xc_cluster"
     id = Column(Integer, primary_key=True, index=True)  # 主键
