@@ -75,9 +75,10 @@ def calculate_cluster_3d(dataList, ageList):
 
 # 时序聚类 name,  *,  color, shape, x, y
 def calculate_cluster_agg2d(dataList, ageList):
-    _, dfnew = cluster.cluster_vectors(dataList, False)
-    df2 = mds.dev_age_compute(dataList, ageList)
-    pos = mds.compute_mds_pos(dataList, 2)
+    frequencies, spectrumn = cluster.ts2fft(dataList, 20480, 2048)
+    _, dfnew = cluster.cluster_vectors(spectrumn, False)
+    df2 = mds.dev_age_compute(spectrumn, ageList, frequencies)
+    pos = mds.compute_mds_pos(spectrumn, 2)
 
     compute_df_color(df2, dfnew)
     drop_df_data(df2)
