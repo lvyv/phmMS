@@ -96,15 +96,15 @@ async def get_trend_dashboard(query, filter):
     return DashboardManagerService.getDashboardList(query, filter)
 
 
-@router.post("/writeMetricMapping")
-async def writeMetricMapping(item: MetricMappingModel, db: get_db = Depends()):
-    so = MetricMappingService(db)
-    result = so.create_item(item)
-    return handle_result(result)
-
-
-@router.get("/metricMapping")
-async def metricMapping(equipCode: str, metricName: str, db: get_db = Depends()):
-    so = MetricMappingService(db)
-    result = so.get_item(equipCode, metricName)
-    return handle_result(result)
+# @router.post("/writeMetricMapping")
+# async def writeMetricMapping(item: MetricMappingModel, db: get_db = Depends()):
+#     so = MetricMappingService(db)
+#     result = so.create_item(item)
+#     return handle_result(result)
+#
+#
+# @router.get("/metricMapping")
+# async def metricMapping(equipType: str, metricName: str, db: get_db = Depends()):
+#     so = MetricMappingService(db)
+#     result = so.get_item(equipType, metricName)
+#     return handle_result(result)

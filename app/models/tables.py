@@ -164,12 +164,10 @@ class TSelfRelation(Base):
 class TMetricMapping(Base):
     __tablename__ = "xc_metric_mapping"
     id = Column(Integer, primary_key=True, index=True)
-    metric_code = Column(TEXT)
-    metric_name = Column(TEXT)
-    metric_alias = Column(TEXT)
-    equip_code = Column(TEXT)
-    equip_type = Column(TEXT)
-    equip_name = Column(TEXT)
+    metric_name = Column(TEXT)     # 测点名称
+    metric_alias = Column(TEXT)    # 测点别名
+    equip_type = Column(TEXT)      # 装备类型
+    metric_describe = Column(TEXT)        # 描述
 
 
 # create all tables

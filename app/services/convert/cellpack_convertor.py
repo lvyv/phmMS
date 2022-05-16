@@ -6,10 +6,11 @@ class CellPackConvertor(IConvertor):
 
     def __init__(self):
         IConvertor.__init__(self)
-        self.ownMetrics = ["ts", "remainLife", "voc", "workVoc", "soc",
-                           "soh", "imbalance", "current", "minTemp", "maxTemp",
-                           "cellMaxVoc", "cellMinVoc", "cellMaxVol", "cellMinVol", "cellAvgVol",
-                           "envTemp", "cellVol", "cellSoc", "state"]
+        self.ownMetrics = self.metricMappingUtils.get_own_metrics(["ts", "remainLife", "voc", "workVoc", "soc",
+                                                                   "soh", "imbalance", "current", "minTemp", "maxTemp",
+                                                                   "cellMaxVoc", "cellMinVoc", "cellMaxVol",
+                                                                   "cellMinVol", "cellAvgVol",
+                                                                   "envTemp", "cellVol", "cellSoc", "state"])
 
     @staticmethod
     def __parse_str_to_json(value):
@@ -19,33 +20,32 @@ class CellPackConvertor(IConvertor):
         finally:
             return load_dict
 
-    @staticmethod
-    def __has_special_key(key):
-        if key in ["envTemp", "cellVol", "cellSoc"]:
+    def __has_special_key(self, key):
+        if key in self.metricMappingUtils.get_own_metrics(["envTemp", "cellVol", "cellSoc"]):
             return True
         return False
 
     def get_metric_value(self, item, metric):
         values = {
             "ts": item.ts,
-            "remainLife": item.remainLife,
-            "voc": item.voc,
-            "workVoc": item.workVoc,
-            "soc": item.soc,
-            "soh": item.soh,
-            "imbalance": item.imbalance,
-            "current": item.current,
-            "minTemp": item.minTemp,
-            "maxTemp": item.maxTemp,
-            "cellMaxVoc": item.cellMaxVoc,
-            "cellMinVoc": item.cellMaxVoc,
-            "cellMaxVol": item.cellMaxVol,
-            "cellMinVol": item.cellMinVol,
-            "cellAvgVol": item.cellAvgVol,
-            "envTemp": item.envTemp,
-            "cellVol": item.cellVol,
-            "cellSoc": item.cellSoc,
-            "state": item.state
+            self.metricMappingUtils.get_own_metric("remainLife"): item.remainLife,
+            self.metricMappingUtils.get_own_metric("voc"): item.voc,
+            self.metricMappingUtils.get_own_metric("workVoc"): item.workVoc,
+            self.metricMappingUtils.get_own_metric("soc"): item.soc,
+            self.metricMappingUtils.get_own_metric("soh"): item.soh,
+            self.metricMappingUtils.get_own_metric("imbalance"): item.imbalance,
+            self.metricMappingUtils.get_own_metric("current"): item.current,
+            self.metricMappingUtils.get_own_metric("minTemp"): item.minTemp,
+            self.metricMappingUtils.get_own_metric("maxTemp"): item.maxTemp,
+            self.metricMappingUtils.get_own_metric("cellMaxVoc"): item.cellMaxVoc,
+            self.metricMappingUtils.get_own_metric("cellMinVoc"): item.cellMaxVoc,
+            self.metricMappingUtils.get_own_metric("cellMaxVol"): item.cellMaxVol,
+            self.metricMappingUtils.get_own_metric("cellMinVol"): item.cellMinVol,
+            self.metricMappingUtils.get_own_metric("cellAvgVol"): item.cellAvgVol,
+            self.metricMappingUtils.get_own_metric("envTemp"): item.envTemp,
+            self.metricMappingUtils.get_own_metric("cellVol"): item.cellVol,
+            self.metricMappingUtils.get_own_metric("cellSoc"): item.cellSoc,
+            self.metricMappingUtils.get_own_metric("state"): item.state
         }
         return values.get(metric, None)
 
