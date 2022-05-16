@@ -64,7 +64,12 @@ executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 
 
 def startMqtt():
-    MqttClient().start()
+    try:
+        MqttClient().start()
+    except Exception as e:
+        print(e)
+    finally:
+        pass
 
 
 threading.Thread(target=startMqtt()).start()
