@@ -33,26 +33,26 @@ from sqlalchemy import Column, Integer, String, FLOAT, INTEGER, BigInteger, Bool
 from phmconfig.database import Base, create_tables
 
 
-class TApiToken(Base):
-    """
-    令牌表，暂存api访问令牌，便于使用。
-    该表主要字段：
-        id: 记录权限Token；
-        url: api的原型，https://ip:port/api/v1/phm/{soh}；
-        tk: 该api的访问令牌。
-
-    Attributes
-    ----------
-
-    Methods
-    -------
-
-    """
-    __tablename__ = "api_token"
-
-    id = Column(Integer, primary_key=True, index=True)
-    url = Column(String(512))
-    tk = Column(String(512))
+# class TApiToken(Base):
+#     """
+#     令牌表，暂存api访问令牌，便于使用。
+#     该表主要字段：
+#         id: 记录权限Token；
+#         url: api的原型，https://ip:port/api/v1/phm/{soh}；
+#         tk: 该api的访问令牌。
+#
+#     Attributes
+#     ----------
+#
+#     Methods
+#     -------
+#
+#     """
+#     __tablename__ = "api_token"
+#
+#     id = Column(Integer, primary_key=True, index=True)
+#     url = Column(String(512))
+#     tk = Column(String(512))
 
 
 class TReqHistory(Base):
