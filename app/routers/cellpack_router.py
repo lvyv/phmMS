@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends
+
+from schemas.metricMappingModel import MetricMappingModel
 from schemas.vrla.cellpack_model import CellPackModel
 from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.health_indicator_model import HealthIndicatorModel
 from schemas.vrla.self_relation_model import SelfRelationModel
 from services.dashboardManagerService import DashboardManagerService
+from services.metricMappingService import MetricMappingService
 from utils.service_result import handle_result
 from phmconfig.database import get_db
 from services.cellpackService import CellPackService
@@ -46,11 +49,11 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
 
 
 # 回写健康指标数据
-@router.post("/writeHealthIndicator")
-async def writeHealthIndicator(item: HealthIndicatorModel, db: get_db = Depends()):
-    so = HealthIndicatorService(db)
-    result = so.create_item(item)
-    return handle_result(result)
+# @router.post("/writeHealthIndicator")
+# async def writeHealthIndicator(item: HealthIndicatorModel, db: get_db = Depends()):
+#     so = HealthIndicatorService(db)
+#     result = so.create_item(item)
+#     return handle_result(result)
 
 
 # 聚类接口
@@ -91,3 +94,17 @@ async def writeClusterDisplay(item: SelfRelationModel, db: get_db = Depends()):
 @router.get("/dashboards")
 async def get_trend_dashboard(query, filter):
     return DashboardManagerService.getDashboardList(query, filter)
+
+
+@router.post("/writeMetricMapping")
+async def writeMetricMapping(item: MetricMappingModel, db: get_db = Depends()):
+    so = MetricMappingService(db)
+    result = so.create_item(item)
+    return handle_result(result)
+
+
+@router.get("/metricMapping")
+async def metricMapping(equipCode: str, metricName: str, db: get_db = Depends()):
+    so = MetricMappingService(db)
+    result = so.get_item(equipCode, metricName)
+    return handle_result(result)
