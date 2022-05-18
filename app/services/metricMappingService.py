@@ -18,7 +18,9 @@ class MetricMappingService(AppService):
         mapping = {}
         for item in items:
             if item.metric_alias not in mapping.keys():
-                mapping[item.metric_alias] = item.metric_name
+                # fix bug
+                if item.metric_alias is not None and item.metric_alias != '':
+                    mapping[item.metric_alias] = item.metric_name
         return mapping
 
     def update_all_mapping(self, equipTypeCode, mappings):
