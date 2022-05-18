@@ -232,31 +232,4 @@ async def calculate_relation(sohin: SohInputParams, reqid: int, leftTag: int, ri
     return {'task': reqid, 'status': 'submitted to work thread.'}
 
 
-def get_metric_task(equipCode):
-    datas = dataCenter.download_zb_metric_from(equipCode)
-    dataCenter.process_zb_metric_from(datas)
-    return datas
-
-
-@app.post("/api/v1/get_metric")
-async def mock_metrics(equipCode):
-    executor_.submit(get_metric_task, equipCode)
-    return {"status": "submitted to work thread."}
-
-
-def get_metric_data_task(metricCode, startTime, endTime):
-    start = TimeUtils.convert_time_str(int(startTime))
-    end = TimeUtils.convert_time_str(int(endTime))
-    interval = TimeUtils.get_time_interval(int(startTime), int(endTime))
-    datas = dataCenter.download_zb_history_data_from(metricCode, start, end, interval)
-    dataCenter.process_zb_history_data_from(datas)
-    return datas
-
-
-@app.post("/api/v1/get_data")
-async def mock_metric_data(metricCode, startTime, endTime):
-    executor_.submit(get_metric_data_task, metricCode, startTime, endTime)
-    return {"status": "submitted to work thread."}
-
-
 app.include_router(mock_zb_router.router)

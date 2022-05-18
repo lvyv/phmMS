@@ -29,7 +29,7 @@ from services.schedule.dynamic_task import DynamicTask
 from utils.app_exceptions import AppExceptionCase
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import schedule_model_router, reqhistory_router, cellpack_router, config_router
+from routers import schedule_model_router, reqhistory_router, cellpack_router, config_router, public_router
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from utils.request_exceptions import (
@@ -76,6 +76,7 @@ app.include_router(reqhistory_router.router)
 app.include_router(schedule_model_router.router)
 app.include_router(cellpack_router.router)
 app.include_router(config_router.router)
+app.include_router(public_router.router)
 
 logging.info(f'dynamic task start up.')
 DynamicTask().start()

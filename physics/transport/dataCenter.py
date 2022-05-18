@@ -4,10 +4,10 @@ import httpx
 from phmconfig import constants
 
 # 从数据资源下载下载装备数据
-from timeUtils import TimeUtils
+from phmconfig.timeUtils import TimeUtils
 
 
-# 模拟数据
+# 模拟数据  设备编码， 测点名称 ， 开始时间， 结束时间
 def download_zb_data(devs, metrics, start, end):
     with httpx.Client(timeout=None, verify=False) as client:
         r = client.post(constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData2",
@@ -15,49 +15,6 @@ def download_zb_data(devs, metrics, start, end):
         dataS = r.json()
         return dataS
     return None
-
-
-# equipName: 装备名称
-# equipCode: 装备编码
-# equipTypeCode: 装备类型编码
-def download_zb_metric_from(equipCode, equipName=None, equipTypeCode=None):
-    with httpx.Client(timeout=None, verify=False) as client:
-        # url = constants.API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT
-        url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetric"
-        if equipName is None and equipTypeCode is None:
-            params = {"equipCode": equipCode}
-        elif equipName is None:
-            params = {"equipCode": equipCode, "equipTypeCode": equipTypeCode}
-        elif equipTypeCode is None:
-            params = {"equipName": equipName, "equipCode": equipCode}
-        else:
-            params = {"equipName": equipName, "equipCode": equipCode, "equipTypeCode": equipTypeCode}
-        r = client.post(url, params=params)
-        dataS = r.json()
-        return dataS
-    return None
-
-
-# result
-#  delFlag | updateBy | updateTime | createBy | createTime | useDate | price | durableYears | personCharge | model \
-#  | manufactureNation | nameplateDate | batch | equipTypeCode | constructionTtem | equipName | equipCode | remark \
-#  | measurePoints
-#  measurePoints: 测点数据
-#  pointCode | pointName | protocol | dataType | description
-
-#  需要处理的数据 result.equipName result.equipCode result.equipTypeCode
-#  result.measurePoints[i].pointCode  result.measurePoints[i].pointName
-
-def process_zb_metric_from(data):
-    if data is None:
-        return None
-    equipCode = data["result"]["equipCode"]
-    equipName = data["result"]["equipName"]
-    equipTypeCode = data["result"]["equipTypeCode"]
-    for item in data["result"]["measurePoints"]:
-        code = item["pointCode"]
-        name = item["pointName"]
-    pass
 
 
 #  ######################################
@@ -164,7 +121,6 @@ def convert_2DAgg_data(data):
         dataList.append(tmpDic[key])
         ret["dev1"][key] = tmpDic[key]
     return ret
-
 
 # 聚类时间演化 （3D） x戳表示时间  2D聚类
 # 设备1  时间戳  测点1 测点2

@@ -48,20 +48,20 @@ async def getZbData2(devs, metrics, start, end):
 
 
 @router.post("/zbMetric")
-async def getZbMetric(equipCode):
+async def getZbMetric(equipTypeCode):
     ret = {
         "result": {
-            "equipCode": equipCode,
+            "equipCode": "B001",
             "equipName": "电池1",
             "equipTypeCode": "N0001",
             "measurePoints": [
                 {
                     "pointCode": "M0001",
-                    "pointName": "SOC"
+                    "pointName": "容量"
                 },
                 {
                     "pointCode": "M0002",
-                    "pointName": "SOH"
+                    "pointName": "健康指标"
                 },
                 {
                     "pointCode": "M0003",

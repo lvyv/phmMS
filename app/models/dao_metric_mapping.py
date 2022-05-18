@@ -21,11 +21,9 @@ class MetricMappingCRUD(AppCRUD):
         self.db.refresh(record)
         return record
 
-    def get_record(self, equip_type: str, metric_name: str) -> TMetricMapping:
-        record = self.db.query(TMetricMapping).filter(and_(TMetricMapping.equip_type == equip_type,
-                                                           TMetricMapping.metric_name == metric_name)).first()
-        if record:
-            return record
+    def update_record(self, metric_code: str, item) -> TMetricMapping:
+        self.db.add(item)
+        self.db.commit()
         return None
 
     def get_all(self, equip_type: str) -> TMetricMapping:

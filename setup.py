@@ -33,6 +33,7 @@ setup(
         'app.services',
         'app.services.convert',
         'app.services.schedule',
+        'app.services.http',
         'app.utils',
         'phmconfig',
         'physics',
