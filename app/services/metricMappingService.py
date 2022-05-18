@@ -14,23 +14,24 @@ class MetricMappingService(AppService):
         return ServiceResult(item)
 
     def get_all_mapping(self, equipType):
-        items = MetricMappingCRUD(self.db).get_all(equipType)
+        items = MetricMappingCRUD(self.db).get_all_by_equip_type(equipType)
         mapping = {}
         for item in items:
             if item.metric_alias not in mapping.keys():
                 mapping[item.metric_alias] = item.metric_name
         return mapping
 
-    def update_all_mapping(self, equipType, mappings):
+    def update_all_mapping(self, equipTypeCode, mappings):
         if mappings is None:
             return
-        items = MetricMappingCRUD(self.db).get_all(equipType)
+        items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
         if items is None:
             for mapping in mappings:
                 mmm = MetricMappingModel(metric_name=mapping["metricName"],
                                          metric_code=mapping["metricCode"],
                                          equip_name=mapping["equipName"],
-                                         equip_type=equipType,
+                                         equip_type='',
+                                         equip_type_code=mapping["equipTypeCode"],
                                          equip_code=mapping["equipCode"],
                                          metric_alias='',
                                          metric_describe='')
@@ -56,9 +57,22 @@ class MetricMappingService(AppService):
                         metric_name=mapping["metricName"],
                         metric_code=mapping["metricCode"],
                         equip_name=mapping["equipName"],
-                        equip_type=equipType,
+                        equip_type='',
+                        equip_type_code=mapping["equipTypeCode"],
                         equip_code=mapping["equipCode"],
                         metric_alias='',
                         metric_describe=''
                     )
                     self.create_item(mmm)
+            items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
+            return ServiceResult(items)
+
+    def update_all_metric_alias(self, equipTypeCode, metricName, metric_alias, equipType, metric_describe):
+        items = MetricMappingCRUD(self.db).get_record_by_type_and_name(equipTypeCode, metricName)
+        for item in items:
+            item.metric_alias = metric_alias
+            item.metric_describe = metric_describe
+            item.equip_type = equipType
+            self.update_item(item.metric_code, item)
+        items = MetricMappingCRUD(self.db).get_record_by_type_and_name(equipTypeCode, metricName)
+        return ServiceResult(items)

@@ -160,6 +160,7 @@ class TMetricMapping(Base):
     equip_code = Column(TEXT)      # 装备编码
     equip_name = Column(TEXT)      # 装备名称
     equip_type = Column(TEXT)      # 装备类型
+    equip_type_code = Column(TEXT)  # 装备类型编码
     metric_describe = Column(TEXT)        # 描述
 
 

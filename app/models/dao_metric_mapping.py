@@ -14,7 +14,8 @@ class MetricMappingCRUD(AppCRUD):
             metric_describe=item.metric_describe,
             equip_name=item.equip_name,
             equip_code=item.equip_code,
-            metric_code=item.metric_code
+            metric_code=item.metric_code,
+            equip_type_code=item.equip_type_code
         )
         self.db.add(record)
         self.db.commit()
@@ -26,8 +27,21 @@ class MetricMappingCRUD(AppCRUD):
         self.db.commit()
         return None
 
-    def get_all(self, equip_type: str) -> TMetricMapping:
+    def get_all(self, equip_type_code: str) -> TMetricMapping:
+        records = self.db.query(TMetricMapping).filter(TMetricMapping.equip_type_code == equip_type_code).all()
+        if records:
+            return records
+        return None
+
+    def get_all_by_equip_type(self, equip_type: str) -> TMetricMapping:
         records = self.db.query(TMetricMapping).filter(TMetricMapping.equip_type == equip_type).all()
+        if records:
+            return records
+        return None
+
+    def get_record_by_type_and_name(self, equip_type_code, metric_name):
+        records = self.db.query(TMetricMapping).filter(and_(TMetricMapping.equip_type_code == equip_type_code,
+                                                            TMetricMapping.metric_name == metric_name)).all()
         if records:
             return records
         return None
