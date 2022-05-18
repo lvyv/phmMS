@@ -27,3 +27,5 @@ scikit-learn~=0.23.2
 adjustText~=0.7.3
 
 statsmodels~=0.13.2
+
+psycopg2~=2.9.3

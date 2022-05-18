@@ -11,7 +11,10 @@ class MetricMappingCRUD(AppCRUD):
             equip_type=item.equip_type,
             metric_name=item.metric_name,
             metric_alias=item.metric_alias,
-            metric_describe=item.metric_describe
+            metric_describe=item.metric_describe,
+            equip_name=item.equip_name,
+            equip_code=item.equip_code,
+            metric_code=item.metric_code
         )
         self.db.add(record)
         self.db.commit()

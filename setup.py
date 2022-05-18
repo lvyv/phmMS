@@ -68,7 +68,8 @@ setup(
         'sklearn',
         'scikit-learn',
         'adjustText',
-        'statsmodels'
+        'statsmodels',
+        'psycopg2'
     ],
     download_url='',
     package_data={

@@ -17,5 +17,6 @@ class MetricMappingService(AppService):
         items = MetricMappingCRUD(self.db).get_all(equipType)
         mapping = {}
         for item in items:
-            mapping[item.metric_alias] = item.metric_name
+            if item.metric_alias not in mapping.keys():
+                mapping[item.metric_alias] = item.metric_name
         return mapping

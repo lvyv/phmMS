@@ -6,6 +6,7 @@ import constants
 
 #  "sqlite:///./app.db"
 #   "mysql+pymysql://root:123465@192.168.101.59:3306/phmmysql"
+#   "postgresql+psycopg2://postgres:postgres@192.168.101.59:5432/phmmsdb"
 
 engine = create_engine(
     constants.PHM_DATABASE_URL #,
