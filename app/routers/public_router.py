@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
 from services.http.dataCenterService import DataCenterService
-from utils.service_result import handle_result
+from utils.service_result import handle_result, ServiceResult
 
 router = APIRouter(
     prefix="/api/v1/public",
@@ -32,3 +32,11 @@ async def dataMapping(equipTypeCode: str, metricName: str, metric_alias: str,
     so = MetricMappingService(db)
     result = so.update_all_metric_alias(equipTypeCode, metricName, metric_alias, equipType, metric_describe)
     return handle_result(result)
+
+
+# 根据装备类型获取mapping
+@router.get("/getMapping")
+async def getMapping(equipCode: str, db: get_db = Depends()):
+    so = MetricMappingService(db)
+    result = so.get_all_mapping_by_equip_type_code(equipCode)
+    return handle_result(ServiceResult(result))

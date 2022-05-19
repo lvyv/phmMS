@@ -45,3 +45,9 @@ class MetricMappingCRUD(AppCRUD):
         if records:
             return records
         return None
+
+    def get_one_by_equip_code(self, equip_code) -> TMetricMapping:
+        records = self.db.query(TMetricMapping).filter(TMetricMapping.equip_code == equip_code).first()
+        if records:
+            return records
+        return None

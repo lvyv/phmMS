@@ -77,6 +77,9 @@ URL_MD_WRITE_SELF_RELATION = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeRelation"
 # 写更新历史请求记录
 URL_MD_WRITE_REQ_HISTORY = PHMMS_URL_PREFIX + "/api/v1/reqhistory/item"
 
+# 查询Mapping表
+URL_MD_QUERY_METRIC_MAPPING = PHMMS_URL_PREFIX + "/api/v1/public/getMapping"
+
 # prefix
 PHMMD_CONTAINER_NAME = cfg["phmmd_container_name"]
 PHMMD_URL_PREFIX = "https://" + PHMMD_CONTAINER_NAME + ":" + str(PHMMD_PORT)

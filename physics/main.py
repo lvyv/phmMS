@@ -192,6 +192,14 @@ def post_process_vrla_relation(reqid, sohres):
 # time intensive tasks
 def soh_task(sohin, reqid):
     dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
+
+    # 获取测点映射
+    devices = json.loads(sohin.devices)
+    if len(devices) > 0:
+        mappingS = dataCenter.query_metric_mapping(devices[0])
+    else:
+        mappingS = dataCenter.query_metric_mapping()
+
     res = phm.calculate_soh(dataS)
     post_process_vrla_soh(reqid, res)
 

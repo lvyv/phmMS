@@ -160,16 +160,6 @@ def process_zb_history_data_agg2d(data):
 # 设备2  时间戳  测点1 测点2
 
 
-# 生成计算SOH、SOC、内阻不平衡度、电压不平衡度格式数据
-def process_zb_history_data_soh(data):
-    if data is None:
-        return None
-    code = data["code"]
-    if code == "success":
-        return data["result"]
-    else:
-        return None
-
 #          for item in data:
 #             equipCode = item["equipCode"]  # 装备编码
 #             equipName = item["equipName"]  # 装备名称
@@ -181,7 +171,47 @@ def process_zb_history_data_soh(data):
 #                 for md in metricData:
 #                     timestamp = md["timestamp"]  # 时间戳
 #                     metricValue = md["metricValue"]  # 测点值
+# 生成计算SOH、SOC、内阻不平衡度、电压不平衡度格式数据
+def process_zb_history_data_soh(data):
+    if data is None:
+        return None
+    code = data["code"]
+    if code == "success":
+        retData = []
+        tmpDic = {}
+        for item in data["result"]:
+            equipCode = item["equipCode"]  # 装备编码
+            equipName = item["equipName"]  # 装备名称
+            equipData = item["equipData"]  # 装备数据
+            for ed in equipData:
+                metricName = ed["metricName"]  # 测点名称
+                metricCode = ed["metricCode"]  # 测点编码
+                metricData = ed["metricData"]  # 测点数据
+                devKey = equipName + metricName
+                for md in metricData:
+                    timestamp = md["timestamp"]  # 时间戳
+                    metricValue = md["metricValue"]  # 测点值
+                    if devKey in tmpDic.keys():
+                        tmpDic[devKey].append(metricValue)
+                    else:
+                        tmpDic[devKey] = [metricValue]
+    else:
+        return None
 
 
+# 生成自相关数据格式
 def process_zb_history_data_relation(data):
     return process_zb_history_data_agg2d(data)
+
+
+def query_metric_mapping(deviceCode=None):
+    with httpx.Client(timeout=None, verify=False) as client:
+        url = constants.URL_MD_QUERY_METRIC_MAPPING
+        if deviceCode is None:
+            r = client.get(url)
+        else:
+            r = client.get(url, params={"equipCode": deviceCode})
+        dataS = r.json()
+        return dataS
+    return None
+

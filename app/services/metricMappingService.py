@@ -15,6 +15,25 @@ class MetricMappingService(AppService):
 
     def get_all_mapping(self, equipType):
         items = MetricMappingCRUD(self.db).get_all_by_equip_type(equipType)
+        if items is None:
+            return None
+        mapping = {}
+        for item in items:
+            if item.metric_alias not in mapping.keys():
+                # fix bug
+                if item.metric_alias is not None and item.metric_alias != '':
+                    mapping[item.metric_alias] = item.metric_name
+        return mapping
+
+    def get_all_mapping_by_equip_type_code(self, equipCode):
+
+        oneRecord = MetricMappingCRUD(self.db).get_one_by_equip_code(equipCode)
+        if oneRecord is None:
+            return None
+        equipTypeCode = oneRecord.equip_type_code
+        items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
+        if items is None:
+            return None
         mapping = {}
         for item in items:
             if item.metric_alias not in mapping.keys():
