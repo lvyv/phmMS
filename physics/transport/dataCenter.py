@@ -172,7 +172,7 @@ def process_zb_history_data_agg2d(data):
 #                     timestamp = md["timestamp"]  # 时间戳
 #                     metricValue = md["metricValue"]  # 测点值
 # 生成计算SOH、SOC、内阻不平衡度、电压不平衡度格式数据
-def process_zb_history_data_soh(data):
+def process_zb_history_data_soh(data, mapping):
     if data is None:
         return None
     code = data["code"]
@@ -187,14 +187,19 @@ def process_zb_history_data_soh(data):
                 metricName = ed["metricName"]  # 测点名称
                 metricCode = ed["metricCode"]  # 测点编码
                 metricData = ed["metricData"]  # 测点数据
-                devKey = equipName + metricName
-                for md in metricData:
+                for i, md in enumerate(metricData):
+                    devKey = equipName + "#" + str(i)
                     timestamp = md["timestamp"]  # 时间戳
                     metricValue = md["metricValue"]  # 测点值
+                    mappingMetricName = mapping[metricName]
                     if devKey in tmpDic.keys():
-                        tmpDic[devKey].append(metricValue)
+                        tmpDic[devKey].update({mappingMetricName: metricValue})
                     else:
-                        tmpDic[devKey] = [metricValue]
+                        timestampLong = TimeUtils.convert_time_stamp(timestamp)
+                        tmpDic[devKey] = {"ts": timestampLong, "did": equipCode, mappingMetricName: metricValue}
+        for key in tmpDic.keys():
+            retData.append(tmpDic[key])
+        return retData
     else:
         return None
 

@@ -1,3 +1,4 @@
+import calendar
 import time
 
 
@@ -26,3 +27,10 @@ class TimeUtils:
         else:
             gap = str(0.1) + "M"
         return gap
+
+    @staticmethod
+    def convert_time_stamp(timeStr):
+        # 2022-02-13 22:09:59
+        timeStamp = calendar.timegm(
+            time.strptime(timeStr, '%Y-%m-%d %H:%M:%S'))
+        return timeStamp * 1000

@@ -88,63 +88,63 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval):
                 "metricName": "容量",
                 "metricCode": "M001",
                 "metricData": [{
-                    "timestamp": "2022-05-1800: 00: 00",
+                    "timestamp": "2022-05-18 00:00:00",
                     "metricValue": 0.5
                 },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     }
                 ]
@@ -153,63 +153,63 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval):
                     "metricName": "健康指标",
                     "metricCode": "M002",
                     "metricData": [{
-                        "timestamp": "2022-05-1800: 00: 00",
+                        "timestamp": "2022-05-18 00:00:00",
                         "metricValue": 0.5
                     },
                         {
-                            "timestamp": "2022-05-1801: 00: 00",
+                            "timestamp": "2022-05-18 01:00:00",
                             "metricValue": 0.6
                         },
                         {
-                            "timestamp": "2022-05-1802: 00: 00",
+                            "timestamp": "2022-05-18 02:00:00",
                             "metricValue": 0.7
                         },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     }
                     ]
@@ -223,63 +223,63 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval):
                     "metricName": "容量",
                     "metricCode": "M003",
                     "metricData": [{
-                        "timestamp": "2022-05-1800: 00: 00",
+                        "timestamp": "2022-05-18 00:00:00",
                         "metricValue": 0.5
                     },
                         {
-                            "timestamp": "2022-05-1801: 00: 00",
+                            "timestamp": "2022-05-18 01:00:00",
                             "metricValue": 0.6
                         },
                         {
-                            "timestamp": "2022-05-1802: 00: 00",
+                            "timestamp": "2022-05-18 02:00:00",
                             "metricValue": 0.7
                         },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     }
                     ]
@@ -288,63 +288,63 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval):
                         "metricName": "健康指标",
                         "metricCode": "M004",
                         "metricData": [{
-                            "timestamp": "2022-05-1800: 00: 00",
+                            "timestamp": "2022-05-18 00:00:00",
                             "metricValue": 0.5
                         },
                             {
-                                "timestamp": "2022-05-1801: 00: 00",
+                                "timestamp": "2022-05-18 01:00:00",
                                 "metricValue": 0.6
                             },
                             {
-                                "timestamp": "2022-05-1802: 00: 00",
+                                "timestamp": "2022-05-18 02:00:00",
                                 "metricValue": 0.7
                             },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     },
                     {
-                        "timestamp": "2022-05-1801: 00: 00",
+                        "timestamp": "2022-05-18 01:00:00",
                         "metricValue": 0.6
                     },
                     {
-                        "timestamp": "2022-05-1802: 00: 00",
+                        "timestamp": "2022-05-18 02:00:00",
                         "metricValue": 0.7
                     }
                         ]

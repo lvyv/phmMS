@@ -166,15 +166,11 @@ def calculate_relate(inData, leftTag, rightTag, step, unit):
     return res
 
 
-def relate_convert(dataS):
-    inDatas = json.loads(json.dumps(dataS))
-    return inDatas
-
-
 #  计算SOH的值
 def evaluate_soh(datas):
     # 计算soh和扩展指标的值并返回。
     return {"soh": 0, "soc": 0, "imbalance": 0, "state": 1}
+    pass
 
 
 # [{
@@ -184,21 +180,17 @@ def evaluate_soh(datas):
 #     "metricName": "容量",
 #     "metricCode": "M001",
 #     "metricData": [{
-#         "timestamp": "2022-05-1800: 00: 00",
+#         "timestamp": "2022-05-18 00:00:00",
 #         "metricValue": 0.5
 #     }]
 #   }]
 # }]
 
-def calculate_soh(dataS):
+def calculate_soh(dataS, mappingS):
     #  返回设备数据
-    devDatas = dataCenter.process_zb_history_data_soh(dataS)
+    devDatas = dataCenter.process_zb_history_data_soh(dataS, mappingS)
     # 进行 SOH、SOC、 内阻不平衡度、健康状态
     evaluate_soh(devDatas)
     # 返回数据
     return devDatas
 
-
-def soh_convert(dataS):
-    inDatas = json.loads(json.dumps(dataS))
-    return inDatas

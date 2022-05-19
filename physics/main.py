@@ -91,42 +91,38 @@ def publish_data_to_iot(reqid, data):
         pass
 
 
-def post_process_vrla_soh(reqid, sohres):
+def post_process_vrla_soh(reqid, items):
     with httpx.Client(timeout=None, verify=False) as client:
         write_back_history_result(client, reqid)
-
-        # 数据转换
-        items = phm.soh_convert(sohres)
-
         # 写回指标统计数据库表
-        for did in items.keys():
-            eqitem = items[did]
+        for item in items:
+            keys = item.keys()
             eqi = {
-                "did": did,
+                "did": item['did'],
                 "dclz": "BATTERY",
-                "remainLife": 0,
-                "voc": 0,
-                "workVoc": 0,
-                "current": 0,
-                "minTemp": 0,
-                "maxTemp": 0,
-                "cellMaxVoc": 0,
-                "cellMinVoc": 0,
-                "cellMaxVol": 0,
-                "cellMinVol": 0,
-                "cellAvgVol": 0,
+                "remainLife": item['remainLife'] if "remainLife" in keys else 0,
+                "voc": item['voc'] if "voc" in keys else 0,
+                "workVoc": item['workVoc'] if "workVoc" in keys else 0,
+                "current": item['current'] if "current" in keys else 0,
+                "minTemp": item['minTemp'] if "minTemp" in keys else 0,
+                "maxTemp": item['maxTemp'] if "maxTemp" in keys else 0,
+                "cellMaxVoc": item['cellMaxVoc'] if "cellMaxVoc" in keys else 0,
+                "cellMinVoc": item['cellMinVoc'] if "cellMinVoc" in keys else 0,
+                "cellMaxVol": item['cellMaxVol'] if "cellMaxVol" in keys else 0,
+                "cellMinVol": item['cellMinVol'] if "cellMinVol" in keys else 0,
+                "cellAvgVol": item['cellAvgVol'] if "cellAvgVol" in keys else 0,
                 "envTemp": "[19, 20]",
                 "cellVol": "[20, 21, 22, 20, 21, 22]",
                 "cellSoc": "[20, 22, 22, 22, 22, 23]",
-                "soh": eqitem['soh'],
-                "soc": eqitem['extend']['soc'],
-                "imbalance": eqitem['extend']['Rimbalance'],
-                "ts": eqitem['ts'],
-                "state": 1
+                "soh": item['soh'] if "soh" in keys else 0,
+                "soc": item['soc'] if 'soc' in keys else 0,
+                "imbalance": item['imbalance'] if 'imbalance' in keys else 0,
+                "ts": item['ts'] if 'ts' in keys else 0,
+                "state": item['state'] if 'state' in keys else 0
             }
             client.post(f'{bcf.URL_MD_WRITE_EVAL}', json=eqi)
 
-        publish_data_to_iot(reqid, sohres)
+        publish_data_to_iot(reqid, items)
 
 
 def post_process_vrla_cluster(reqid, sohres, displayType):
@@ -134,7 +130,7 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
 
         write_back_history_result(client, reqid)
 
-        # 数据转换
+        # 聚类模型需要数据转换
         items = phm.cluster_convert(sohres)
 
         # 将数据写入数据库
@@ -166,13 +162,10 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
         publish_data_to_iot(reqid, sohres)
 
 
-def post_process_vrla_relation(reqid, sohres):
+def post_process_vrla_relation(reqid, items):
     with httpx.Client(timeout=None, verify=False) as client:
 
         write_back_history_result(client, reqid)
-
-        # 数据转换
-        items = phm.relate_convert(sohres)
 
         # 写回指标统计数据库表
         for did in items.keys():
@@ -186,21 +179,29 @@ def post_process_vrla_relation(reqid, sohres):
                 }
                 client.post(f'{bcf.URL_MD_WRITE_SELF_RELATION}', json=eqi)
 
-        publish_data_to_iot(reqid, sohres)
+        publish_data_to_iot(reqid, items)
 
 
 # time intensive tasks
 def soh_task(sohin, reqid):
+    # 下载装备数据
     dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
-
     # 获取测点映射
     devices = json.loads(sohin.devices)
     if len(devices) > 0:
         mappingS = dataCenter.query_metric_mapping(devices[0])
     else:
         mappingS = dataCenter.query_metric_mapping()
+    # 测点反转
+    convertMapping = {}
+    if mappingS is not None:
+        for k, v in mappingS.items():
+            convertMapping[v] = k
 
-    res = phm.calculate_soh(dataS)
+    # 计算SOH
+    res = phm.calculate_soh(dataS, convertMapping)
+
+    # 处理结果
     post_process_vrla_soh(reqid, res)
 
 
