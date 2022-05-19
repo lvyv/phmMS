@@ -6,25 +6,10 @@ from phmconfig import constants
 # 从数据资源下载下载装备数据
 from phmconfig.timeUtils import TimeUtils
 
-mock = 0
-
-
-def download_zb_mock_data(devs, metrics, start, end):
-    with httpx.Client(timeout=None, verify=False) as client:
-        r = client.post(constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData2",
-                        params={"devs": devs, "metrics": metrics, "start": start, "end": end})
-        dataS = r.json()
-        return dataS
-    return None
-
 
 #   设备编码， 测点名称 ， 开始时间， 结束时间
 def download_zb_data(devs, metrics, start, end):
-    if mock == 1:
-        return download_zb_mock_data(devs, metrics, start, end)
-    else:
-        return download_zb_real_data(devs, metrics, start, end)
-    return None
+    return download_zb_real_data(devs, metrics, start, end)
 
 
 #  ######################################

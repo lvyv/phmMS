@@ -1,6 +1,5 @@
 import requests
 import json
-import time
 
 from physics.common import cluster, mds
 import logging
@@ -8,17 +7,6 @@ from physics.common.cluster_utils import cluster_shape
 from statsmodels.tsa.api import stattools
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from physics.transport import dataCenter
-
-
-def get_data_and_age(dataS):
-    dataList = []
-    ageList = []
-    for key in dataS.keys():
-        ks = dataS[key].keys()
-        for k in ks:
-            dataList.append(dataS[key][k])
-        ageList.append(len(ks))
-    return dataList, ageList
 
 
 def compute_df_color(df2, dfnew):
