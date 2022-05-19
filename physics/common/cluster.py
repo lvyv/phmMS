@@ -35,7 +35,7 @@ from scipy import signal
 from physics.common.cluster_utils import cluster_color
 
 
-def ts2fft(datumn, samplerate, nperseg):
+def ts2fft(datumn, samplerate=1.0, nperseg=None):
     """
     This function computes all the one-dimensional time domain signals by FFT.
     Parameters

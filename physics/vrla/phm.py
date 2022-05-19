@@ -84,7 +84,7 @@ def calculate_cluster_3d(dataList, ageList, devList):
 
 # 时序聚类 name,  *,  color, shape, x, y
 def calculate_cluster_agg2d(dataList, ageList, devList):
-    frequencies, spectrumn = cluster.ts2fft(dataList, 20480, 2048)
+    frequencies, spectrumn = cluster.ts2fft(dataList)
     _, dfnew = cluster.cluster_vectors(spectrumn, False)
     df2 = mds.dev_age_compute(spectrumn, ageList, frequencies)
     compute_df_devName(df2, ageList, devList)
@@ -129,7 +129,7 @@ def calculate_cluster(dataS, display):
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
             out = calculate_cluster_3d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_AGG2D:
-            dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
+            dataList, ageList, devList = dataCenter.process_zb_history_data_agg2d(dataS)
             out = calculate_cluster_agg2d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_AGG3D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)

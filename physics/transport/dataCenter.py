@@ -111,11 +111,13 @@ def process_zb_history_data_2d_3d_agg3d(data):
 # 生成聚类时间演化格式数据
 def process_zb_history_data_agg2d(data):
     if data is None:
-        return None, None
+        return None, None,None
     code = data["code"]
     if code == "success":
         dataList = []
         ageList = []
+        devList = []
+        tmpDic = {}
         for item in data["result"]:
             equipCode = item["equipCode"]  # 装备编码
             equipName = item["equipName"]  # 装备名称
@@ -124,8 +126,22 @@ def process_zb_history_data_agg2d(data):
                 metricName = ed["metricName"]  # 测点名称
                 metricCode = ed["metricCode"]  # 测点编码
                 metricData = ed["metricData"]  # 测点数据
+                devKey = equipName + metricName
+                for md in metricData:
+                    timestamp = md["timestamp"]  # 时间戳
+                    metricValue = md["metricValue"]  # 测点值
+                    if devKey in tmpDic.keys():
+                        tmpDic[devKey].append(metricValue)
+                    else:
+                        tmpDic[devKey] = [metricValue]
+            ageList.append(len(equipData))
+            devList.append(equipName)
+
+        for key in tmpDic.keys():
+            dataList.append(tmpDic[key])
+        return dataList, ageList, devList
     else:
-        return None, None
+        return None, None,None
 
 
 # ---聚类的数据结构
@@ -133,51 +149,10 @@ def process_zb_history_data_agg2d(data):
 # 设备1  时间戳  测点1 测点2
 # 设备1  时间戳  测点1 测点2
 # 设备2  时间戳  测点1 测点2
-def convert_2D_3D_data(data):
-    if data is None:
-        return None
-    code = data["code"]
-    tmpDic = {}
-    dataList = []
-    if code == "success":
-        for item in data["result"]:
-            name = item["metric_name"]
-            value = item["metric_value"]
-            timestamp = item["timestamp"]
-            if timestamp in tmpDic.keys():
-                tmpDic[timestamp].append(value)
-            else:
-                tmpDic[timestamp] = [value]
-    ret = {"dev1": {}}
-    for key in tmpDic.keys():
-        dataList.append(tmpDic[key])
-        ret["dev1"][key] = tmpDic[key]
-    return ret
-
 
 # 时序聚类 （2D）
 # 设备1 时间段 测点1 测点2
 # 设备2 时间段 测点1 测点2
-def convert_2DAgg_data(data):
-    if data is None:
-        return None
-    code = data["code"]
-    tmpDic = {}
-    dataList = []
-    if code == "success":
-        for item in data["result"]:
-            name = item["metric_name"]
-            value = item["metric_value"]
-            timestamp = item["timestamp"]
-            if name in tmpDic.keys():
-                tmpDic[name].append(value)
-            else:
-                tmpDic[name] = [value]
-    ret = {"dev1": {}}
-    for key in tmpDic.keys():
-        dataList.append(tmpDic[key])
-        ret["dev1"][key] = tmpDic[key]
-    return ret
 
 # 聚类时间演化 （3D） x戳表示时间  2D聚类
 # 设备1  时间戳  测点1 测点2
