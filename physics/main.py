@@ -98,7 +98,7 @@ def post_process_vrla_soh(reqid, items):
         for item in items:
             keys = item.keys()
             eqi = {
-                "did": item['did'],
+                "did": item['did'] if 'did' in keys else "unknown",
                 "dclz": "BATTERY",
                 "remainLife": item['remainLife'] if "remainLife" in keys else 0,
                 "voc": item['voc'] if "voc" in keys else 0,
@@ -111,9 +111,9 @@ def post_process_vrla_soh(reqid, items):
                 "cellMaxVol": item['cellMaxVol'] if "cellMaxVol" in keys else 0,
                 "cellMinVol": item['cellMinVol'] if "cellMinVol" in keys else 0,
                 "cellAvgVol": item['cellAvgVol'] if "cellAvgVol" in keys else 0,
-                "envTemp": "[19, 20]",
-                "cellVol": "[20, 21, 22, 20, 21, 22]",
-                "cellSoc": "[20, 22, 22, 22, 22, 23]",
+                "envTemp": item['envTemp'] if "envTemp" in keys else "[0, 0]",
+                "cellVol": item['cellVol'] if "cellVol" in keys else "[0, 0, 0, 0, 0, 0]",
+                "cellSoc": item['cellSoc'] if "cellSoc" in keys else "[0, 0, 0, 0, 0, 0]",
                 "soh": item['soh'] if "soh" in keys else 0,
                 "soc": item['soc'] if 'soc' in keys else 0,
                 "imbalance": item['imbalance'] if 'imbalance' in keys else 0,
