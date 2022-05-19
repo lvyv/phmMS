@@ -154,16 +154,15 @@ def cluster_convert(dataS):
     return outDatas
 
 
+# res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
+#        "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
 def calculate_relate(inData, leftTag, rightTag, step, unit):
-    x, _ = get_data_and_age(inData)
+    x, ageList, devList = dataCenter.process_zb_history_data_relation(inData)
     acf = stattools.acf(x[0], adjusted=True)
-    res = {"B001": {"lag": [], "value": []}}
+    res = {devList[0]: {"lag": [], "value": []}}
     for index, item in enumerate(acf):
-        res["B001"]["lag"].append(index)
-        res["B001"]["value"].append(item)
-    #
-    # res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
-    #        "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
+        res[devList[0]]["lag"].append(index)
+        res[devList[0]]["value"].append(item)
     return res
 
 
@@ -172,36 +171,32 @@ def relate_convert(dataS):
     return inDatas
 
 
-def evaluate_soh(did):
-    """
-    计算soh和扩展指标的值并返回。
-    :param did:
-    :return:
-    """
-    logging.info(did)
-    return 0.99, {"soc": 0.8, "Rimbalance": 0.1}
+#  计算SOH的值
+def evaluate_soh(datas):
+    # 计算soh和扩展指标的值并返回。
+    return {"soh": 0, "soc": 0, "imbalance": 0, "state": 1}
 
 
-# {
-# 	"dev1": {
-# 		"ts": [1, 2, 3, 4],
-# 		"metric1": [1, 2, 3, 5],
-# 		"metric2": [2, 3, 4, 5]
-# 	},
-# 	"dev2": {
-# 		"ts": [1, 2, 3, 4],
-# 		"metric1": [1, 2, 3, 4],
-# 		"metric2": [2, 3, 4, 5]
-# 	}
-# }
-def calculate_soh(dataS, didS):
-    devs = dataS.keys()
-    results = {}
-    for dev in didS:
-        ts = int(time.time() * 1000)
-        soh, extend = evaluate_soh(dev)
-        results.update({dev: {'soh': soh, 'extend': extend, 'ts': ts}})
-    return results
+# [{
+# "equipCode": "B001",
+# "equipName": "电池A",
+# "equipData": [{
+#     "metricName": "容量",
+#     "metricCode": "M001",
+#     "metricData": [{
+#         "timestamp": "2022-05-1800: 00: 00",
+#         "metricValue": 0.5
+#     }]
+#   }]
+# }]
+
+def calculate_soh(dataS):
+    #  返回设备数据
+    devDatas = dataCenter.process_zb_history_data_soh(dataS)
+    # 进行 SOH、SOC、 内阻不平衡度、健康状态
+    evaluate_soh(devDatas)
+    # 返回数据
+    return devDatas
 
 
 def soh_convert(dataS):
