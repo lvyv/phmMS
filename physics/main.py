@@ -206,10 +206,10 @@ def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
 
 # IF11:REST MODEL 外部接口-phmMD与phmMS之间接口
 class SohInputParams(BaseModel):
-    devices: str = '[]'  # json string
-    tags: str = '[]'  # json string
-    startts: int  # timestamp ms
-    endts: int  # timestamp ms
+    devices: str = '[\"B001\", \"B002\"]'  # json string
+    tags: str = '[\"soc\",\"soh\"]'  # json string
+    startts: int = 1652170492000  # timestamp ms
+    endts: int = 1652256892000  # timestamp ms
 
 
 @app.post("/api/v1/soh")

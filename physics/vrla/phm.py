@@ -7,6 +7,7 @@ import logging
 from physics.common.cluster_utils import cluster_shape
 from statsmodels.tsa.api import stattools
 from services.convert.cluster_display_util import ClusterDisplayUtil
+from physics.transport import dataCenter
 
 
 def get_data_and_age(dataS):
@@ -39,12 +40,20 @@ def compute_df_shape(df2, ageList):
         start += item
 
 
+def compute_df_devName(df2, ageList, devList):
+    start = 0;
+    for i, item in enumerate(ageList):
+        df2.loc[start:, 'dev'] = devList[i]
+        start += item
+
+
 #    frequencies, spectrum = cluster.ts2fft(dataList, 20480, 2048)
 
 # 2D聚类  name, size, color, shape, x, y
-def calculate_cluster_2d(dataList, ageList):
+def calculate_cluster_2d(dataList, ageList, devList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
     df2 = mds.dev_age_compute(dataList, ageList)
+    compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(dataList, 2)
     compute_df_color(df2, dfnew)
     drop_df_data(df2)
@@ -57,11 +66,11 @@ def calculate_cluster_2d(dataList, ageList):
 
 
 # 3D聚类 name, size, color, shape, x, y, z
-def calculate_cluster_3d(dataList, ageList):
+def calculate_cluster_3d(dataList, ageList, devList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
     df2 = mds.dev_age_compute(dataList, ageList)
+    compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(dataList, 3)
-
     compute_df_color(df2, dfnew)
     drop_df_data(df2)
     compute_df_shape(df2, ageList)
@@ -74,10 +83,11 @@ def calculate_cluster_3d(dataList, ageList):
 
 
 # 时序聚类 name,  *,  color, shape, x, y
-def calculate_cluster_agg2d(dataList, ageList):
+def calculate_cluster_agg2d(dataList, ageList, devList):
     frequencies, spectrumn = cluster.ts2fft(dataList, 20480, 2048)
     _, dfnew = cluster.cluster_vectors(spectrumn, False)
     df2 = mds.dev_age_compute(spectrumn, ageList, frequencies)
+    compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(spectrumn, 2)
 
     compute_df_color(df2, dfnew)
@@ -91,9 +101,10 @@ def calculate_cluster_agg2d(dataList, ageList):
 
 
 # 聚类时间演化 name, *, color, *, x, y, *
-def calculate_cluster_agg3d(dataList, ageList):
+def calculate_cluster_agg3d(dataList, ageList, devList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
     df2 = mds.dev_age_compute(dataList, ageList)
+    compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(dataList, 2)
 
     compute_df_color(df2, dfnew)
@@ -101,7 +112,7 @@ def calculate_cluster_agg3d(dataList, ageList):
     compute_df_shape(df2, ageList)
 
     # TODO FIX x坐标取时间
-    df2['pos_x'] = pos[:, 0]
+    df2['pos_x'] = df2['age']
     df2['pos_y'] = pos[:, 0]
     df2['pos_z'] = pos[:, 1]
     return df2.to_json()
@@ -110,15 +121,19 @@ def calculate_cluster_agg3d(dataList, ageList):
 def calculate_cluster(dataS, display):
     try:
         out = None
-        dataList, ageList = get_data_and_age(dataS)
+        # dataList, ageList = get_data_and_age(dataS)
         if display == ClusterDisplayUtil.DISPLAY_2D:
-            out = calculate_cluster_2d(dataList, ageList)
+            dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
+            out = calculate_cluster_2d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_3D:
-            out = calculate_cluster_3d(dataList, ageList)
+            dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
+            out = calculate_cluster_3d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_AGG2D:
-            out = calculate_cluster_agg2d(dataList, ageList)
+            dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
+            out = calculate_cluster_agg2d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_AGG3D:
-            out = calculate_cluster_agg3d(dataList, ageList)
+            dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
+            out = calculate_cluster_agg3d(dataList, ageList, devList)
         else:
             pass
     except requests.exceptions.ConnectionError as ce:
