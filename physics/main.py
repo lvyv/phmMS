@@ -83,7 +83,12 @@ def write_back_history_result(client, reqid):
 
 def publish_data_to_iot(reqid, data):
     # 发布遥测数据到IOT
-    MqttClient().publish(json.dumps({"reqid": reqid, "sohres": data}))
+    try:
+        MqttClient().publish(json.dumps({"reqid": reqid, "sohres": data}))
+    except Exception as e:
+        print(e)
+    finally:
+        pass
 
 
 def post_process_vrla_soh(reqid, sohres):
@@ -158,7 +163,6 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
 
             client.post(bcf.URL_MD_WRITE_CLUSTER, json=eqi)
             time.sleep(0.1)
-
         publish_data_to_iot(reqid, sohres)
 
 

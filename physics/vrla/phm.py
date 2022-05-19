@@ -121,7 +121,6 @@ def calculate_cluster_agg3d(dataList, ageList, devList):
 def calculate_cluster(dataS, display):
     try:
         out = None
-        # dataList, ageList = get_data_and_age(dataS)
         if display == ClusterDisplayUtil.DISPLAY_2D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
             out = calculate_cluster_2d(dataList, ageList, devList)
