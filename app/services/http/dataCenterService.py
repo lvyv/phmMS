@@ -10,8 +10,10 @@ class DataCenterService:
     @staticmethod
     def download_zb_metric(equipTypeCode=None, equipCode=None, equipName=None):
         with httpx.Client(timeout=None, verify=False) as client:
-            # url = constants.API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT
-            url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetric"
+            if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
+                url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetric"
+            else:
+                url = constants.API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT
             params = {}
             if equipTypeCode is not None:
                 params["equipTypeCode"] = equipTypeCode

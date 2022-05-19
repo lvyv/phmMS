@@ -20,8 +20,10 @@ def download_zb_data(devs, metrics, start, end):
 # interval: 数据抽取间隔  格式 [数字][M|H|D]
 def download_zb_history_data_from(equipCode, metricName, startTime, endTime, interval):
     with httpx.Client(timeout=None, verify=False) as client:
-        # url = constants.API_QUERY_HISTORY_DATA
-        url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData"
+        if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
+            url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData"
+        else:
+            url = constants.API_QUERY_HISTORY_DATA
         r = client.post(url,
                         params={"equipCode": equipCode, "metricName": metricName,
                                 "startTime": startTime, "endTime": endTime,

@@ -99,6 +99,9 @@ API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT = URL_SJZY_API_PREFIX + "/api/equip/quer
 API_QUERY_HISTORY_DATA = URL_SJZY_API_PREFIX + "/api/devices/query_history_data"
 
 
-#对接grafana
+# 对接grafana
 URL_MS_GET_DASHBOARD_LIST = cfg["url_ms_get_dashboard_list"]
+
+# 模拟装备数据
+MOCK_ZB_DATA = cfg["mock_zb_data"]
 
