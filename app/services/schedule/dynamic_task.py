@@ -14,6 +14,7 @@ from services.schedule.schedule_service import ScheduleService
 from utils.service_result import handle_result
 import concurrent.futures
 
+API_SCHEDULE_PREFIX = constants.PHMMS_URL_PREFIX + "/api/v1/phm/vrla/"
 API_SCHEDULE_SOH = constants.PHMMS_URL_PREFIX + "/api/v1/phm/vrla/soh"
 API_SCHEDULE_CLUSTER = constants.PHMMS_URL_PREFIX + "/api/v1/phm/vrla/cluster"
 API_SCHEDULE_RELATION = constants.PHMMS_URL_PREFIX + "/api/v1/phm/vrla/relation"
@@ -105,6 +106,7 @@ class DynamicTask(object):
                         item.startts = item.startTime
                         item.endts = currentTime
                         item.startTime = currentTime
+                        item.execUrl = API_SCHEDULE_PREFIX + item.execUrl
                         self.__executor.submit(self.__async_task, item)
                 else:
                     if currentTime > item.delay * 1000 + item.startTime:
