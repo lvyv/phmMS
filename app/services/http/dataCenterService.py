@@ -43,3 +43,17 @@ class DataCenterService:
             mappings.append({"equipCode": equipCode, "equipName": equipName, "equipTypeCode": equipTypeCode,
                              "metricCode": code, "metricName": name})
         return mappings
+
+    @staticmethod
+    def filter_zb_equip_type_code(mappings):
+        tmpDict = {}
+        ret = []
+        for mapping in mappings:
+            if mapping["equipTypeCode"] not in tmpDict.keys():
+                tmpDict[mapping["equipTypeCode"]] = mapping
+        for key in tmpDict.keys():
+            tmpDict[key].pop("metricCode")
+            tmpDict[key].pop("metricName")
+            tmpDict[key].pop("equipCode")
+            ret.append(tmpDict[key])
+        return ret

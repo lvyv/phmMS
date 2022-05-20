@@ -19,7 +19,8 @@ router = APIRouter(
 @router.get("/getEquipTypeCode")
 async def getEquipTypeCode():
     metrics = DataCenterService.download_zb_metric()
-    return metrics
+    equipTypeCode = DataCenterService.filter_zb_equip_type_code(metrics)
+    return equipTypeCode
 
 
 # equipTypeCode 设备类型编码
