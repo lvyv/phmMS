@@ -5,6 +5,8 @@ from models.dao_reqhistory import RequestHistoryCRUD
 from services.main import AppService
 from services.schedule.dynamic_task import DynamicTask
 from utils.payload_util import PayloadUtil
+from services.convert.cluster_display_util import ClusterDisplayUtil
+from services.convert.self_relation_util import SelfRelationUtil
 
 
 class BegForService(AppService):
@@ -29,13 +31,16 @@ class BegForService(AppService):
         tags.sort()
 
         # 查询历史记录
-        if displayType in ["EVAL"]:
-            hisRecords = RequestHistoryCRUD(self.db).get_eval_records(json.dumps(devs, ensure_ascii=False),
-                                                                      displayType, start, end)
-        else:
+        if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
+                           ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D,
+                           SelfRelationUtil.DISPLAY_SELF_RELATION]:
             hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
                                                                  json.dumps(tags, ensure_ascii=False),
                                                                  displayType, start, end)
+        else:
+            hisRecords = RequestHistoryCRUD(self.db).get_eval_records(json.dumps(devs, ensure_ascii=False),
+                                                                      "EVAL", start, end)
+
         # 若无历史记录，执行调度任务
         if len(hisRecords) <= 0:
             DynamicTask().async_once_task(devs, tags, start, end, displayType, leftTag, rightTag, step, unit)
