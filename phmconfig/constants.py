@@ -30,6 +30,9 @@ REQ_STATUS_SETTLED = 'settled'
 # 后台ai模型的地址
 REST_REQUEST_TIMEOUT = 10
 
+# 精确查询
+PREFECT_MATCH_HISTORY_QUERY_RECORD = False
+
 # ------------------------- api ------------------------------
 
 # prefix

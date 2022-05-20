@@ -7,6 +7,7 @@ from services.schedule.dynamic_task import DynamicTask
 from utils.payload_util import PayloadUtil
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.self_relation_util import SelfRelationUtil
+from phmconfig import constants
 
 
 class BegForService(AppService):
@@ -21,8 +22,9 @@ class BegForService(AppService):
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
         # 通过时间戳 获取日期
-        start, _ = BegForService.enlarge_timeline(start)
-        _, end = BegForService.enlarge_timeline(end)
+        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+            start, _ = BegForService.enlarge_timeline(start)
+            _, end = BegForService.enlarge_timeline(end)
 
         # 装备编码、测点名称 排序
         devs = equipCode.split(",")
@@ -34,12 +36,22 @@ class BegForService(AppService):
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                            ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D,
                            SelfRelationUtil.DISPLAY_SELF_RELATION]:
-            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                                 json.dumps(tags, ensure_ascii=False),
-                                                                 displayType, start, end)
+            if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+                hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                     json.dumps(tags, ensure_ascii=False),
+                                                                     displayType, start, end)
+            else:
+                hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                                   json.dumps(tags, ensure_ascii=False),
+                                                                                   displayType, start, end)
         else:
-            hisRecords = RequestHistoryCRUD(self.db).get_eval_records(json.dumps(devs, ensure_ascii=False),
-                                                                      "EVAL", start, end)
+            if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+                hisRecords = RequestHistoryCRUD(self.db).get_eval_records(json.dumps(devs, ensure_ascii=False),
+                                                                          "EVAL", start, end)
+            else:
+                hisRecords = RequestHistoryCRUD(self.db).get_eval_records_prefect_match(
+                    json.dumps(devs, ensure_ascii=False),
+                    "EVAL", start, end)
 
         # 若无历史记录，执行调度任务
         if len(hisRecords) <= 0:
