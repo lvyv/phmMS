@@ -40,7 +40,7 @@ async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[s
 
 
 @router.post("/zbData")
-async def getZbData(equipCode, metricName, startTime, endTime, interval: Optional[int] = None):
+async def getZbData(equipCode, metricName, startTime, endTime, interval: Optional[str] = None):
     ret = {
         "code": "success",
         "result": [{

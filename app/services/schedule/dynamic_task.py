@@ -125,7 +125,12 @@ class DynamicTask(object):
                           }
                 r = client.post(item.execUrl, json=params)
                 logging.info(r)
-            DynamicTask.__updateData(item)
+            try:
+                DynamicTask.__updateData(item)
+            except Exception as e:
+                print(e)
+            finally:
+                pass
 
     def async_once_task(self, devs, tags, start, end, displayType, leftTag: int = None,
                         rightTag: int = None, step: int = None, unit: int = None):
