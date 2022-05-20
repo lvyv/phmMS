@@ -31,6 +31,13 @@ class TimeUtils:
     @staticmethod
     def convert_time_stamp(timeStr):
         # 2022-02-13 22:09:59
+        timeArray = time.strptime(timeStr, "%Y-%m-%d %H:%M:%S")
+        timeStamp = int(time.mktime(timeArray))
+        return timeStamp * 1000
+
+    @staticmethod
+    def convert_time_stamp_utc(timeStr):
+        # 2022-02-13 22:09:59 + 8H
         timeStamp = calendar.timegm(
             time.strptime(timeStr, '%Y-%m-%d %H:%M:%S'))
         return timeStamp * 1000

@@ -25,8 +25,8 @@ class SelfRelationService(AppService):
         tags.sort()
 
         hisRecordId = []
-        hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs),
-                                                             json.dumps(tags),
+        hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                             json.dumps(tags, ensure_ascii=False),
                                                              SelfRelationUtil.DISPLAY_SELF_RELATION, start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)

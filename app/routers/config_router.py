@@ -22,8 +22,8 @@ async def createSchedule(item: ScheduleModel, db: get_db = Depends()):
     dids.sort()
     tags = item.dtags.split(',')
     tags.sort()
-    item.dids = json.dumps(dids)
-    item.dtags = json.dumps(tags)
+    item.dids = json.dumps(dids, ensure_ascii=False)
+    item.dtags = json.dumps(tags, ensure_ascii=False)
 
     result = so.create_item(item)
     ret = handle_result(result)

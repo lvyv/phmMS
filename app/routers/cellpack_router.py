@@ -3,7 +3,9 @@ from fastapi import APIRouter, Depends
 from schemas.vrla.cellpack_model import CellPackModel
 from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.self_relation_model import SelfRelationModel
+from services.convert.self_relation_util import SelfRelationUtil
 from services.dashboardManagerService import DashboardManagerService
+from services.schedule.beg_for_service import BegForService
 from utils.service_result import handle_result
 from phmconfig.database import get_db
 from services.cellpackService import CellPackService
@@ -33,6 +35,8 @@ async def writeHealthEval(item: CellPackModel, db: get_db = Depends()):
 @router.post("/eval")
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict, db: get_db = Depends()):
     so = CellPackService(db)
+    BegForService(db).exec(equipCode, metrics, "EVAL", payload)
+
     result = so.health_eval(equipType, equipCode, metrics, payload)
     return handle_result(result)
 
@@ -51,6 +55,7 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
 async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayType: str, payload: dict,
                          db: get_db = Depends()):
     so = ClusterDisplayService(db)
+    BegForService(db).exec(equipCode, metrics, displayType, payload)
     result = so.clusterDisplay(equipType, equipCode, metrics, displayType, payload)
     return handle_result(result)
 
@@ -69,6 +74,8 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str,
                         leftTag: int, rightTag: int, step: int, unit: int,
                         payload: dict, db: get_db = Depends()):
     so = SelfRelationService(db)
+    BegForService(db).exec(equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
+                           leftTag, rightTag, step, unit)
     result = so.selfRelation(equipType, equipCode, metrics, leftTag, rightTag, step, unit, payload)
     return handle_result(result)
 

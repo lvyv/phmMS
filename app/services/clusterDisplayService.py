@@ -38,8 +38,9 @@ class ClusterDisplayService(AppService):
             tags = metrics.split(",")
             tags.sort()
             hisRecordId = []
-            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs),
-                                                                 json.dumps(tags), displayType, start, end)
+            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                 json.dumps(tags, ensure_ascii=False),
+                                                                 displayType, start, end)
             for his in hisRecords:
                 hisRecordId.append(his.id)
             if len(hisRecordId) == 0:

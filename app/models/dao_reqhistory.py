@@ -90,4 +90,15 @@ class RequestHistoryCRUD(AppCRUD):
                                                          )).all()
         return records
 
-
+    def get_eval_records(self, equipCode: str, displayType: str, start: int, end: int) -> TReqHistory:
+        records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
+                                                         TReqHistory.displayType == displayType,
+                                                         or_(TReqHistory.startTs.between(start, end),
+                                                             TReqHistory.endTs.between(start, end),
+                                                             and_(TReqHistory.startTs >= start,
+                                                                  TReqHistory.endTs <= end),
+                                                             and_(TReqHistory.startTs <= start,
+                                                                  TReqHistory.endTs >= end)
+                                                             )
+                                                         )).all()
+        return records

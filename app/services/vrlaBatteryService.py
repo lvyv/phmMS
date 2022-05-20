@@ -66,18 +66,19 @@ class VRLABatteryService(AppService):
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
-            'memo': json.dumps(devs),
-            'metrics': json.dumps(tags),
+            'memo': json.dumps(devs, ensure_ascii=False),
+            'metrics': json.dumps(tags, ensure_ascii=False),
             'startTs': startts,
-            'endTs': endts
+            'endTs': endts,
+            'displayType': "EVAL"
         }
         item = ReqItemCreate(**external_data)
         soh_item = RequestHistoryCRUD(self.db).create_record(item)
         try:
             async with httpx.AsyncClient(timeout=ct.REST_REQUEST_TIMEOUT, verify=False) as client:
                 payload = {
-                    "devices": json.dumps(devs),
-                    "tags": json.dumps(tags),
+                    "devices": json.dumps(devs, ensure_ascii=False),
+                    "tags": json.dumps(tags, ensure_ascii=False),
                     "startts": startts,
                     "endts": endts
                 }
@@ -108,8 +109,8 @@ class VRLABatteryService(AppService):
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
-            'memo': json.dumps(devs),
-            'metrics': json.dumps(tags),
+            'memo': json.dumps(devs, ensure_ascii=False),
+            'metrics': json.dumps(tags, ensure_ascii=False),
             'displayType': displayType,
             'startTs': startts,
             'endTs': endts
@@ -119,8 +120,8 @@ class VRLABatteryService(AppService):
         try:
             async with httpx.AsyncClient(timeout=ct.REST_REQUEST_TIMEOUT, verify=False) as client:
                 payload = {
-                    "devices": json.dumps(devs),
-                    "tags": json.dumps(tags),
+                    "devices": json.dumps(devs, ensure_ascii=False),
+                    "tags": json.dumps(tags, ensure_ascii=False),
                     "startts": startts,
                     "endts": endts
                 }
@@ -144,8 +145,8 @@ class VRLABatteryService(AppService):
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
-            'memo': json.dumps(devs),
-            'metrics': json.dumps(tags),
+            'memo': json.dumps(devs, ensure_ascii=False),
+            'metrics': json.dumps(tags, ensure_ascii=False),
             'displayType': SelfRelationUtil.DISPLAY_SELF_RELATION,
             'startTs': startts,
             'endTs': endts
@@ -155,8 +156,8 @@ class VRLABatteryService(AppService):
         try:
             async with httpx.AsyncClient(timeout=ct.REST_REQUEST_TIMEOUT, verify=False) as client:
                 payload = {
-                    "devices": json.dumps(devs),
-                    "tags": json.dumps(tags),
+                    "devices": json.dumps(devs, ensure_ascii=False),
+                    "tags": json.dumps(tags, ensure_ascii=False),
                     "startts": startts,
                     "endts": endts
                 }

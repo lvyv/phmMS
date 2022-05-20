@@ -1,15 +1,25 @@
+import json
 import time
+
+import constants
 import database
 import httpx
 import logging
 import threading
+
+from models.tables import TSchedule
+from services.convert.cluster_display_util import ClusterDisplayUtil
+from services.convert.self_relation_util import SelfRelationUtil
 from services.schedule.schedule_service import ScheduleService
 from utils.service_result import handle_result
 import concurrent.futures
 
+API_SCHEDULE_SOH = constants.PHMMS_URL_PREFIX + "/api/v1/phm/vrla/soh"
+API_SCHEDULE_CLUSTER = constants.PHMMS_URL_PREFIX + "/api/v1/phm/vrla/cluster"
+API_SCHEDULE_RELATION = constants.PHMMS_URL_PREFIX + "/api/v1/phm/vrla/relation"
+
 
 class DynamicTask(object):
-
     _instance_lock = threading.Lock()
     init_first = False
 
@@ -116,3 +126,24 @@ class DynamicTask(object):
                 r = client.post(item.execUrl, json=params)
                 logging.info(r)
             DynamicTask.__updateData(item)
+
+    def async_once_task(self, devs, tags, start, end, displayType, leftTag: int = None,
+                        rightTag: int = None, step: int = None, unit: int = None):
+
+        item = TSchedule()
+        item.enable = True
+        item.dids = json.dumps(devs, ensure_ascii=False)
+        item.dtags = json.dumps(tags, ensure_ascii=False)
+        item.startts = start
+        item.endts = end
+
+        if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
+                           ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
+            item.execUrl = API_SCHEDULE_CLUSTER
+        elif displayType in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
+            item.execUrl = API_SCHEDULE_RELATION + "?leftTag=" + str(leftTag) + "&rightTag=" + str(
+                rightTag) + "&step=" + str(step) + "&unit=" + str(unit)
+        else:
+            item.execUrl = API_SCHEDULE_SOH
+
+        self.__executor.submit(self.__async_task, item)
