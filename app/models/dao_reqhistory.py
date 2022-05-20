@@ -88,3 +88,10 @@ class RequestHistoryCRUD(AppCRUD):
                                                               TReqHistory.endTs == end)
                                                          )).all()
         return records
+
+    # 获取时间片段
+    def get_time_segment(self, equipCode: str, metrics: str, displayType: str):
+        records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
+                                                         TReqHistory.metrics == metrics,
+                                                         TReqHistory.displayType == displayType)).all()
+        return records

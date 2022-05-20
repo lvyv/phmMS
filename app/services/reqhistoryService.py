@@ -1,38 +1,12 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# Copyright 2021 The CASICloud Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-# pylint: disable=invalid-name
-# pylint: disable=missing-docstring
-
-"""
-=========================
-business logic layer
-=========================
-
-business logic层，负责实现客户端请求的结果入库和查询。
-"""
-
-# Author: Awen <26896225@qq.com>
-# License: MIT
+import json
 
 from services.main import AppService
 from models.dao_reqhistory import RequestHistoryCRUD
 from utils.service_result import ServiceResult
+
+
 # from utils.app_exceptions import AppException
+from utils.time_util import TimeUtil
 
 
 class ReqHistoryService(AppService):
@@ -42,3 +16,28 @@ class ReqHistoryService(AppService):
             # return ServiceResult(AppException.FooCreateItem())
             pass
         return ServiceResult(req_item)
+
+    def get_time_segment(self, equipCode, metric, displayType):
+        devs = equipCode.split(",")
+        devs.sort()
+        tags = metric.split(",")
+        tags.sort()
+
+        record = RequestHistoryCRUD(self.db).get_time_segment(json.dumps(devs, ensure_ascii=False),
+                                                              json.dumps(tags, ensure_ascii=False), displayType)
+        if len(record) <= 0:
+            return None
+        ret = []
+        for item in record:
+            ret.append({
+                "equipCode": equipCode,
+                "metric": metric,
+                "displayType": displayType,
+                "timeSegment": ReqHistoryService.convert_time_segment(item.startTs, item.endTs)
+            })
+        return ServiceResult(ret)
+
+    @staticmethod
+    def convert_time_segment(start, end):
+        segment = TimeUtil.convert_time_utc_str(start) + "-" + TimeUtil.convert_time_utc_str(end)
+        return segment

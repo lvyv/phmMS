@@ -56,3 +56,10 @@ async def updateHistoryRecord(reqid: str, res: str, db: get_db = Depends()):
     reqs = ReqHistoryService(db)
     result = reqs.update_item(reqid, res)
     return handle_result(result)
+
+
+@router.get("/plugin/timeSegment")
+async def getTimeSegment(equipCode, metric, displayType, db: get_db = Depends()):
+    so = ReqHistoryService(db)
+    result = so.get_time_segment(equipCode, metric, displayType)
+    return handle_result(result)
