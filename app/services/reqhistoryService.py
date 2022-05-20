@@ -29,6 +29,8 @@ class ReqHistoryService(AppService):
             return None
         ret = []
         for item in record:
+            if item.startTs <= 0 or item.endTs <= 0:
+                continue
             ret.append({
                 "equipCode": equipCode,
                 "metric": metric,

@@ -97,7 +97,7 @@ class DynamicTask(object):
             time.sleep(1)
             if self.__items is None:
                 continue
-            currentTime = int(round(time.time() * 1000))
+            currentTime = int(round(time.time())) * 1000
             for item in self.__items:
                 if item.firstRun is True:
                     if currentTime > item.initDelay * 1000 + item.startTime:
