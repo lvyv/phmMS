@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-
+from typing import Optional
 
 router = APIRouter(
     prefix="/api/v1/mock",
@@ -9,7 +9,8 @@ router = APIRouter(
 
 
 @router.post("/zbMetric")
-async def getZbMetric(equipTypeCode):
+async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[str] = None,
+                      equipName: Optional[str] = None):
     ret = {
         "result": {
             "equipCode": "B001",
@@ -39,7 +40,7 @@ async def getZbMetric(equipTypeCode):
 
 
 @router.post("/zbData")
-async def getZbData(equipCode, metricName, startTime, endTime, interval):
+async def getZbData(equipCode, metricName, startTime, endTime, interval: Optional[int] = None):
     ret = {
         "code": "success",
         "result": [{

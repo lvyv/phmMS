@@ -75,7 +75,7 @@ class TReqHistory(Base):
     -------
 
     """
-    __tablename__ = "req_history"
+    __tablename__ = "xc_req_history"
 
     id = Column(Integer, primary_key=True, index=True)
     model = Column(String(512))

@@ -15,6 +15,13 @@ router = APIRouter(
 )
 
 
+# 查询装备编码类型
+@router.get("/getEquipTypeCode")
+async def getEquipTypeCode():
+    metrics = DataCenterService.download_zb_metric()
+    return metrics
+
+
 # equipTypeCode 设备类型编码
 @router.post("/sync")
 async def dataSync(equipTypeCode: str, db: get_db = Depends()):
