@@ -44,7 +44,7 @@ class ClusterDisplayService(AppService):
             for his in hisRecords:
                 hisRecordId.append(his.id)
             if len(hisRecordId) == 0:
-                pass
+                items = None
             else:
                 items = ClusterCRUD(self.db).get_records(hisRecordId)
         else:

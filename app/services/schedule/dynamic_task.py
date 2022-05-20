@@ -139,10 +139,10 @@ class DynamicTask(object):
 
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                            ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
-            item.execUrl = API_SCHEDULE_CLUSTER
+            item.execUrl = API_SCHEDULE_CLUSTER + "?displayType=" + displayType
         elif displayType in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
-            item.execUrl = API_SCHEDULE_RELATION + "?leftTag=" + str(leftTag) + "&rightTag=" + str(
-                rightTag) + "&step=" + str(step) + "&unit=" + str(unit)
+            item.execUrl = API_SCHEDULE_RELATION + "?leftTag=" + str(
+                leftTag) + "&rightTag=" + str(rightTag) + "&step=" + str(step) + "&unit=" + str(unit)
         else:
             item.execUrl = API_SCHEDULE_SOH
 
