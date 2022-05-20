@@ -48,6 +48,8 @@ class MetricMappingService(AppService):
         items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
         if items is None:
             for mapping in mappings:
+                if mapping["equipTypeCode"] != equipTypeCode:
+                    continue
                 mmm = MetricMappingModel(metric_name=mapping["metricName"],
                                          metric_code=mapping["metricCode"],
                                          equip_name=mapping["equipName"],
@@ -74,6 +76,8 @@ class MetricMappingService(AppService):
                             self.update_item(item.metric_code, item)
                 if found is False:
                     # 新增记录
+                    if mapping["equipTypeCode"] != equipTypeCode:
+                        continue
                     mmm = MetricMappingModel(
                         metric_name=mapping["metricName"],
                         metric_code=mapping["metricCode"],
@@ -85,8 +89,8 @@ class MetricMappingService(AppService):
                         metric_describe=''
                     )
                     self.create_item(mmm)
-            items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
-            return ServiceResult(items)
+        items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
+        return ServiceResult(items)
 
     def update_all_metric_alias(self, equipTypeCode, metricName, metric_alias, equipType, metric_describe):
         items = MetricMappingCRUD(self.db).get_record_by_type_and_name(equipTypeCode, metricName)
