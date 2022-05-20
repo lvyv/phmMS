@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
 from services.http.dataCenterService import DataCenterService
+from services.reqhistoryService import ReqHistoryService
 from utils.service_result import handle_result, ServiceResult
 
 router = APIRouter(
@@ -40,3 +41,10 @@ async def getMapping(equipCode: str, db: get_db = Depends()):
     so = MetricMappingService(db)
     result = so.get_all_mapping_by_equip_type_code(equipCode)
     return handle_result(ServiceResult(result))
+
+
+@router.put("/updateHistoryRecord")
+async def updateHistoryRecord(reqid: str, res: str, db: get_db = Depends()):
+    reqs = ReqHistoryService(db)
+    result = reqs.update_item(reqid, res)
+    return handle_result(result)

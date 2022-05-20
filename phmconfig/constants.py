@@ -75,7 +75,7 @@ URL_MD_WRITE_CLUSTER = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeCluster"
 # 写自相关数据
 URL_MD_WRITE_SELF_RELATION = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeRelation"
 # 写更新历史请求记录
-URL_MD_WRITE_REQ_HISTORY = PHMMS_URL_PREFIX + "/api/v1/reqhistory/item"
+URL_MD_WRITE_REQ_HISTORY = PHMMS_URL_PREFIX + "/api/v1/public/updateHistoryRecord"
 
 # 查询Mapping表
 URL_MD_QUERY_METRIC_MAPPING = PHMMS_URL_PREFIX + "/api/v1/public/getMapping"
