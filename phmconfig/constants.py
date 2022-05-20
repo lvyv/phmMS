@@ -31,7 +31,7 @@ REQ_STATUS_SETTLED = 'settled'
 REST_REQUEST_TIMEOUT = 10
 
 # 精确查询
-PREFECT_MATCH_HISTORY_QUERY_RECORD = False
+PREFECT_MATCH_HISTORY_QUERY_RECORD = True
 
 # ------------------------- api ------------------------------
 
