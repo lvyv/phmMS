@@ -9,9 +9,10 @@ import constants
 #   "postgresql+psycopg2://postgres:postgres@192.168.101.59:5432/phmmsdb"
 
 engine = create_engine(
-    constants.PHM_DATABASE_URL #,
-   # connect_args={"check_same_thread": False},
+    constants.PHM_DATABASE_URL  # ,
+    # connect_args={"check_same_thread": False},
 )
+
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
@@ -30,6 +31,16 @@ def get_db():
 Base = declarative_base()
 
 
+def create_database():
+    pos = constants.PHM_DATABASE_URL.rfind("/")
+    engine_prefix = constants.PHM_DATABASE_URL[0: pos + 1]
+    database = constants.PHM_DATABASE_URL[pos + 1:].split("?")[0]
+    with create_engine(engine_prefix,
+                       isolation_level='AUTOCOMMIT').connect() as connection:
+        connection.execute('CREATE DATABASE IF NOT EXISTS ' + database + ' charset="utf8"')
+
+
 def create_tables() -> list:
+    create_database()
     Base.metadata.create_all(bind=engine)
     return list(Base.metadata.tables.keys())
