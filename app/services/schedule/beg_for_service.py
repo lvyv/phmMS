@@ -72,3 +72,11 @@ class BegForService(AppService):
         start = BegForService.convert_time_stamp_utc(date + " 00:00:00")
         end = BegForService.convert_time_stamp_utc(date + " 23:59:59")
         return start, end
+
+    @staticmethod
+    def getPlayLoadByTimeSegment(timeSegment):
+        ts = timeSegment.split(",")
+        if len(ts) != 2:
+            return None
+        payload = {"range": {"from": ts[0], "to": ts[1]}}
+        return payload

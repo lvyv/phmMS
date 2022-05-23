@@ -41,5 +41,5 @@ class ReqHistoryService(AppService):
 
     @staticmethod
     def convert_time_segment(start, end):
-        segment = TimeUtil.convert_time_utc_str(start) + "-" + TimeUtil.convert_time_utc_str(end)
+        segment = TimeUtil.convert_time_utc_str(start) + "," + TimeUtil.convert_time_utc_str(end)
         return segment

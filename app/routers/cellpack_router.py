@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends
 
 from schemas.vrla.cellpack_model import CellPackModel
@@ -36,12 +38,23 @@ async def writeHealthEval(item: CellPackModel, db: get_db = Depends()):
 # equipCode: 设备编码
 # equipType:  battery,cellpack
 @router.post("/eval")
-async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict, db: get_db = Depends()):
+async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict,
+                     timeSegment: Optional[str] = None, db: get_db = Depends()):
+
+    # 数据同步
     sjzyManager.dataSync(equipCode, db)
 
-    so = CellPackService(db)
+    # 更新playload
+    if timeSegment is not None:
+        pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
+        if pl is not None:
+            payload = pl
+
+    # 调用模型
     BegForService(db).exec(equipCode, metrics, "EVAL", payload)
 
+    # 数据展示
+    so = CellPackService(db)
     result = so.health_eval(equipType, equipCode, metrics, payload)
     return handle_result(result)
 
@@ -58,10 +71,22 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
 # payload:  {"range":{"from":"2022-02-13T22:09:59.457Z","to":"2022-02-14T04:09:59.457Z"}}
 @router.post("/cluster")
 async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayType: str, payload: dict,
+                         timeSegment: Optional[str] = None,
                          db: get_db = Depends()):
+    # 数据同步
     sjzyManager.dataSync(equipCode, db)
-    so = ClusterDisplayService(db)
+
+    # 更新playload
+    if timeSegment is not None:
+        pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
+        if pl is not None:
+            payload = pl
+
+    # 调用模型
     BegForService(db).exec(equipCode, metrics, displayType, payload)
+
+    # 数据展示
+    so = ClusterDisplayService(db)
     result = so.clusterDisplay(equipType, equipCode, metrics, displayType, payload)
     return handle_result(result)
 
@@ -78,11 +103,21 @@ async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
 @router.post("/relation")
 async def trendRelation(equipType: str, equipCode: str, metrics: str,
                         leftTag: int, rightTag: int, step: int, unit: int,
-                        payload: dict, db: get_db = Depends()):
+                        payload: dict,  timeSegment: Optional[str] = None, db: get_db = Depends()):
+    # 数据同步
     sjzyManager.dataSync(equipCode, db)
-    so = SelfRelationService(db)
+
+    # 更新playload
+    if timeSegment is not None:
+        pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
+        if pl is not None:
+            payload = pl
+
+    # 调用模型
     BegForService(db).exec(equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
                            leftTag, rightTag, step, unit)
+    # 数据展示
+    so = SelfRelationService(db)
     result = so.selfRelation(equipType, equipCode, metrics, leftTag, rightTag, step, unit, payload)
     return handle_result(result)
 

@@ -10,9 +10,9 @@ class SjzyManager:
 
     # 根据装备名称，同步测点数据
     def dataSync(self, equipCode, db):
-        # 每隔一小时，同步测点
+        # 每隔5分钟，同步测点
         now_time = int(datetime.now().timestamp())
-        if self.LastTime == 0 or now_time - self.LastTime > 3600:
+        if self.LastTime == 0 or now_time - self.LastTime > 300:
             self.LastTime = now_time
             logging.info("sync equip metric ...")
         else:
