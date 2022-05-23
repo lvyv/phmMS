@@ -8,6 +8,7 @@ from schemas.vrla.self_relation_model import SelfRelationModel
 from services.convert.self_relation_util import SelfRelationUtil
 from services.dashboardManagerService import DashboardManagerService
 from services.schedule.beg_for_service import BegForService
+from services.schedule.time_grap_util import TimeGrapUtil
 from services.sjzy.sjzy_manager import SjzyManager
 from utils.service_result import handle_result
 from phmconfig.database import get_db
@@ -17,6 +18,7 @@ from services.clusterDisplayService import ClusterDisplayService
 from services.selfRelationService import SelfRelationService
 
 sjzyManager = SjzyManager()
+timeGrapUtil = TimeGrapUtil()
 
 router = APIRouter(
     prefix="/api/v1/cellpack",
@@ -50,8 +52,9 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
         if pl is not None:
             payload = pl
 
-    # 调用模型
-    BegForService(db).exec(equipCode, metrics, "EVAL", payload)
+    if timeGrapUtil.canClick() is True:
+        # 调用模型
+        BegForService(db).exec(equipCode, metrics, "EVAL", payload)
 
     # 数据展示
     so = CellPackService(db)
