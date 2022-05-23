@@ -42,7 +42,7 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
                      timeSegment: Optional[str] = None, db: get_db = Depends()):
 
     # 数据同步
-    sjzyManager.dataSync(equipCode, db)
+    sjzyManager.dataSync(equipCode, equipType, db)
 
     # 更新playload
     if timeSegment is not None:
@@ -74,7 +74,7 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
                          timeSegment: Optional[str] = None,
                          db: get_db = Depends()):
     # 数据同步
-    sjzyManager.dataSync(equipCode, db)
+    sjzyManager.dataSync(equipCode, equipType, db)
 
     # 更新playload
     if timeSegment is not None:
@@ -105,7 +105,7 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str,
                         leftTag: int, rightTag: int, step: int, unit: int,
                         payload: dict,  timeSegment: Optional[str] = None, db: get_db = Depends()):
     # 数据同步
-    sjzyManager.dataSync(equipCode, db)
+    sjzyManager.dataSync(equipCode, equipType, db)
 
     # 更新playload
     if timeSegment is not None:

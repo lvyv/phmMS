@@ -34,14 +34,16 @@ class DataCenterService:
         mappings = []
         if data is None:
             return None
-        equipCode = data["result"]["equipCode"]
-        equipName = data["result"]["equipName"]
-        equipTypeCode = data["result"]["equipTypeCode"]
-        for item in data["result"]["measurePoints"]:
-            code = item["pointCode"]
-            name = item["pointName"]
-            mappings.append({"equipCode": equipCode, "equipName": equipName, "equipTypeCode": equipTypeCode,
-                             "metricCode": code, "metricName": name})
+        result = data["result"]
+        for res in result:
+            equipCode = res["equipCode"]
+            equipName = res["equipName"]
+            equipTypeCode = res["equipTypeCode"]
+            for item in res["measurePoints"]:
+                code = item["pointCode"]
+                name = item["pointName"]
+                mappings.append({"equipCode": equipCode, "equipName": equipName, "equipTypeCode": equipTypeCode,
+                                 "metricCode": code, "metricName": name})
         return mappings
 
     @staticmethod

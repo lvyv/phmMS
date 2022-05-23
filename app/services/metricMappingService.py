@@ -42,9 +42,12 @@ class MetricMappingService(AppService):
                     mapping[item.metric_alias] = item.metric_name
         return mapping
 
-    def update_all_mapping(self, equipTypeCode, mappings):
+    def update_all_mapping(self, equipTypeCode, mappings, equipType):
         if mappings is None:
             return
+
+        equipType = "battery" if equipType in ["cellpack", "battery"] else ''
+
         items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
         if items is None:
             for mapping in mappings:
@@ -53,7 +56,7 @@ class MetricMappingService(AppService):
                 mmm = MetricMappingModel(metric_name=mapping["metricName"],
                                          metric_code=mapping["metricCode"],
                                          equip_name=mapping["equipName"],
-                                         equip_type='',
+                                         equip_type=equipType,
                                          equip_type_code=mapping["equipTypeCode"],
                                          equip_code=mapping["equipCode"],
                                          metric_alias='',
@@ -82,7 +85,7 @@ class MetricMappingService(AppService):
                         metric_name=mapping["metricName"],
                         metric_code=mapping["metricCode"],
                         equip_name=mapping["equipName"],
-                        equip_type='',
+                        equip_type=equipType,
                         equip_type_code=mapping["equipTypeCode"],
                         equip_code=mapping["equipCode"],
                         metric_alias='',

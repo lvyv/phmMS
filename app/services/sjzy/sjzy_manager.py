@@ -9,7 +9,7 @@ class SjzyManager:
     LastTime = 0
 
     # 根据装备名称，同步测点数据
-    def dataSync(self, equipCode, db):
+    def dataSync(self, equipCode, equipType, db):
         # 每隔5分钟，同步测点
         now_time = int(datetime.now().timestamp())
         if self.LastTime == 0 or now_time - self.LastTime > 300:
@@ -29,4 +29,4 @@ class SjzyManager:
         so = MetricMappingService(db)
         metrics = DataCenterService.download_zb_metric(equipTypeCode)
         # 同步电池测点映射数据
-        so.update_all_mapping(equipTypeCode, metrics)
+        so.update_all_mapping(equipTypeCode, metrics, equipType)
