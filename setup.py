@@ -34,6 +34,7 @@ setup(
         'app.services.convert',
         'app.services.schedule',
         'app.services.http',
+        'app.services.sjzy',
         'app.utils',
         'phmconfig',
         'physics',

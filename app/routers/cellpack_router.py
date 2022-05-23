@@ -6,12 +6,15 @@ from schemas.vrla.self_relation_model import SelfRelationModel
 from services.convert.self_relation_util import SelfRelationUtil
 from services.dashboardManagerService import DashboardManagerService
 from services.schedule.beg_for_service import BegForService
+from services.sjzy.sjzy_manager import SjzyManager
 from utils.service_result import handle_result
 from phmconfig.database import get_db
 from services.cellpackService import CellPackService
 from services.healthIndicatorService import HealthIndicatorService
 from services.clusterDisplayService import ClusterDisplayService
 from services.selfRelationService import SelfRelationService
+
+sjzyManager = SjzyManager()
 
 router = APIRouter(
     prefix="/api/v1/cellpack",
@@ -34,6 +37,8 @@ async def writeHealthEval(item: CellPackModel, db: get_db = Depends()):
 # equipType:  battery,cellpack
 @router.post("/eval")
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict, db: get_db = Depends()):
+    sjzyManager.dataSync(equipCode, db)
+
     so = CellPackService(db)
     BegForService(db).exec(equipCode, metrics, "EVAL", payload)
 
@@ -54,6 +59,7 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
 @router.post("/cluster")
 async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayType: str, payload: dict,
                          db: get_db = Depends()):
+    sjzyManager.dataSync(equipCode, db)
     so = ClusterDisplayService(db)
     BegForService(db).exec(equipCode, metrics, displayType, payload)
     result = so.clusterDisplay(equipType, equipCode, metrics, displayType, payload)
@@ -73,6 +79,7 @@ async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
 async def trendRelation(equipType: str, equipCode: str, metrics: str,
                         leftTag: int, rightTag: int, step: int, unit: int,
                         payload: dict, db: get_db = Depends()):
+    sjzyManager.dataSync(equipCode, db)
     so = SelfRelationService(db)
     BegForService(db).exec(equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
                            leftTag, rightTag, step, unit)
