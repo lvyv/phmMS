@@ -1,12 +1,10 @@
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.self_relation_util import SelfRelationUtil
-from services.convert.metric_mapping_utils import MetricMappingUtils
 
 
 class IConvertor:
     def __init__(self):
         self.tmpDict = {}
-        self.metricMappingUtils = MetricMappingUtils()
 
     def get_metric_value(self, item, metric):
         pass

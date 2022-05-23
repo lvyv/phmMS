@@ -1,16 +1,32 @@
 import json
+import threading
+
 from services.convert.convertor import IConvertor
+from services.convert.metric_mapping_utils import MetricMappingUtils
 
 
 class CellPackConvertor(IConvertor):
+    _instance_lock = threading.Lock()
+    init_first = False
 
     def __init__(self):
         IConvertor.__init__(self)
-        self.ownMetrics = self.metricMappingUtils.get_own_metrics(["ts", "remainLife", "voc", "workVoc", "soc",
-                                                                   "soh", "imbalance", "current", "minTemp", "maxTemp",
-                                                                   "cellMaxVoc", "cellMinVoc", "cellMaxVol",
-                                                                   "cellMinVol", "cellAvgVol",
-                                                                   "envTemp", "cellVol", "cellSoc", "state"])
+        if CellPackConvertor.init_first is False:
+            CellPackConvertor.init_first = True
+            self.metricMappingUtils = MetricMappingUtils("battery")
+            self.ownMetrics = self.metricMappingUtils.get_own_metrics(["ts", "remainLife", "voc", "workVoc", "soc",
+                                                                       "soh", "imbalance", "current", "minTemp",
+                                                                       "maxTemp",
+                                                                       "cellMaxVoc", "cellMinVoc", "cellMaxVol",
+                                                                       "cellMinVol", "cellAvgVol",
+                                                                       "envTemp", "cellVol", "cellSoc", "state"])
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            with CellPackConvertor._instance_lock:
+                if not hasattr(CellPackConvertor, '_instance'):
+                    CellPackConvertor._instance = super().__new__(cls)
+        return CellPackConvertor._instance
 
     @staticmethod
     def __parse_str_to_json(value):
