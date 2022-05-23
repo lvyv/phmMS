@@ -28,11 +28,13 @@ class MetricMappingUtils:
     def get_own_metrics(self, metrics):
         ret = []
         for metric in metrics:
-            if metric is ["ts"]:
+            if metric in ["ts"]:
                 ret.append("ts")
             else:
                 ret.append(self.items[metric])
         return ret
 
     def get_own_metric(self, metric):
+        if metric in ["ts"]:
+            return "ts"
         return self.items[metric]
