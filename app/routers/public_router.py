@@ -2,6 +2,8 @@ import json
 from typing import Optional
 
 from fastapi import APIRouter, Depends
+
+from services.convert.metric_mapping_utils import MetricMappingUtils
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
 from services.http.dataCenterService import DataCenterService
@@ -40,6 +42,8 @@ async def dataMapping(equipTypeCode: str, metricName: str, metric_alias: str,
                       db: get_db = Depends()):
     so = MetricMappingService(db)
     result = so.update_all_metric_alias(equipTypeCode, metricName, metric_alias, equipType, metric_describe)
+    # 设置
+    MetricMappingUtils.init_first = False
     return handle_result(result)
 
 
