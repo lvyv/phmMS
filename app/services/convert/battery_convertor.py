@@ -5,25 +5,25 @@ from services.convert.metric_mapping_utils import MetricMappingUtils
 
 
 class BatteryConvertor(IConvertor):
-    _instance_lock = threading.Lock()
-    init_first = False
+    # _instance_lock = threading.Lock()
+    # init_first = False
 
     def __init__(self):
         IConvertor.__init__(self)
-        if BatteryConvertor.init_first is False:
-            BatteryConvertor.init_first = True
-            self.metricMappingUtils = MetricMappingUtils("battery")
-            self.ownMetrics = self.metricMappingUtils.get_own_metrics(["ts", "remainLife", "voc", "workVoc", "soc",
-                                                                       "soh", "imbalance", "current", "minTemp",
-                                                                       "maxTemp",
-                                                                       "state"])
+        # if BatteryConvertor.init_first is False:
+        #     BatteryConvertor.init_first = True
+        self.metricMappingUtils = MetricMappingUtils("battery")
+        self.ownMetrics = self.metricMappingUtils.get_own_metrics(["ts", "remainLife", "voc", "workVoc", "soc",
+                                                                   "soh", "imbalance", "current", "minTemp",
+                                                                   "maxTemp",
+                                                                   "state"])
 
-    def __new__(cls, *args, **kwargs):
-        if not hasattr(cls, '_instance'):
-            with BatteryConvertor._instance_lock:
-                if not hasattr(BatteryConvertor, '_instance'):
-                    BatteryConvertor._instance = super().__new__(cls)
-        return BatteryConvertor._instance
+    # def __new__(cls, *args, **kwargs):
+    #     if not hasattr(cls, '_instance'):
+    #         with BatteryConvertor._instance_lock:
+    #             if not hasattr(BatteryConvertor, '_instance'):
+    #                 BatteryConvertor._instance = super().__new__(cls)
+    #     return BatteryConvertor._instance
 
     def get_metric_value(self, item, metric):
         values = {
