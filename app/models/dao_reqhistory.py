@@ -95,3 +95,7 @@ class RequestHistoryCRUD(AppCRUD):
                                                          TReqHistory.metrics == metrics,
                                                          TReqHistory.displayType == displayType)).all()
         return records
+
+    def get_records_by_displayType(self, displayType):
+        records = self.db.query(TReqHistory).filter(TReqHistory.displayType == displayType).all()
+        return records

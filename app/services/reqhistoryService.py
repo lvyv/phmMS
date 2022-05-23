@@ -4,7 +4,6 @@ from services.main import AppService
 from models.dao_reqhistory import RequestHistoryCRUD
 from utils.service_result import ServiceResult
 
-
 # from utils.app_exceptions import AppException
 from utils.time_util import TimeUtil
 
@@ -43,3 +42,19 @@ class ReqHistoryService(AppService):
     def convert_time_segment(start, end):
         segment = TimeUtil.convert_time_utc_str(start) + "," + TimeUtil.convert_time_utc_str(end)
         return segment
+
+    def get_plugin_all_info(self, displayType):
+        record = RequestHistoryCRUD(self.db).get_records_by_displayType(displayType)
+        if len(record) <= 0:
+            return ServiceResult(None)
+        ret = []
+        for item in record:
+            if item.startTs <= 0 or item.endTs <= 0:
+                continue
+            ret.append({
+                "equipCode": ",".join(it for it in json.loads(item.memo)),
+                "metric": ",".join(it for it in json.loads(item.metrics)),
+                "displayType": displayType,
+                "timeSegment": ReqHistoryService.convert_time_segment(item.startTs, item.endTs)
+            })
+        return ServiceResult(ret)
