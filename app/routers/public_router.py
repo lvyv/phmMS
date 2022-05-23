@@ -69,7 +69,7 @@ async def getTimeSegment(equipCode, metric, displayType, db: get_db = Depends())
     return handle_result(result)
 
 
-@router.get("/plugin/info")
+# @router.get("/plugin/info")
 async def getPluginAllInfo(displayType, db: get_db = Depends()):
     so = ReqHistoryService(db)
     result = so.get_plugin_all_info(displayType)
