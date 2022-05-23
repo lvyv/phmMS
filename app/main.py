@@ -5,6 +5,8 @@ entrypoint of the app
 
 三层架构应用程序的主入口.
 """
+import json
+
 from services.schedule.dynamic_task import DynamicTask
 from utils.app_exceptions import AppExceptionCase
 from fastapi import FastAPI
@@ -37,6 +39,7 @@ app.add_middleware(
 app.mount('/static', StaticFiles(directory='../swagger_ui_dep/static'), name='static')
 logging.info(f'Worker Thread: {threading.current_thread().ident:6}     tables {tb.TABLES}.')
 
+
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request, e):
     return await http_exception_handler(request, e)
@@ -57,6 +60,11 @@ app.include_router(cellpack_router.router)
 # app.include_router(config_router.router)
 app.include_router(public_router.router)
 
+
+@app.get("/")
+async def pluginAuth():
+    return "plugin auth success."
+
+
 logging.info(f'dynamic task start up.')
 DynamicTask().start()
-

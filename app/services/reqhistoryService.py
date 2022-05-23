@@ -30,12 +30,13 @@ class ReqHistoryService(AppService):
         for item in record:
             if item.startTs <= 0 or item.endTs <= 0:
                 continue
-            ret.append({
-                "equipCode": equipCode,
-                "metric": metric,
-                "displayType": displayType,
-                "timeSegment": ReqHistoryService.convert_time_segment(item.startTs, item.endTs)
-            })
+            # ret.append({
+            #     "equipCode": equipCode,
+            #     "metric": metric,
+            #     "displayType": displayType,
+            #     "timeSegment": ReqHistoryService.convert_time_segment(item.startTs, item.endTs)
+            # })
+            ret.append(ReqHistoryService.convert_time_segment(item.startTs, item.endTs))
         return ServiceResult(ret)
 
     @staticmethod
@@ -51,10 +52,11 @@ class ReqHistoryService(AppService):
         for item in record:
             if item.startTs <= 0 or item.endTs <= 0:
                 continue
-            ret.append({
-                "equipCode": ",".join(it for it in json.loads(item.memo)),
-                "metric": ",".join(it for it in json.loads(item.metrics)),
-                "displayType": displayType,
-                "timeSegment": ReqHistoryService.convert_time_segment(item.startTs, item.endTs)
-            })
+            # ret.append({
+            #     "equipCode": ",".join(it for it in json.loads(item.memo)),
+            #     "metric": ",".join(it for it in json.loads(item.metrics)),
+            #     "displayType": displayType,
+            #     "timeSegment": ReqHistoryService.convert_time_segment(item.startTs, item.endTs)
+            # })
+            ret.append(ReqHistoryService.convert_time_segment(item.startTs, item.endTs))
         return ServiceResult(ret)
