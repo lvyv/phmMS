@@ -44,7 +44,7 @@ class BegForService(AppService):
                 hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
                                                                                    json.dumps(tags, ensure_ascii=False),
                                                                                    displayType, start, end)
-        else:
+        elif displayType in [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"]:
             if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
                 hisRecords = RequestHistoryCRUD(self.db).get_eval_records(json.dumps(devs, ensure_ascii=False),
                                                                           "EVAL", start, end)
@@ -52,6 +52,8 @@ class BegForService(AppService):
                 hisRecords = RequestHistoryCRUD(self.db).get_eval_records_prefect_match(
                     json.dumps(devs, ensure_ascii=False),
                     "EVAL", start, end)
+        else:
+            return None
 
         # 若无历史记录，执行调度任务
         if len(hisRecords) <= 0:
