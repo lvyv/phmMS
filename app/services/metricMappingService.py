@@ -42,7 +42,7 @@ class MetricMappingService(AppService):
                     mapping[item.metric_alias] = item.metric_name
         return mapping
 
-    def update_all_mapping(self, equipTypeCode, mappings, equipType):
+    def update_all_mapping(self, equipTypeCode, mappings, equipType=None):
         if mappings is None:
             return
 
@@ -56,7 +56,7 @@ class MetricMappingService(AppService):
                 mmm = MetricMappingModel(metric_name=mapping["metricName"],
                                          metric_code=mapping["metricCode"],
                                          equip_name=mapping["equipName"],
-                                         equip_type=equipType,
+                                         equip_type=equipType if equipType is not None else '',
                                          equip_type_code=mapping["equipTypeCode"],
                                          equip_code=mapping["equipCode"],
                                          metric_alias='',
@@ -85,7 +85,7 @@ class MetricMappingService(AppService):
                         metric_name=mapping["metricName"],
                         metric_code=mapping["metricCode"],
                         equip_name=mapping["equipName"],
-                        equip_type=equipType,
+                        equip_type=equipType if equipType is not None else '',
                         equip_type_code=mapping["equipTypeCode"],
                         equip_code=mapping["equipCode"],
                         metric_alias='',
