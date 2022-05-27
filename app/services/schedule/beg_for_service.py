@@ -19,8 +19,8 @@ class BegForService(AppService):
     def exec(self, equipCode: str, metrics: str, displayType: str, payload: dict,
              leftTag: int = None, rightTag: int = None, step: int = None, unit: int = None):
         # 转换成时间戳
-        start = PayloadUtil.get_start_time(payload)
-        end = PayloadUtil.get_end_time(payload)
+        start_orgin = start = PayloadUtil.get_start_time(payload)
+        end_orgin = end = PayloadUtil.get_end_time(payload)
         # 通过时间戳 获取日期
         if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
             start, _ = BegForService.enlarge_timeline(start)
@@ -57,7 +57,7 @@ class BegForService(AppService):
 
         # 若无历史记录，执行调度任务
         if len(hisRecords) <= 0:
-            DynamicTask().async_once_task(devs, tags, start, end, displayType, leftTag, rightTag, step, unit)
+            DynamicTask().async_once_task(devs, tags, start_orgin, end_orgin, displayType, leftTag, rightTag, step, unit)
 
     @staticmethod
     def convert_time_stamp_utc(timeStr):
