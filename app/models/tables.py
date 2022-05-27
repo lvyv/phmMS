@@ -47,14 +47,14 @@ class TReqHistory(Base):
     __tablename__ = "xc_req_history"
 
     id = Column(Integer, primary_key=True, index=True)
-    model = Column(String(512))
-    status = Column(String(512))
+    model = Column(TEXT)
+    status = Column(TEXT)
     result = Column(TEXT)
     requestts = Column(BigInteger)
     settledts = Column(BigInteger)
-    memo = Column(String(2048), default='')
-    metrics = Column(String(2048), default='')
-    displayType = Column(String(64))
+    memo = Column(TEXT)
+    metrics = Column(TEXT)
+    displayType = Column(TEXT)
     startTs = Column(BigInteger)
     endTs = Column(BigInteger)
 
@@ -63,8 +63,8 @@ class TCellPack(Base):
     __tablename__ = "xc_cell_pack"
     id = Column(Integer, primary_key=True, index=True)  # 主键
     ts = Column(BigInteger)  # 时间
-    did = Column(String(512))  # 装备ID
-    dclz = Column(String(128))  # 装备类型
+    did = Column(TEXT)  # 装备ID
+    dclz = Column(TEXT)  # 装备类型
     remainLife = Column(FLOAT)  # 剩余寿命
     voc = Column(FLOAT)  # 开路电压 【电池处于断路状态时的电压，即非工作电压】
     workVoc = Column(FLOAT)  # 端电压 【电池处于闭路状态时的电池正负极之间的电压，即工作电压】
@@ -79,21 +79,21 @@ class TCellPack(Base):
     cellMaxVol = Column(FLOAT)  # 电池单元的最大端电压
     cellMinVol = Column(FLOAT)  # 电池单元的最小端电压
     cellAvgVol = Column(FLOAT)  # 电池单元的均值端电压
-    envTemp = Column(String(1024))  # 电池组的环境温度（存在多个测点）
-    cellVol = Column(String(1024))  # 电池单元端电压集合
-    cellSoc = Column(String(1024))  # 电池单元容量集合
+    envTemp = Column(TEXT)  # 电池组的环境温度（存在多个测点）
+    cellVol = Column(TEXT)  # 电池单元端电压集合
+    cellSoc = Column(TEXT)  # 电池单元容量集合
     state = Column(Integer)  # 健康状态
 
 
 class TSchedule(Base):  # 装备数据分析调度表
     __tablename__ = "xc_schedule"
     id = Column(Integer, primary_key=True, index=True)  # 主键
-    dids = Column(String(1024))  # 设备ID列表
-    dtags = Column(String(1024))  # 设备测点列表
+    dids = Column(TEXT)  # 设备ID列表
+    dtags = Column(TEXT)  # 设备测点列表
     enable = Column(Boolean)  # 启用任务
     initDelay = Column(Integer)  # 初始任务延迟时间
     delay = Column(Integer)  # 定时延迟时间
-    execUrl = Column(String(128))  # 执行调用的 URL
+    execUrl = Column(TEXT)  # 执行调用的 URL
     startTime = Column(BigInteger)  # 调度执行时间
 
 
@@ -105,10 +105,10 @@ class TCluster(Base):
     x = Column(FLOAT)  # x 轴坐标
     y = Column(FLOAT)  # y 轴坐标
     z = Column(FLOAT)  # z 轴坐标
-    color = Column(String(64))  # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
+    color = Column(TEXT)  # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
     size = Column(FLOAT)  # 大小
-    shape = Column(String(64))  # 形状 eg: "circle", "star","square", "cross", "diamond"
-    name = Column(String(64))  # 装备ID
+    shape = Column(TEXT)  # 形状 eg: "circle", "star","square", "cross", "diamond"
+    name = Column(TEXT)  # 装备ID
 
 
 class TSelfRelation(Base):

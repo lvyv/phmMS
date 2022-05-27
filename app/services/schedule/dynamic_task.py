@@ -151,6 +151,6 @@ class DynamicTask(object):
             item.execUrl = API_SCHEDULE_RELATION + "?leftTag=" + str(
                 leftTag) + "&rightTag=" + str(rightTag) + "&step=" + str(step) + "&unit=" + str(unit)
         else:
-            item.execUrl = API_SCHEDULE_SOH
+            item.execUrl = API_SCHEDULE_SOH + "?displayType=" + displayType
 
         self.__executor.submit(self.__async_task, item)

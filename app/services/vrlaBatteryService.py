@@ -16,7 +16,7 @@ class VRLABatteryService(AppService):
     电池模型业务逻辑服务。
     """
 
-    async def soh(self, devs: list, tags: list, startts: int, endts: int) -> ServiceResult:
+    async def soh(self, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
         """
         健康指标计算。
         :param devs:
@@ -39,7 +39,7 @@ class VRLABatteryService(AppService):
             'metrics': json.dumps(tags, ensure_ascii=False),
             'startTs': startts,
             'endTs': endts,
-            'displayType': "EVAL"
+            'displayType': displayType
         }
         item = ReqItemCreate(**external_data)
         soh_item = RequestHistoryCRUD(self.db).create_record(item)

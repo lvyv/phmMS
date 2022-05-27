@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 from schemas.vrla.cellpack_model import CellPackModel
 from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.self_relation_model import SelfRelationModel
+from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.self_relation_util import SelfRelationUtil
 from services.dashboardManagerService import DashboardManagerService
 from services.metricMappingService import MetricMappingService
@@ -96,7 +97,14 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
             payload = pl
 
     # 调用模型
-    BegForService(db).exec(equipCode, metrics, displayType, payload)
+    # 如果为散点图，折线图时，下载数据。
+    if displayType in [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE]:
+        devs = equipCode.split(",")
+        result = MetricMappingService(db).get_all_mapping_by_equip_type_code(devs[0])
+        allMetrics = ",".join(metricName for metricName in result.values())
+        BegForService(db).exec(equipCode, allMetrics, displayType, payload)
+    else:
+        BegForService(db).exec(equipCode, metrics, displayType, payload)
 
     # 数据展示
     so = ClusterDisplayService(db)
