@@ -57,8 +57,6 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval: Optiona
     # 根据开始数据 与 结束时间生成 时间序列
 
     maxPoints = 50
-
-    intervalValue = 1
     if interval.endswith("M"):
         if interval.find(".") > 0:
             # 秒
