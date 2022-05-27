@@ -1,3 +1,5 @@
+import math
+
 import requests
 import json
 
@@ -29,10 +31,31 @@ def compute_df_shape(df2, ageList):
 
 
 def compute_df_devName(df2, ageList, devList):
-    start = 0;
+    start = 0
     for i, item in enumerate(ageList):
         df2.loc[start:, 'dev'] = devList[i]
         start += item
+
+
+def fix_cluster_age(df):
+    for idx, age in enumerate(df["age"]):
+        if age >= 1000000:
+            ag = 10
+        elif age >= 100000:
+            ag = 9 + age/100000
+        elif age >= 10000:
+            ag = 8 + age/10000
+        elif age >= 1000:
+            ag = 7 + age/1000
+        elif age >= 100:
+            ag = 6 + age/1000
+        elif age >= 10:
+            ag = 5 + age/100
+        elif age >= 5:
+            ag = 4 + age/10
+        else:
+            ag = age
+        df.loc[idx, 'age'] = ag
 
 
 #    frequencies, spectrum = cluster.ts2fft(dataList, 20480, 2048)
@@ -41,6 +64,9 @@ def compute_df_devName(df2, ageList, devList):
 def calculate_cluster_2d(dataList, ageList, devList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
     df2 = mds.dev_age_compute(dataList, ageList)
+
+    fix_cluster_age(df2)
+
     compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(dataList, 2)
     compute_df_color(df2, dfnew)
@@ -57,6 +83,9 @@ def calculate_cluster_2d(dataList, ageList, devList):
 def calculate_cluster_3d(dataList, ageList, devList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
     df2 = mds.dev_age_compute(dataList, ageList)
+
+    fix_cluster_age(df2)
+
     compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(dataList, 3)
     compute_df_color(df2, dfnew)
@@ -181,4 +210,3 @@ def calculate_soh(dataS, mappingS):
     evaluate_soh(devDatas)
     # 返回数据
     return devDatas
-

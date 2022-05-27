@@ -40,11 +40,11 @@ PREFECT_MATCH_HISTORY_QUERY_RECORD = cfg["time_segment_prefect_match"] if "time_
 # 配置服务启动模式
 SCHEMA_HTTPS = cfg["schema_https"] if "schema_https" in cfg_keys else False
 
-SCHEMA_HEADER = "https" if SCHEMA_HTTPS is True else "http" + "://"
+SCHEMA_HEADER = "https" if SCHEMA_HTTPS is True else "http"
 
 # prefix
 PHMMS_CONTAINER_NAME = cfg["phmms_container_name"]
-PHMMS_URL_PREFIX = SCHEMA_HEADER + PHMMS_CONTAINER_NAME + ":" + str(PHMMS_PORT)
+PHMMS_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMS_CONTAINER_NAME + ":" + str(PHMMS_PORT)
 # 写评估数据
 URL_MD_WRITE_EVAL = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeEval"
 # 写健康指标URL地址
@@ -61,7 +61,7 @@ URL_MD_QUERY_METRIC_MAPPING = PHMMS_URL_PREFIX + "/api/v1/public/getMapping"
 
 # prefix
 PHMMD_CONTAINER_NAME = cfg["phmmd_container_name"]
-PHMMD_URL_PREFIX = SCHEMA_HEADER + PHMMD_CONTAINER_NAME + ":" + str(PHMMD_PORT)
+PHMMD_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMD_CONTAINER_NAME + ":" + str(PHMMD_PORT)
 # 调用评估
 URL_MS_CALL_SOH = PHMMD_URL_PREFIX + "/api/v1/soh"
 # 调用聚类

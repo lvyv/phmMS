@@ -1,5 +1,8 @@
+from random import random
+
 from fastapi import APIRouter
 from typing import Optional
+from phmconfig.timeUtils import TimeUtils
 
 router = APIRouter(
     prefix="/api/v1/mock",
@@ -51,278 +54,65 @@ async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[s
 
 @router.post("/zbData")
 async def getZbData(equipCode, metricName, startTime, endTime, interval: Optional[str] = None):
+    # 根据开始数据 与 结束时间生成 时间序列
+
+    maxPoints = 50
+
+    intervalValue = 1
+    if interval.endswith("M"):
+        if interval.find(".") > 0:
+            # 秒
+            interval = 1
+            pass
+        else:
+            # 分
+            interval = 60
+            pass
+    elif interval.endswith("H"):
+        interval = 3600
+        pass
+    elif interval.endswith("D"):
+        interval = 24 * 3600
+        pass
+
+    genTime = []
+    start = TimeUtils.convert_time_stamp(startTime)
+    end = TimeUtils.convert_time_stamp(endTime)
+
+    for inc in range(maxPoints):
+        genTime.append(TimeUtils.convert_time_str(start + inc * interval * 1000))
+
+    # 生成模拟数据
     ret = {
         "code": "success",
-        "result": [{
-            "equipCode": "B001",
-            "equipName": "电池A",
-            "equipData": [{
-                "metricName": "容量",
-                "metricCode": "M001",
-                "metricData": [{
-                    "timestamp": "2022-05-18 00:00:00",
-                    "metricValue": 0.5
-                },
-                    {
-                        "timestamp": "2022-05-18 01:00:00",
-                        "metricValue": 0.6
-                    },
-                    {
-                        "timestamp": "2022-05-18 02:00:00",
-                        "metricValue": 0.7
-                    },
-                    {
-                        "timestamp": "2022-05-18 01:00:00",
-                        "metricValue": 0.6
-                    },
-                    {
-                        "timestamp": "2022-05-18 02:00:00",
-                        "metricValue": 0.7
-                    },
-                    {
-                        "timestamp": "2022-05-18 01:00:00",
-                        "metricValue": 0.6
-                    },
-                    {
-                        "timestamp": "2022-05-18 02:00:00",
-                        "metricValue": 0.7
-                    },
-                    {
-                        "timestamp": "2022-05-18 01:00:00",
-                        "metricValue": 0.6
-                    },
-                    {
-                        "timestamp": "2022-05-18 02:00:00",
-                        "metricValue": 0.7
-                    },
-                    {
-                        "timestamp": "2022-05-18 01:00:00",
-                        "metricValue": 0.6
-                    },
-                    {
-                        "timestamp": "2022-05-18 02:00:00",
-                        "metricValue": 0.7
-                    },
-                    {
-                        "timestamp": "2022-05-18 01:00:00",
-                        "metricValue": 0.6
-                    },
-                    {
-                        "timestamp": "2022-05-18 02:00:00",
-                        "metricValue": 0.7
-                    },
-                    {
-                        "timestamp": "2022-05-18 01:00:00",
-                        "metricValue": 0.6
-                    },
-                    {
-                        "timestamp": "2022-05-18 02:00:00",
-                        "metricValue": 0.7
-                    }
-                ]
-            },
-                {
-                    "metricName": "健康指标",
-                    "metricCode": "M002",
-                    "metricData": [{
-                        "timestamp": "2022-05-18 00:00:00",
-                        "metricValue": 0.5
-                    },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        }
-                    ]
-                }
-            ]
-        },
-            {
-                "equipCode": "B002",
-                "equipName": "电池B",
-                "equipData": [{
-                    "metricName": "容量",
-                    "metricCode": "M003",
-                    "metricData": [{
-                        "timestamp": "2022-05-18 00:00:00",
-                        "metricValue": 0.5
-                    },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        },
-                        {
-                            "timestamp": "2022-05-18 01:00:00",
-                            "metricValue": 0.6
-                        },
-                        {
-                            "timestamp": "2022-05-18 02:00:00",
-                            "metricValue": 0.7
-                        }
-                    ]
-                },
-                    {
-                        "metricName": "健康指标",
-                        "metricCode": "M004",
-                        "metricData": [{
-                            "timestamp": "2022-05-18 00:00:00",
-                            "metricValue": 0.5
-                        },
-                            {
-                                "timestamp": "2022-05-18 01:00:00",
-                                "metricValue": 0.6
-                            },
-                            {
-                                "timestamp": "2022-05-18 02:00:00",
-                                "metricValue": 0.7
-                            },
-                            {
-                                "timestamp": "2022-05-18 01:00:00",
-                                "metricValue": 0.6
-                            },
-                            {
-                                "timestamp": "2022-05-18 02:00:00",
-                                "metricValue": 0.7
-                            },
-                            {
-                                "timestamp": "2022-05-18 01:00:00",
-                                "metricValue": 0.6
-                            },
-                            {
-                                "timestamp": "2022-05-18 02:00:00",
-                                "metricValue": 0.7
-                            },
-                            {
-                                "timestamp": "2022-05-18 01:00:00",
-                                "metricValue": 0.6
-                            },
-                            {
-                                "timestamp": "2022-05-18 02:00:00",
-                                "metricValue": 0.7
-                            },
-                            {
-                                "timestamp": "2022-05-18 01:00:00",
-                                "metricValue": 0.6
-                            },
-                            {
-                                "timestamp": "2022-05-18 02:00:00",
-                                "metricValue": 0.7
-                            },
-                            {
-                                "timestamp": "2022-05-18 01:00:00",
-                                "metricValue": 0.6
-                            },
-                            {
-                                "timestamp": "2022-05-18 02:00:00",
-                                "metricValue": 0.7
-                            },
-                            {
-                                "timestamp": "2022-05-18 01:00:00",
-                                "metricValue": 0.6
-                            },
-                            {
-                                "timestamp": "2022-05-18 02:00:00",
-                                "metricValue": 0.7
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+        "result": []
     }
+    # 通过传入的设备编码
+    devs = equipCode.split(",")
+    tags = metricName.split(",")
+    tagNumber = 1
+    for dev in devs:
+        genDev = {
+            "equipCode": dev,
+            "equipName": "电池" + dev,
+            "equipData": []
+        }
+        for tag in tags:
+            genTag = {
+                "metricName": tag,
+                "metricCode": "M00" + str(tagNumber),
+                "metricData": []
+            }
+
+            for inx in range(maxPoints):
+                genTag["metricData"].append({
+                    "timestamp": genTime[inx],
+                    "metricValue": int(random() * 100)
+                })
+
+            genDev["equipData"].append(genTag)
+
+            tagNumber = tagNumber + 1
+        ret["result"].append(genDev)
+
     return ret
