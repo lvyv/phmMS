@@ -40,21 +40,37 @@ def compute_df_devName(df2, ageList, devList):
 def fix_cluster_age(df):
     for idx, age in enumerate(df["age"]):
         if age >= 1000000:
-            ag = 10
+            ag = 18
         elif age >= 100000:
-            ag = 9 + age/100000
+            ag = 17 + age/100000
         elif age >= 10000:
-            ag = 8 + age/10000
+            ag = 16 + age/10000
         elif age >= 1000:
-            ag = 7 + age/1000
+            ag = 15 + age/1000
         elif age >= 100:
-            ag = 6 + age/1000
+            ag = 14 + age/1000
+        elif age >= 90:
+            ag = 13 + age / 100
+        elif age >= 80:
+            ag = 12 + age / 90
+        elif age >= 70:
+            ag = 11 + age / 80
+        elif age >= 60:
+            ag = 10 + age / 70
+        elif age >= 50:
+            ag = 9 + age / 60
+        elif age >= 40:
+            ag = 8 + age / 50
+        elif age >= 30:
+            ag = 7 + age / 40
+        elif age >= 20:
+            ag = 6 + age / 30
         elif age >= 10:
-            ag = 5 + age/100
+            ag = 5 + age / 20
         elif age >= 5:
-            ag = 4 + age/10
+            ag = 4 + age / 10
         else:
-            ag = age
+            ag = 3 + age/5
         df.loc[idx, 'age'] = ag
 
 
