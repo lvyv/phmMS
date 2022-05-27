@@ -39,6 +39,7 @@ class RequestHistoryCRUD(AppCRUD):
     def get_record_last(self, equipCode: str, metrics: str, displayType: str) -> TReqHistory:
         record = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                         TReqHistory.metrics == metrics,
+                                                        TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                         TReqHistory.displayType == displayType)) \
             .order_by(desc(TReqHistory.id)).first()
         if record:
@@ -48,6 +49,7 @@ class RequestHistoryCRUD(AppCRUD):
     def get_records(self, equipCode: str, metrics: str, displayType: str, start: int, end: int) -> TReqHistory:
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.metrics == metrics,
+                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          TReqHistory.displayType == displayType,
                                                          or_(TReqHistory.startTs.between(start, end),
                                                              TReqHistory.endTs.between(start, end),
@@ -63,14 +65,16 @@ class RequestHistoryCRUD(AppCRUD):
                                   displayType: str, start: int, end: int) -> TReqHistory:
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.metrics == metrics,
+                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          TReqHistory.displayType == displayType,
                                                          and_(TReqHistory.startTs == start,
                                                               TReqHistory.endTs == end))).all()
         return records
 
-    def get_eval_records(self, equipCode: str, displayType: str, start: int, end: int) -> TReqHistory:
+    def get_eval_records(self, equipCode: str, displayType: [], start: int, end: int) -> TReqHistory:
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
-                                                         TReqHistory.displayType == displayType,
+                                                         TReqHistory.displayType.in_(displayType),
+                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          or_(TReqHistory.startTs.between(start, end),
                                                              TReqHistory.endTs.between(start, end),
                                                              and_(TReqHistory.startTs >= start,
@@ -81,9 +85,10 @@ class RequestHistoryCRUD(AppCRUD):
                                                          )).all()
         return records
 
-    def get_eval_records_prefect_match(self, equipCode: str, displayType: str, start: int, end: int) -> TReqHistory:
+    def get_eval_records_prefect_match(self, equipCode: str, displayType: [], start: int, end: int) -> TReqHistory:
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
-                                                         TReqHistory.displayType == displayType,
+                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
+                                                         TReqHistory.displayType.in_(displayType),
                                                          and_(TReqHistory.startTs == start,
                                                               TReqHistory.endTs == end)
                                                          )).all()
@@ -92,10 +97,12 @@ class RequestHistoryCRUD(AppCRUD):
     # 获取时间片段
     def get_time_segment(self, equipCode: str, metrics: str, displayType: str):
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
+                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          TReqHistory.metrics == metrics,
                                                          TReqHistory.displayType == displayType)).all()
         return records
 
     def get_records_by_displayType(self, displayType):
-        records = self.db.query(TReqHistory).filter(TReqHistory.displayType == displayType).all()
+        records = self.db.query(TReqHistory).filter(and_(TReqHistory.displayType == displayType,
+                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED)).all()
         return records

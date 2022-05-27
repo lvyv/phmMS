@@ -46,12 +46,13 @@ class BegForService(AppService):
                                                                                    displayType, start, end)
         elif displayType in [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"]:
             if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-                hisRecords = RequestHistoryCRUD(self.db).get_eval_records(json.dumps(devs, ensure_ascii=False),
-                                                                          displayType, start, end)
+                hisRecords = RequestHistoryCRUD(self.db).get_eval_records(
+                    json.dumps(devs, ensure_ascii=False),
+                    [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"], start, end)
             else:
                 hisRecords = RequestHistoryCRUD(self.db).get_eval_records_prefect_match(
                     json.dumps(devs, ensure_ascii=False),
-                    displayType, start, end)
+                    [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"], start, end)
         else:
             return None
 
