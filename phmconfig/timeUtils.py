@@ -7,7 +7,7 @@ class TimeUtils:
     def convert_time_str(timestamp):
         time_tuple = time.localtime(timestamp / 1000)
         bj_time = time.strftime("%Y-%m-%d %H:%M:%S", time_tuple)
-        print("北京时间:", bj_time)
+        # print("北京时间:", bj_time)
         return bj_time
 
     @staticmethod

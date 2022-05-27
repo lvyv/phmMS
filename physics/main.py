@@ -138,7 +138,7 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
                 eqi["z"] = items[did][6]
 
             client.post(bcf.URL_MD_WRITE_CLUSTER, json=eqi)
-            time.sleep(0.1)
+            # time.sleep(0.1)
         publish_data_to_iot(reqid, sohres)
 
 
