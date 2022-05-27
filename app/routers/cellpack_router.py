@@ -10,6 +10,7 @@ from services.dashboardManagerService import DashboardManagerService
 from services.schedule.beg_for_service import BegForService
 from services.schedule.time_grap_util import TimeGrapUtil
 from services.sjzy.sjzy_manager import SjzyManager
+from services.validate.evalModelValidate import EvalModelValidate
 from services.validate.relationModelValidate import RelationModelValidate
 from utils.service_result import handle_result, ServiceResult
 from phmconfig.database import get_db
@@ -43,6 +44,11 @@ async def writeHealthEval(item: CellPackModel, db: get_db = Depends()):
 @router.post("/eval")
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict,
                      timeSegment: Optional[str] = None, db: get_db = Depends()):
+
+    # 评估模型校验
+    support = EvalModelValidate.support(equipCode)
+    if support is False:
+        return handle_result(ServiceResult("评估只支持单设备模型建立..."))
 
     # 数据同步
     sjzyManager.dataSync(equipCode, equipType, db)
