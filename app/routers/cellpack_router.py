@@ -7,6 +7,7 @@ from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.self_relation_model import SelfRelationModel
 from services.convert.self_relation_util import SelfRelationUtil
 from services.dashboardManagerService import DashboardManagerService
+from services.metricMappingService import MetricMappingService
 from services.schedule.beg_for_service import BegForService
 from services.schedule.time_grap_util import TimeGrapUtil
 from services.sjzy.sjzy_manager import SjzyManager
@@ -61,7 +62,9 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
 
     if timeGrapUtil.canClick() is True:
         # 调用模型
-        BegForService(db).exec(equipCode, metrics, "EVAL", payload)
+        result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
+        allMetrics = ",".join(metricName for metricName in result.values())
+        BegForService(db).exec(equipCode, allMetrics, "EVAL", payload)
 
     # 数据展示
     so = CellPackService(db)
