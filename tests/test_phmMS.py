@@ -41,14 +41,22 @@ class TestMain(unittest.TestCase):
         logging.info(f'********************  CASICLOUD AI METER services  ********************')
         logging.info(f'phmMS tables were created by import statement {tb.TABLES}.')
         logging.info(f'phmMS micro service starting at {ct.PHMMS_HOST}: {ct.PHMMS_PORT}')
-        uvicorn.run('app.main:app',  # noqa 标准用法
-                    host=ct.PHMMS_HOST,
-                    port=ct.PHMMS_PORT,
-                    ssl_keyfile=ct.PHMMS_KEY,
-                    ssl_certfile=ct.PHMMS_CER,
-                    log_level='warning',
-                    workers=1
-                    )
+        if ct.SCHEMA_HTTPS is True:
+            uvicorn.run('app.main:app',  # noqa 标准用法
+                        host=ct.PHMMS_HOST,
+                        port=ct.PHMMS_PORT,
+                        ssl_keyfile=ct.PHMMS_KEY,
+                        ssl_certfile=ct.PHMMS_CER,
+                        log_level='warning',
+                        workers=1
+                        )
+        else:
+            uvicorn.run('app.main:app',  # noqa 标准用法
+                        host=ct.PHMMS_HOST,
+                        port=ct.PHMMS_PORT,
+                        log_level='warning',
+                        workers=1
+                        )
 
 
 if __name__ == "__main__":

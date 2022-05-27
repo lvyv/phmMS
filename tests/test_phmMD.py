@@ -40,14 +40,22 @@ class TestMain(unittest.TestCase):
         logging.info(f'********************  CASICLOUD AI METER services  ********************')
         logging.info(f'phmMD is starting...')
         logging.info(f'phmMD micro service starting at {bcf.PHMMD_HOST}: {bcf.PHMMD_PORT}')
-        uvicorn.run('physics.main:app',  # noqa 标准用法
-                host=bcf.PHMMD_HOST,
-                port=bcf.PHMMD_PORT,
-                ssl_keyfile=bcf.PHMMD_KEY,
-                ssl_certfile=bcf.PHMMD_CER,
-                log_level='warning',
-                workers=1
-                )
+        if bcf.SCHEMA_HTTPS is True:
+            uvicorn.run('physics.main:app',  # noqa 标准用法
+                    host=bcf.PHMMD_HOST,
+                    port=bcf.PHMMD_PORT,
+                    ssl_keyfile=bcf.PHMMD_KEY,
+                    ssl_certfile=bcf.PHMMD_CER,
+                    log_level='warning',
+                    workers=1
+                    )
+        else:
+            uvicorn.run('physics.main:app',  # noqa 标准用法
+                    host=bcf.PHMMD_HOST,
+                    port=bcf.PHMMD_PORT,
+                    log_level='warning',
+                    workers=1
+                    )
 
 
 if __name__ == "__main__":

@@ -35,6 +35,7 @@ setup(
         'app.services.schedule',
         'app.services.http',
         'app.services.sjzy',
+        'app.services.validate',
         'app.utils',
         'phmconfig',
         'physics',

@@ -10,7 +10,8 @@ from services.dashboardManagerService import DashboardManagerService
 from services.schedule.beg_for_service import BegForService
 from services.schedule.time_grap_util import TimeGrapUtil
 from services.sjzy.sjzy_manager import SjzyManager
-from utils.service_result import handle_result
+from services.validate.relationModelValidate import RelationModelValidate
+from utils.service_result import handle_result, ServiceResult
 from phmconfig.database import get_db
 from services.cellpackService import CellPackService
 from services.healthIndicatorService import HealthIndicatorService
@@ -107,6 +108,12 @@ async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
 async def trendRelation(equipType: str, equipCode: str, metrics: str,
                         leftTag: int, rightTag: int, step: int, unit: int,
                         payload: dict,  timeSegment: Optional[str] = None, db: get_db = Depends()):
+
+    # 自相关模型支持判断
+    support = RelationModelValidate.support(equipCode, metrics)
+    if support is False:
+        return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
+
     # 数据同步
     sjzyManager.dataSync(equipCode, equipType, db)
 

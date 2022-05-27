@@ -2,6 +2,8 @@ from phmconfig.config import ConfigSet
 
 cfg = ConfigSet.get_cfg()
 
+cfg_keys = cfg.keys()
+
 # --------------------- MS -------------------------------------
 # phmMS启动的地址、端口、证书等
 PHMMS_HOST = cfg['phmms_host']
@@ -31,13 +33,18 @@ REQ_STATUS_SETTLED = 'settled'
 REST_REQUEST_TIMEOUT = 10
 
 # 精确查询
-PREFECT_MATCH_HISTORY_QUERY_RECORD = cfg["time_segment_prefect_match"]
+PREFECT_MATCH_HISTORY_QUERY_RECORD = cfg["time_segment_prefect_match"] if "time_segment_prefect_match" in cfg_keys else True
 
 # ------------------------- api ------------------------------
 
+# 配置服务启动模式
+SCHEMA_HTTPS = cfg["schema_https"] if "schema_https" in cfg_keys else False
+
+SCHEMA_HEADER = "https" if SCHEMA_HTTPS is True else "http" + "://"
+
 # prefix
 PHMMS_CONTAINER_NAME = cfg["phmms_container_name"]
-PHMMS_URL_PREFIX = "https://" + PHMMS_CONTAINER_NAME + ":" + str(PHMMS_PORT)
+PHMMS_URL_PREFIX = SCHEMA_HEADER + PHMMS_CONTAINER_NAME + ":" + str(PHMMS_PORT)
 # 写评估数据
 URL_MD_WRITE_EVAL = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeEval"
 # 写健康指标URL地址
@@ -54,7 +61,7 @@ URL_MD_QUERY_METRIC_MAPPING = PHMMS_URL_PREFIX + "/api/v1/public/getMapping"
 
 # prefix
 PHMMD_CONTAINER_NAME = cfg["phmmd_container_name"]
-PHMMD_URL_PREFIX = "https://" + PHMMD_CONTAINER_NAME + ":" + str(PHMMD_PORT)
+PHMMD_URL_PREFIX = SCHEMA_HEADER + PHMMD_CONTAINER_NAME + ":" + str(PHMMD_PORT)
 # 调用评估
 URL_MS_CALL_SOH = PHMMD_URL_PREFIX + "/api/v1/soh"
 # 调用聚类
@@ -75,5 +82,5 @@ API_QUERY_HISTORY_DATA = URL_SJZY_API_PREFIX + "/api/devices/query_history_data"
 URL_MS_GET_DASHBOARD_LIST = cfg["url_ms_get_dashboard_list"]
 
 # 模拟装备数据
-MOCK_ZB_DATA = cfg["mock_zb_data"]
+MOCK_ZB_DATA = cfg["mock_zb_data"] if "mock_zb_data" in cfg_keys else False
 
