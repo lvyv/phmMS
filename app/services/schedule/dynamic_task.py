@@ -137,20 +137,28 @@ class DynamicTask(object):
     def async_once_task(self, devs, tags, start, end, displayType, leftTag: int = None,
                         rightTag: int = None, step: int = None, unit: int = None):
 
+        if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
+                           ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
+            item = DynamicTask.make_t_schedule(devs, tags, start, end)
+            item.execUrl = API_SCHEDULE_CLUSTER + "?displayType=" + displayType
+            self.__executor.submit(self.__async_task, item)
+        elif displayType in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
+            item = DynamicTask.make_t_schedule(devs, tags, start, end)
+            item.execUrl = API_SCHEDULE_RELATION + "?leftTag=" + str(
+                leftTag) + "&rightTag=" + str(rightTag) + "&step=" + str(step) + "&unit=" + str(unit)
+            self.__executor.submit(self.__async_task, item)
+        else:
+            for single in devs:
+                item = DynamicTask.make_t_schedule([single], tags, start, end)
+                item.execUrl = API_SCHEDULE_SOH + "?displayType=" + displayType
+                self.__executor.submit(self.__async_task, item)
+
+    @staticmethod
+    def make_t_schedule(devs, tags, start, end):
         item = TSchedule()
         item.enable = True
         item.dids = json.dumps(devs, ensure_ascii=False)
         item.dtags = json.dumps(tags, ensure_ascii=False)
         item.startts = start
         item.endts = end
-
-        if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
-                           ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
-            item.execUrl = API_SCHEDULE_CLUSTER + "?displayType=" + displayType
-        elif displayType in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
-            item.execUrl = API_SCHEDULE_RELATION + "?leftTag=" + str(
-                leftTag) + "&rightTag=" + str(rightTag) + "&step=" + str(step) + "&unit=" + str(unit)
-        else:
-            item.execUrl = API_SCHEDULE_SOH + "?displayType=" + displayType
-
-        self.__executor.submit(self.__async_task, item)
+        return item
