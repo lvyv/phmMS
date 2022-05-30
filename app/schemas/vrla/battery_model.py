@@ -12,3 +12,13 @@ class BatteryModel(BaseDataModel):
     minTemp: float        # 最小温度
     maxTemp: float        # 最大温度
     state:  int           # 健康状态
+
+    # extend
+    M1: float
+    M2: float
+    M3: float
+    M4: float
+    M5: float
+    M6: float
+    M7: float
+    M8: float

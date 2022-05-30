@@ -98,7 +98,15 @@ def post_process_vrla_soh(reqid, items):
                 "soc": item['soc'] if 'soc' in keys else 0,
                 "imbalance": item['imbalance'] if 'imbalance' in keys else 0,
                 "ts": item['ts'] if 'ts' in keys else 0,
-                "state": item['state'] if 'state' in keys else 0
+                "state": item['state'] if 'state' in keys else 0,
+                "M1": item['M1'] if 'M1' in keys else 0,
+                "M2": item['M2'] if 'M2' in keys else 0,
+                "M3": item['M3'] if 'M3' in keys else 0,
+                "M4": item['M4'] if 'M4' in keys else 0,
+                "M5": item['M5'] if 'M5' in keys else 0,
+                "M6": item['M6'] if 'M6' in keys else 0,
+                "M7": item['M7'] if 'M7' in keys else 0,
+                "M8": item['M8'] if 'M8' in keys else 0
             }
             client.post(f'{bcf.URL_MD_WRITE_EVAL}', json=eqi)
 

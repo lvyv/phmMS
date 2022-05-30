@@ -19,7 +19,8 @@ class CellPackConvertor(IConvertor):
                                                                    "maxTemp",
                                                                    "cellMaxVoc", "cellMinVoc", "cellMaxVol",
                                                                    "cellMinVol", "cellAvgVol",
-                                                                   "envTemp", "cellVol", "cellSoc", "state"])
+                                                                   "envTemp", "cellVol", "cellSoc", "state",
+                                                                   "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"])
 
     # def __new__(cls, *args, **kwargs):
     #     if not hasattr(cls, '_instance'):
@@ -61,7 +62,15 @@ class CellPackConvertor(IConvertor):
             self.metricMappingUtils.get_own_metric("envTemp"): item.envTemp,
             self.metricMappingUtils.get_own_metric("cellVol"): item.cellVol,
             self.metricMappingUtils.get_own_metric("cellSoc"): item.cellSoc,
-            self.metricMappingUtils.get_own_metric("state"): item.state
+            self.metricMappingUtils.get_own_metric("state"): item.state,
+            self.metricMappingUtils.get_own_metric("M1"): item.M1,
+            self.metricMappingUtils.get_own_metric("M2"): item.M2,
+            self.metricMappingUtils.get_own_metric("M3"): item.M3,
+            self.metricMappingUtils.get_own_metric("M4"): item.M4,
+            self.metricMappingUtils.get_own_metric("M5"): item.M5,
+            self.metricMappingUtils.get_own_metric("M6"): item.M6,
+            self.metricMappingUtils.get_own_metric("M7"): item.M7,
+            self.metricMappingUtils.get_own_metric("M8"): item.M8
         }
         return values.get(metric, None)
 

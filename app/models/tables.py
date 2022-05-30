@@ -84,6 +84,16 @@ class TCellPack(Base):
     cellSoc = Column(TEXT)  # 电池单元容量集合
     state = Column(Integer)  # 健康状态
 
+    # extend
+    M1 = Column(FLOAT)
+    M2 = Column(FLOAT)
+    M3 = Column(FLOAT)
+    M4 = Column(FLOAT)
+    M5 = Column(FLOAT)
+    M6 = Column(FLOAT)
+    M7 = Column(FLOAT)
+    M8 = Column(FLOAT)
+
 
 class TSchedule(Base):  # 装备数据分析调度表
     __tablename__ = "xc_schedule"
