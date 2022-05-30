@@ -1,5 +1,4 @@
-import math
-
+from random import random
 import requests
 import json
 
@@ -196,14 +195,19 @@ def calculate_relate(inData, leftTag, rightTag, step, unit):
     for index, item in enumerate(acf):
         res[devList[0]]["lag"].append(index)
         res[devList[0]]["value"].append(item)
+
+    # TODO fix 自相关模型计算
     return res
 
 
-#  计算SOH的值
+#  TODO  fix 评估模型计算
 def evaluate_soh(datas):
-    # 计算soh和扩展指标的值并返回。
-    return {"soh": 0, "soc": 0, "imbalance": 0, "state": 1}
-    pass
+    # in
+    # [{'ts':时间戳, 'did': 'BATTERY', '测点1':'值1', '测点2':'值2' }]
+    # 进行 健康指标（SOH） 内阻不平衡度(imbalance) 健康状态(state) 电压不平衡度(M8)
+    for item in datas:
+        item.update({"M8": int(random() * 100)})
+    return datas
 
 
 # [{
