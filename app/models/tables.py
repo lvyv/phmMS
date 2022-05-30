@@ -83,7 +83,7 @@ class TCellPack(Base):
     cellVol = Column(TEXT)  # 电池单元端电压集合
     cellSoc = Column(TEXT)  # 电池单元容量集合
     state = Column(Integer)  # 健康状态
-
+    reqId = Column(Integer)  # 执行请求ID 关联历史记录表
     # extend
     M1 = Column(FLOAT)
     M2 = Column(FLOAT)

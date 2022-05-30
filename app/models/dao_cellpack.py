@@ -10,6 +10,7 @@ class CellPackCRUD(AppCRUD):
         record = TCellPack(ts=item.ts,
                            did=item.did,
                            dclz=item.dclz,
+                           reqId=item.reqId,
                            remainLife=item.remainLife,
                            voc=item.voc,
                            workVoc=item.workVoc,

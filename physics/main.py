@@ -79,7 +79,8 @@ def post_process_vrla_soh(reqid, items):
             keys = item.keys()
             eqi = {
                 "did": item['did'] if 'did' in keys else "unknown",
-                "dclz": "BATTERY",
+                "dclz": "battery",
+                "reqId": reqid,
                 "remainLife": item['remainLife'] if "remainLife" in keys else 0,
                 "voc": item['voc'] if "voc" in keys else 0,
                 "workVoc": item['workVoc'] if "workVoc" in keys else 0,
