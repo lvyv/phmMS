@@ -19,9 +19,23 @@ PHMMD_KEY = cfg['phmmd_key']
 PHMMD_CER = cfg['phmmd_cer']
 
 # ----------------------------- DB -----------------------
-
 # 数据库地址
 PHM_DATABASE_URL = cfg['datasource_url']
+
+DATABASE_TYPE_MYSQL = 'MYSQL'
+DATABASE_TYPE_PGSQL = 'PGSQL'
+
+
+def get_database_type():
+    if PHM_DATABASE_URL.startswith("postgresql") is True:
+        return DATABASE_TYPE_PGSQL
+    elif PHM_DATABASE_URL.startswith("mysql") is True:
+        return DATABASE_TYPE_MYSQL
+    else:
+        return None
+
+
+USING_DATABASE_TYPE = get_database_type()
 
 #  --------------------------- COMMON -------------------------
 # 所有后端的科学计算模型，phmMD类型
@@ -33,7 +47,8 @@ REQ_STATUS_SETTLED = 'settled'
 REST_REQUEST_TIMEOUT = 10
 
 # 精确查询
-PREFECT_MATCH_HISTORY_QUERY_RECORD = cfg["time_segment_prefect_match"] if "time_segment_prefect_match" in cfg_keys else True
+PREFECT_MATCH_HISTORY_QUERY_RECORD = cfg[
+    "time_segment_prefect_match"] if "time_segment_prefect_match" in cfg_keys else True
 
 # ------------------------- api ------------------------------
 
@@ -69,7 +84,6 @@ URL_MS_CALL_CLUSTER = PHMMD_URL_PREFIX + "/api/v1/cluster"
 # 调用自相关
 URL_MS_CALL_RELATION = PHMMD_URL_PREFIX + "/api/v1/relation"
 
-
 # 数据资源
 URL_SJZY_API_PREFIX = cfg["url_sjzy_host"]
 # 从数据资源获取装备所有测点
@@ -77,10 +91,8 @@ API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT = URL_SJZY_API_PREFIX + "/api/equip/quer
 # 从数据资源获取装备的测点数据
 API_QUERY_HISTORY_DATA = URL_SJZY_API_PREFIX + "/api/devices/query_history_data"
 
-
 # 对接grafana
 URL_MS_GET_DASHBOARD_LIST = cfg["url_ms_get_dashboard_list"]
 
 # 模拟装备数据
 MOCK_ZB_DATA = cfg["mock_zb_data"] if "mock_zb_data" in cfg_keys else False
-
