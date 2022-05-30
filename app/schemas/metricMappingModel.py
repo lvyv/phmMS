@@ -10,6 +10,7 @@ class MetricMappingModel(BaseModel):
     equip_name: str
     metric_describe: str
     equip_type_code: str
+    metric_unit: str
 
     class Config:
         orm_mode = True

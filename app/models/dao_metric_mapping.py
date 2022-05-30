@@ -15,7 +15,8 @@ class MetricMappingCRUD(AppCRUD):
             equip_name=item.equip_name,
             equip_code=item.equip_code,
             metric_code=item.metric_code,
-            equip_type_code=item.equip_type_code
+            equip_type_code=item.equip_type_code,
+            metric_unit=item.metric_unit
         )
         self.db.add(record)
         self.db.commit()

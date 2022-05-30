@@ -60,6 +60,7 @@ class MetricMappingService(AppService):
                                          equip_type_code=mapping["equipTypeCode"],
                                          equip_code=mapping["equipCode"],
                                          metric_alias='',
+                                         metric_unit=mapping["metricUnit"],
                                          metric_describe='')
                 self.create_item(mmm)
         else:
@@ -72,10 +73,15 @@ class MetricMappingService(AppService):
                             # 更新数据库
                             item.metric_name = mapping["metricName"]
                             item.equip_name = mapping["equipName"]
+                            item.metric_unit = mapping["metricUnit"]
                             self.update_item(item.metric_code, item)
                         elif item.equip_name != mapping["equipName"]:
                             # 更新数据库
                             item.equip_name = mapping["equipName"]
+                            item.metric_unit = mapping["metricUnit"]
+                            self.update_item(item.metric_code, item)
+                        elif item.metric_unit != mapping["metricUnit"]:
+                            item.metric_unit = mapping["metricUnit"]
                             self.update_item(item.metric_code, item)
                 if found is False:
                     # 新增记录
@@ -89,6 +95,7 @@ class MetricMappingService(AppService):
                         equip_type_code=mapping["equipTypeCode"],
                         equip_code=mapping["equipCode"],
                         metric_alias='',
+                        metric_unit=mapping["metricUnit"],
                         metric_describe=''
                     )
                     self.create_item(mmm)

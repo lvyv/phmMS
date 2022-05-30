@@ -141,6 +141,7 @@ class TMetricMapping(Base):
     equip_type = Column(TEXT)      # 装备类型
     equip_type_code = Column(TEXT)  # 装备类型编码
     metric_describe = Column(TEXT)        # 描述
+    metric_unit = Column(TEXT)     # 测点类型
 
 
 # create all tables

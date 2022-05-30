@@ -42,8 +42,9 @@ class DataCenterService:
             for item in res["measurePoints"]:
                 code = item["pointCode"]
                 name = item["pointName"]
+                unit = item["pointUnit"] if "pointUnit" in item.keys() else ''
                 mappings.append({"equipCode": equipCode, "equipName": equipName, "equipTypeCode": equipTypeCode,
-                                 "metricCode": code, "metricName": name})
+                                 "metricCode": code, "metricName": name, "metricUnit": unit})
         return mappings
 
     @staticmethod

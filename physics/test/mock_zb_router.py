@@ -17,7 +17,7 @@ async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[s
     ret = {
         "result": [{
             "equipCode": "B001", "equipName": "电池1", "equipTypeCode": "N0001",
-            "measurePoints": [{"pointCode": "M0001", "pointName": "容量"},
+            "measurePoints": [{"pointCode": "M0001", "pointName": "容量", "pointUnit": "%"},
                               {"pointCode": "M0002", "pointName": "健康指标"},
                               {"pointCode": "M0003", "pointName": "最大温度"},
                               {"pointCode": "M0004", "pointName": "电池单元的最大开路电压"},
@@ -30,11 +30,12 @@ async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[s
                               {"pointCode": "M0011", "pointName": "电池单元容量集合"},
                               {"pointCode": "M0012", "pointName": "健康状态"},
                               {"pointCode": "M0013", "pointName": "电压不平衡度"},
+                              {"pointCode": "M0038", "pointName": "abc", "pointUnit": "%"},
                               {"pointCode": "M0014", "pointName": "未知"}]
         },
             {
                 "equipCode": "B002", "equipName": "电池2", "equipTypeCode": "N0001",
-                "measurePoints": [{"pointCode": "M0015", "pointName": "容量"},
+                "measurePoints": [{"pointCode": "M0015", "pointName": "容量", "pointUnit": "%"},
                                   {"pointCode": "M0016", "pointName": "健康指标"},
                                   {"pointCode": "M0017", "pointName": "剩余寿命"},
                                   {"pointCode": "M0018", "pointName": "开路电压"},
