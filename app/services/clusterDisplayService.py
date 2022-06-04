@@ -1,5 +1,6 @@
 import json
 
+import constants
 from models.dao_cellpack import CellPackCRUD
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.convertor_factory import ConvertorFactory
@@ -22,15 +23,47 @@ class ClusterDisplayService(AppService):
         end = PayloadUtil.get_end_time(payload)
 
         if displayType == ClusterDisplayUtil.DISPLAY_SCATTER:
-            devs = code.split(",")
-            items = CellPackCRUD(self.db).get_records_latest(devs)
-            if items is None:
-                return ServiceResult(None)
+            if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
+                devs = code.split(",")
+                devs.sort()
+                tags = metrics.split(",")
+                tags.sort()
+                hisRecordId = []
+                hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                     json.dumps(tags, ensure_ascii=False),
+                                                                     displayType, start, end)
+                for his in hisRecords:
+                    hisRecordId.append(his.id)
+                if len(hisRecordId) == 0:
+                    items = None
+                else:
+                    items = CellPackCRUD(self.db).get_records_latest_by_reqIds(devs, hisRecordId)
+            else:
+                devs = code.split(",")
+                items = CellPackCRUD(self.db).get_records_latest(devs)
+                if items is None:
+                    return ServiceResult(None)
         elif displayType == ClusterDisplayUtil.DISPLAY_POLYLINE:
-            devs = code.split(",")
-            items = CellPackCRUD(self.db).get_records_by_devs(devs, start, end)
-            if items is None:
-                return ServiceResult(None)
+            if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
+                devs = code.split(",")
+                devs.sort()
+                tags = metrics.split(",")
+                tags.sort()
+                hisRecordId = []
+                hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                     json.dumps(tags, ensure_ascii=False),
+                                                                     displayType, start, end)
+                for his in hisRecords:
+                    hisRecordId.append(his.id)
+                if len(hisRecordId) == 0:
+                    items = None
+                else:
+                    items = CellPackCRUD(self.db).get_records_by_reqIds(hisRecordId)
+            else:
+                devs = code.split(",")
+                items = CellPackCRUD(self.db).get_records_by_devs(devs, start, end)
+                if items is None:
+                    return ServiceResult(None)
         elif displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                              ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
             devs = code.split(",")

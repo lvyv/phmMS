@@ -57,6 +57,31 @@ class CellPackCRUD(AppCRUD):
             return records
         return None
 
+    def get_records_by_reqIds(self, reqIds: []) -> TCellPack:
+        records = self.db.query(TCellPack).filter(and_(TCellPack.reqId.in_(reqIds))).all()
+        if records:
+            return records
+        return None
+
+    def get_record_latest_by_id(self, dev, reqid: str) -> TCellPack:
+        record = self.db.query(TCellPack).filter(
+            and_(TCellPack.reqId == reqid,
+                 TCellPack.did == dev)).order_by(desc(TCellPack.ts)).first()
+        if record:
+            return record
+        return None
+
+    def get_records_latest_by_reqIds(self, devs: [], reqIds: []) -> TCellPack:
+        items = []
+        for reqId in reqIds:
+            for dev in devs:
+                record = self.get_record_latest_by_id(dev, reqId)
+                if record:
+                    items.append(record)
+        if len(items) == 0:
+            return None
+        return items
+
     def get_records_by_devs(self, dids: [], start: int, end: int) -> TCellPack:
         records = self.db.query(TCellPack).filter(and_(TCellPack.did.in_(dids),
                                                        TCellPack.ts.between(start, end)
@@ -78,7 +103,7 @@ class CellPackCRUD(AppCRUD):
     def get_records_by_limit(self, dids, limit) -> TCellPack:
         items = []
         for did in dids:
-            item = self.db.query(TCellPack).filter(TCellPack.did == did)\
+            item = self.db.query(TCellPack).filter(TCellPack.did == did) \
                 .order_by(desc(TCellPack.ts)).limit(limit).all()
             if item:
                 items.append(item)

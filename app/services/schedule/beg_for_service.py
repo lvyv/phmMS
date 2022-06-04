@@ -48,29 +48,41 @@ class BegForService(AppService):
                                                                                    displayType, start, end)
             mustBe = len(hisRecords) <= 0
         elif displayType in [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"]:
-            if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-                # 修正 devs
-                tmpDevs = []
-                for single in devs:
-                    hisRecords = RequestHistoryCRUD(self.db).get_eval_records(
-                        json.dumps([single], ensure_ascii=False),
-                        [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"], start, end)
-                    if len(hisRecords) <= 0:
-                        mustBe = True
-                        tmpDevs.append(single)
-                if mustBe is True:
-                    devs = tmpDevs
+            if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
+                if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+                    hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                         json.dumps(tags, ensure_ascii=False),
+                                                                         displayType, start, end)
+                else:
+                    hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(
+                        json.dumps(devs, ensure_ascii=False),
+                        json.dumps(tags, ensure_ascii=False),
+                        displayType, start, end)
+                mustBe = len(hisRecords) <= 0
             else:
-                tmpDevs = []
-                for single in devs:
-                    hisRecords = RequestHistoryCRUD(self.db).get_eval_records_prefect_match(
-                        json.dumps([single], ensure_ascii=False),
-                        [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"], start, end)
-                    if len(hisRecords) <= 0:
-                        mustBe = True
-                        tmpDevs.append(single)
-                if mustBe is True:
-                    devs = tmpDevs
+                if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+                    # 修正 devs
+                    tmpDevs = []
+                    for single in devs:
+                        hisRecords = RequestHistoryCRUD(self.db).get_eval_records(
+                            json.dumps([single], ensure_ascii=False),
+                            [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"], start, end)
+                        if len(hisRecords) <= 0:
+                            mustBe = True
+                            tmpDevs.append(single)
+                    if mustBe is True:
+                        devs = tmpDevs
+                else:
+                    tmpDevs = []
+                    for single in devs:
+                        hisRecords = RequestHistoryCRUD(self.db).get_eval_records_prefect_match(
+                            json.dumps([single], ensure_ascii=False),
+                            [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"], start, end)
+                        if len(hisRecords) <= 0:
+                            mustBe = True
+                            tmpDevs.append(single)
+                    if mustBe is True:
+                        devs = tmpDevs
         else:
             return None
 

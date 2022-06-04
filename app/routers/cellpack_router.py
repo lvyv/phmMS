@@ -2,6 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends
 
+import constants
 from schemas.vrla.cellpack_model import CellPackModel
 from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.self_relation_model import SelfRelationModel
@@ -61,15 +62,18 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
         if pl is not None:
             payload = pl
 
+    # if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
+    #     BegForService(db).exec(equipCode, metrics, "EVAL", payload)
+    # else:
+    result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
+    allMetrics = ",".join(metricName for metricName in result.values())
     if timeGrapUtil.canClick() is True:
         # 调用模型
-        result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
-        allMetrics = ",".join(metricName for metricName in result.values())
         BegForService(db).exec(equipCode, allMetrics, "EVAL", payload)
 
     # 数据展示
     so = CellPackService(db)
-    result = so.health_eval(equipType, equipCode, metrics, payload)
+    result = so.health_eval(equipType, equipCode, metrics, payload, allMetrics)
     return handle_result(result)
 
 
@@ -99,10 +103,13 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
     # 调用模型
     # 如果为散点图，折线图时，下载数据。
     if displayType in [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE]:
-        devs = equipCode.split(",")
-        result = MetricMappingService(db).get_all_mapping_by_equip_type_code(devs[0])
-        allMetrics = ",".join(metricName for metricName in result.values())
-        BegForService(db).exec(equipCode, allMetrics, displayType, payload)
+        if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
+            BegForService(db).exec(equipCode, metrics, displayType, payload)
+        else:
+            devs = equipCode.split(",")
+            result = MetricMappingService(db).get_all_mapping_by_equip_type_code(devs[0])
+            allMetrics = ",".join(metricName for metricName in result.values())
+            BegForService(db).exec(equipCode, allMetrics, displayType, payload)
     else:
         BegForService(db).exec(equipCode, metrics, displayType, payload)
 
