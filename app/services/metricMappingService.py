@@ -49,6 +49,9 @@ class MetricMappingService(AppService):
         equipType = "battery" if equipType in ["cellpack", "battery"] else ''
 
         items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
+
+        # TODO fix 不存在的测点编码
+
         if items is None:
             for mapping in mappings:
                 if mapping["equipTypeCode"] != equipTypeCode:

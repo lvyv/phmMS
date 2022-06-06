@@ -31,6 +31,8 @@ def get_db():
 Base = declarative_base()
 
 
+# TODO fix 支持pgsql
+
 def create_database():
     pos = constants.PHM_DATABASE_URL.rfind("/")
     engine_prefix = constants.PHM_DATABASE_URL[0: pos + 1]
