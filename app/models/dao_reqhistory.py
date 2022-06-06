@@ -71,29 +71,6 @@ class RequestHistoryCRUD(AppCRUD):
                                                               TReqHistory.endTs == end))).all()
         return records
 
-    def get_eval_records(self, equipCode: str, displayType: [], start: int, end: int) -> TReqHistory:
-        records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
-                                                         TReqHistory.displayType.in_(displayType),
-                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
-                                                         or_(TReqHistory.startTs.between(start, end),
-                                                             TReqHistory.endTs.between(start, end),
-                                                             and_(TReqHistory.startTs >= start,
-                                                                  TReqHistory.endTs <= end),
-                                                             and_(TReqHistory.startTs <= start,
-                                                                  TReqHistory.endTs >= end)
-                                                             )
-                                                         )).all()
-        return records
-
-    def get_eval_records_prefect_match(self, equipCode: str, displayType: [], start: int, end: int) -> TReqHistory:
-        records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
-                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
-                                                         TReqHistory.displayType.in_(displayType),
-                                                         and_(TReqHistory.startTs == start,
-                                                              TReqHistory.endTs == end)
-                                                         )).all()
-        return records
-
     # 获取时间片段
     def get_time_segment(self, equipCode: str, metrics: str, displayType: str):
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
