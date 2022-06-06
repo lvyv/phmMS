@@ -1,3 +1,6 @@
+from utils.payload_util import PayloadUtil
+
+
 class SelfRelationUtil:
     DISPLAY_SELF_RELATION = "SELF_RELATION"
 
@@ -21,3 +24,16 @@ class SelfRelationUtil:
         if key in ["ts"]:
             return "time"
         return "number"
+
+    @staticmethod
+    def getTagInfoByPayload(payload):
+        start = PayloadUtil.get_start_time(payload)
+        end = PayloadUtil.get_end_time(payload)
+        return start, end
+
+    @staticmethod
+    def getStepUintByTagAndPayload(start, end, payload):
+        _start, _end = SelfRelationUtil.getTagInfoByPayload(payload)
+        if start >= _start and end <= _end:
+            return 0, 0
+        return 0, 0

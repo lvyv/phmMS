@@ -207,6 +207,13 @@ def cluster_task(clusterin, reqid, displayType):
 
 
 def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
+    logging.info("relation param, startTime: " + TimeUtils.convert_time_str(relationin.startts) +
+                 " endTime: " + TimeUtils.convert_time_str(relationin.endts) +
+                 " leftTag: " + TimeUtils.convert_time_str(leftTag) +
+                 " rightTag: " + TimeUtils.convert_time_str(rightTag) +
+                 " step: " + str(step) +
+                 " unit: " + str(unit))
+
     dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
     res = phm.calculate_relate(dataS, leftTag, rightTag, step, unit)
     post_process_vrla_relation(reqid, res)

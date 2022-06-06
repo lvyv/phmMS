@@ -120,10 +120,12 @@ async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
 
 
 # 自相关接口  针对单个设备，单个测点进行
+# 注意：(自相关折线图数据 复用聚类折线图)  &from=$__from&to=$__to
 @router.post("/relation")
-async def trendRelation(equipType: str, equipCode: str, metrics: str,
-                        leftTag: int, rightTag: int, step: int, unit: int,
-                        payload: dict,  timeSegment: Optional[str] = None, db: get_db = Depends()):
+async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: dict,
+                        leftTag: Optional[int] = None, rightTag: Optional[int] = None,
+                        step: Optional[int] = None, unit: Optional[int] = None,
+                        timeSegment: Optional[str] = None, db: get_db = Depends()):
 
     # 自相关模型支持判断
     support = RelationModelValidate.support(equipCode, metrics)
@@ -133,11 +135,23 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str,
     # 数据同步
     sjzyManager.dataSync(equipCode, equipType, db)
 
+    # 注意自相关模型，将payload 中的值赋给 tag
+    left_tag_time, right_tag_time = SelfRelationUtil.getTagInfoByPayload(payload)
+
     # 更新playload
     if timeSegment is not None:
         pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
         if pl is not None:
             payload = pl
+
+    # 根据left_tag_time, right_tag_time, payload 获取 step, unit
+    tag_step, tag_unit = SelfRelationUtil.getStepUintByTagAndPayload(left_tag_time, right_tag_time, payload)
+
+    # 弃用leftTag rightTag step unit
+    leftTag = left_tag_time
+    rightTag = right_tag_time
+    step = tag_step
+    unit = tag_unit
 
     # 调用模型
     BegForService(db).exec(equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
