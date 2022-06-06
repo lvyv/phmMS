@@ -1,5 +1,7 @@
 import json
 
+from phmconfig import constants
+from models.dao_cellpack import CellPackCRUD
 from models.dao_reqhistory import RequestHistoryCRUD
 from services.convert.self_relation_util import SelfRelationUtil
 from services.main import AppService
@@ -25,9 +27,17 @@ class SelfRelationService(AppService):
         tags.sort()
 
         hisRecordId = []
-        hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                             json.dumps(tags, ensure_ascii=False),
-                                                             SelfRelationUtil.DISPLAY_SELF_RELATION, start, end)
+
+        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                 json.dumps(tags, ensure_ascii=False),
+                                                                 SelfRelationUtil.DISPLAY_SELF_RELATION,
+                                                                 start, end)
+        else:
+            hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                               json.dumps(tags, ensure_ascii=False),
+                                                                               SelfRelationUtil.DISPLAY_SELF_RELATION,
+                                                                               start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)
         if len(hisRecordId) == 0:
@@ -40,4 +50,41 @@ class SelfRelationService(AppService):
         if convertor is None:
             return ServiceResult(None)
         convertItems = convertor.convertSelfRelation(items)
+        return ServiceResult(convertItems)
+
+    def selfRelationBase(self, clz, code, metrics, payload) -> ServiceResult:
+
+        start = PayloadUtil.get_start_time(payload)
+        end = PayloadUtil.get_end_time(payload)
+
+        devs = code.split(",")
+        devs.sort()
+        tags = metrics.split(",")
+        tags.sort()
+
+        hisRecordId = []
+
+        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                 json.dumps(tags, ensure_ascii=False),
+                                                                 SelfRelationUtil.DISPLAY_SELF_RELATION,
+                                                                 start, end)
+        else:
+            hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                               json.dumps(tags, ensure_ascii=False),
+                                                                               SelfRelationUtil.DISPLAY_SELF_RELATION,
+                                                                               start, end)
+        for his in hisRecords:
+            hisRecordId.append(his.id)
+        if len(hisRecordId) == 0:
+            items = None
+        else:
+            items = CellPackCRUD(self.db).get_records_by_reqIds(hisRecordId)
+
+        if items is None:
+            return ServiceResult(None)
+        convertor = ConvertorFactory.get_convertor(clz)
+        if convertor is None:
+            return ServiceResult(None)
+        convertItems = convertor.convertClusterDisplayPolyline(items, code, metrics)
         return ServiceResult(convertItems)

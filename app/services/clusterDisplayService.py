@@ -1,6 +1,6 @@
 import json
 
-import constants
+from phmconfig import constants
 from models.dao_cellpack import CellPackCRUD
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.convertor_factory import ConvertorFactory
@@ -28,9 +28,15 @@ class ClusterDisplayService(AppService):
         tags.sort()
 
         hisRecordId = []
-        hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                             json.dumps(tags, ensure_ascii=False),
-                                                             displayType, start, end)
+
+        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                 json.dumps(tags, ensure_ascii=False),
+                                                                 displayType, start, end)
+        else:
+            hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                               json.dumps(tags, ensure_ascii=False),
+                                                                               displayType, start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)
 

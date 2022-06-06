@@ -1,6 +1,6 @@
 import json
 
-import constants
+from phmconfig import constants
 from models.dao_reqhistory import RequestHistoryCRUD
 from services.convert.health_eval_util import HealthEvalUtil
 from services.main import AppService
@@ -26,9 +26,16 @@ class CellPackService(AppService):
         tags.sort()
 
         hisRecordId = []
-        hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                             json.dumps(tags, ensure_ascii=False),
-                                                             HealthEvalUtil.DISPLAY_HEALTH_EVAL, start, end)
+
+        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
+            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
+                                                                 json.dumps(tags, ensure_ascii=False),
+                                                                 HealthEvalUtil.DISPLAY_HEALTH_EVAL, start, end)
+        else:
+            hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                               json.dumps(tags, ensure_ascii=False),
+                                                                               HealthEvalUtil.DISPLAY_HEALTH_EVAL,
+                                                                               start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)
         if len(hisRecordId) == 0:
