@@ -3,6 +3,7 @@ from utils.payload_util import PayloadUtil
 
 class SelfRelationUtil:
     DISPLAY_SELF_RELATION = "SELF_RELATION"
+    DISPLAY_SELF_RELATION_POLYLINE = "SELF_POLYLINE"
 
     @staticmethod
     def get_use_metrics(displayType):

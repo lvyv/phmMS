@@ -4,6 +4,7 @@ from phmconfig import constants
 from models.dao_cellpack import CellPackCRUD
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.convertor_factory import ConvertorFactory
+from services.convert.self_relation_util import SelfRelationUtil
 from services.main import AppService
 from models.dao_cluster_display import ClusterCRUD
 from models.dao_reqhistory import RequestHistoryCRUD
@@ -45,7 +46,7 @@ class ClusterDisplayService(AppService):
                 items = None
             else:
                 items = CellPackCRUD(self.db).get_records_latest_by_reqIds(devs, hisRecordId)
-        elif displayType == ClusterDisplayUtil.DISPLAY_POLYLINE:
+        elif displayType in [ClusterDisplayUtil.DISPLAY_POLYLINE, SelfRelationUtil.DISPLAY_SELF_RELATION_POLYLINE]:
             if len(hisRecordId) == 0:
                 items = None
             else:
@@ -70,7 +71,7 @@ class ClusterDisplayService(AppService):
             convertItems = convertor.convertClusterDisplay(displayType, items)
         elif displayType in [ClusterDisplayUtil.DISPLAY_SCATTER]:
             convertItems = convertor.convertClusterDisplayScatter(items, code, metrics)
-        elif displayType in [ClusterDisplayUtil.DISPLAY_POLYLINE]:
+        elif displayType in [ClusterDisplayUtil.DISPLAY_POLYLINE, SelfRelationUtil.DISPLAY_SELF_RELATION_POLYLINE]:
             convertItems = convertor.convertClusterDisplayPolyline(items, code, metrics)
         else:
             return ServiceResult(None)

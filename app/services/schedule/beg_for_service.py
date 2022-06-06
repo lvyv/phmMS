@@ -36,7 +36,7 @@ class BegForService(AppService):
         # 查询历史记录
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                            ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D,
-                           SelfRelationUtil.DISPLAY_SELF_RELATION,
+                           SelfRelationUtil.DISPLAY_SELF_RELATION, SelfRelationUtil.DISPLAY_SELF_RELATION_POLYLINE,
                            ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE,
                            HealthEvalUtil.DISPLAY_HEALTH_EVAL]:
             if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
