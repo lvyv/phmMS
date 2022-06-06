@@ -78,12 +78,13 @@ def fix_cluster_age(df):
 # 2D聚类  name, size, color, shape, x, y
 def calculate_cluster_2d(dataList, ageList, devList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
+    logging.info("2D HDBSCAN calculate complete")
     df2 = mds.dev_age_compute(dataList, ageList)
-
     fix_cluster_age(df2)
-
+    logging.info("2D age calculate complete")
     compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(dataList, 2)
+    logging.info("2D pos calculate complete")
     compute_df_color(df2, dfnew)
     drop_df_data(df2)
     compute_df_shape(df2, ageList)
@@ -97,12 +98,13 @@ def calculate_cluster_2d(dataList, ageList, devList):
 # 3D聚类 name, size, color, shape, x, y, z
 def calculate_cluster_3d(dataList, ageList, devList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
+    logging.info("3D HDBSCAN calculate complete")
     df2 = mds.dev_age_compute(dataList, ageList)
-
+    logging.info("3D age calculate complete")
     fix_cluster_age(df2)
-
     compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(dataList, 3)
+    logging.info("3D pos calculate complete")
     compute_df_color(df2, dfnew)
     drop_df_data(df2)
     compute_df_shape(df2, ageList)
@@ -117,11 +119,14 @@ def calculate_cluster_3d(dataList, ageList, devList):
 # 时序聚类 name,  *,  color, shape, x, y
 def calculate_cluster_agg2d(dataList, ageList, devList):
     frequencies, spectrumn = cluster.ts2fft(dataList)
+    logging.info("agg2d fft calculate complete")
     _, dfnew = cluster.cluster_vectors(spectrumn, False)
+    logging.info("agg2d HDBSCAN calculate complete")
     df2 = mds.dev_age_compute(spectrumn, ageList, frequencies)
+    logging.info("agg2d age calculate complete")
     compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(spectrumn, 2)
-
+    logging.info("agg2d pos calculate complete")
     compute_df_color(df2, dfnew)
     drop_df_data(df2)
     compute_df_shape(df2, ageList)
@@ -135,10 +140,12 @@ def calculate_cluster_agg2d(dataList, ageList, devList):
 # 聚类时间演化 name, *, color, *, x, y, *
 def calculate_cluster_agg3d(dataList, ageList, devList):
     _, dfnew = cluster.cluster_vectors(dataList, False)
+    logging.info("agg3d HDBSCAN calculate complete")
     df2 = mds.dev_age_compute(dataList, ageList)
+    logging.info("agg3d age calculate complete")
     compute_df_devName(df2, ageList, devList)
     pos = mds.compute_mds_pos(dataList, 2)
-
+    logging.info("agg3d pos calculate complete")
     compute_df_color(df2, dfnew)
     drop_df_data(df2)
     compute_df_shape(df2, ageList)
@@ -152,22 +159,29 @@ def calculate_cluster_agg3d(dataList, ageList, devList):
 
 def calculate_cluster(dataS, display):
     try:
+        logging.info("start cluster =>" + display)
         out = None
         if display == ClusterDisplayUtil.DISPLAY_2D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
+            logging.info("cluster data prepare to complete =>" + display)
             out = calculate_cluster_2d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_3D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
+            logging.info("cluster data prepare to complete =>" + display)
             out = calculate_cluster_3d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_AGG2D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_agg2d(dataS)
+            logging.info("cluster data prepare to complete =>" + display)
             out = calculate_cluster_agg2d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_AGG3D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
+            logging.info("cluster data prepare to complete =>" + display)
             out = calculate_cluster_agg3d(dataList, ageList, devList)
         else:
             pass
+        logging.info("complete cluster =>" + display)
     except requests.exceptions.ConnectionError as ce:
+        logging.info("stop cluster =>" + display)
         logging.error(ce)
     return out
 

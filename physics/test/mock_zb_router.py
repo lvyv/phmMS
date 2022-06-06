@@ -56,25 +56,26 @@ async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[s
 @router.post("/zbData")
 async def getZbData(equipCode, metricName, startTime, endTime, interval: Optional[str] = None):
     # 根据开始数据 与 结束时间生成 时间序列
-    maxPoints = 100
+    skipK = 10
+    maxPoints = int(1000 / skipK)
     if interval.endswith("M"):
         if interval.find(".") > 0:
             # 秒
             step = float(interval.replace("M", ""))
-            interval = int(step * 60) * 10
+            interval = int(step * 60) * skipK
             pass
         else:
             # 分
             step = int(interval.replace("M", ""))
-            interval = step * 60 * 10
+            interval = step * 60 * skipK
             pass
     elif interval.endswith("H"):
         step = int(interval.replace("H", ""))
-        interval = step * 3600 * 10
+        interval = step * 3600 * skipK
         pass
     elif interval.endswith("D"):
         step = int(interval.replace("D", ""))
-        interval = step * 24 * 3600 * 10
+        interval = step * 24 * 3600 * skipK
         pass
 
     genTime = []

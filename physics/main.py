@@ -202,6 +202,7 @@ def soh_task(sohin, reqid):
 
 def cluster_task(clusterin, reqid, displayType):
     dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
+    logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
     res = phm.calculate_cluster(dataS, displayType)
     post_process_vrla_cluster(reqid, res, displayType)
 
@@ -215,6 +216,7 @@ def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
                  " unit: " + str(unit))
 
     dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
+    logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
     res = phm.calculate_relate(dataS, leftTag, rightTag, step, unit)
     post_process_vrla_relation(reqid, res)
 
