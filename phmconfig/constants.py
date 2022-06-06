@@ -50,10 +50,6 @@ REST_REQUEST_TIMEOUT = 10
 PREFECT_MATCH_HISTORY_QUERY_RECORD = cfg[
     "time_segment_prefect_match"] if "time_segment_prefect_match" in cfg_keys else True
 
-# 数据调度精确匹配
-MODEL_SCHEDULE_PREFECT_MATCH = cfg[
-    "model_schedule_prefect_match"] if "model_schedule_prefect_match" in cfg_keys else True
-
 # ------------------------- api ------------------------------
 
 # 配置服务启动模式

@@ -43,20 +43,6 @@ class CellPackCRUD(AppCRUD):
         self.db.refresh(record)
         return record
 
-    def get_record(self, did: str) -> TCellPack:
-        record = self.db.query(TCellPack).filter(TCellPack.did == did).order_by(desc(TCellPack.ts)).first()
-        if record:
-            return record
-        return None
-
-    def get_records(self, did: str, start: int, end: int) -> TCellPack:
-        records = self.db.query(TCellPack).filter(and_(TCellPack.did == did,
-                                                       TCellPack.ts.between(start, end)
-                                                       )).all()
-        if records:
-            return records
-        return None
-
     def get_records_by_reqIds(self, reqIds: []) -> TCellPack:
         records = self.db.query(TCellPack).filter(and_(TCellPack.reqId.in_(reqIds))).all()
         if records:
@@ -78,24 +64,6 @@ class CellPackCRUD(AppCRUD):
                 record = self.get_record_latest_by_id(dev, reqId)
                 if record:
                     items.append(record)
-        if len(items) == 0:
-            return None
-        return items
-
-    def get_records_by_devs(self, dids: [], start: int, end: int) -> TCellPack:
-        records = self.db.query(TCellPack).filter(and_(TCellPack.did.in_(dids),
-                                                       TCellPack.ts.between(start, end)
-                                                       )).all()
-        if records:
-            return records
-        return None
-
-    def get_records_latest(self, dids: []) -> TCellPack:
-        items = []
-        for did in dids:
-            record = self.get_record(did)
-            if record:
-                items.append(record)
         if len(items) == 0:
             return None
         return items

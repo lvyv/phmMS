@@ -148,15 +148,9 @@ class DynamicTask(object):
                 leftTag) + "&rightTag=" + str(rightTag) + "&step=" + str(step) + "&unit=" + str(unit)
             self.__executor.submit(self.__async_task, item)
         else:
-            if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
-                item = DynamicTask.make_t_schedule(devs, tags, start, end)
-                item.execUrl = API_SCHEDULE_SOH + "?displayType=" + displayType
-                self.__executor.submit(self.__async_task, item)
-            else:
-                for single in devs:
-                    item = DynamicTask.make_t_schedule([single], tags, start, end)
-                    item.execUrl = API_SCHEDULE_SOH + "?displayType=" + displayType
-                    self.__executor.submit(self.__async_task, item)
+            item = DynamicTask.make_t_schedule(devs, tags, start, end)
+            item.execUrl = API_SCHEDULE_SOH + "?displayType=" + displayType
+            self.__executor.submit(self.__async_task, item)
 
     @staticmethod
     def make_t_schedule(devs, tags, start, end):

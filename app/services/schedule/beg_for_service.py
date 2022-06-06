@@ -2,6 +2,7 @@ import json
 import time
 
 from models.dao_reqhistory import RequestHistoryCRUD
+from services.convert.health_eval_util import HealthEvalUtil
 from services.main import AppService
 from services.schedule.dynamic_task import DynamicTask
 from utils.payload_util import PayloadUtil
@@ -32,12 +33,12 @@ class BegForService(AppService):
         tags = metrics.split(",")
         tags.sort()
 
-        mustBe = False
-
         # 查询历史记录
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                            ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D,
-                           SelfRelationUtil.DISPLAY_SELF_RELATION]:
+                           SelfRelationUtil.DISPLAY_SELF_RELATION,
+                           ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE,
+                           HealthEvalUtil.DISPLAY_HEALTH_EVAL]:
             if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
                 hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
                                                                      json.dumps(tags, ensure_ascii=False),
@@ -46,49 +47,13 @@ class BegForService(AppService):
                 hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
                                                                                    json.dumps(tags, ensure_ascii=False),
                                                                                    displayType, start, end)
-            mustBe = len(hisRecords) <= 0
-        elif displayType in [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"]:
-            if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
-                if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-                    hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                                         json.dumps(tags, ensure_ascii=False),
-                                                                         displayType, start, end)
-                else:
-                    hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(
-                        json.dumps(devs, ensure_ascii=False),
-                        json.dumps(tags, ensure_ascii=False),
-                        displayType, start, end)
-                mustBe = len(hisRecords) <= 0
-            else:
-                if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-                    # 修正 devs
-                    tmpDevs = []
-                    for single in devs:
-                        hisRecords = RequestHistoryCRUD(self.db).get_eval_records(
-                            json.dumps([single], ensure_ascii=False),
-                            [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"], start, end)
-                        if len(hisRecords) <= 0:
-                            mustBe = True
-                            tmpDevs.append(single)
-                    if mustBe is True:
-                        devs = tmpDevs
-                else:
-                    tmpDevs = []
-                    for single in devs:
-                        hisRecords = RequestHistoryCRUD(self.db).get_eval_records_prefect_match(
-                            json.dumps([single], ensure_ascii=False),
-                            [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE, "EVAL"], start, end)
-                        if len(hisRecords) <= 0:
-                            mustBe = True
-                            tmpDevs.append(single)
-                    if mustBe is True:
-                        devs = tmpDevs
         else:
             return None
 
         # 若无历史记录，执行调度任务
-        if mustBe is True:
-            DynamicTask().async_once_task(devs, tags, start_orgin, end_orgin, displayType, leftTag, rightTag, step, unit)
+        if len(hisRecords) <= 0:
+            DynamicTask().async_once_task(devs, tags, start_orgin, end_orgin,
+                                          displayType, leftTag, rightTag, step, unit)
 
     @staticmethod
     def convert_time_stamp_utc(timeStr):

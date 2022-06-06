@@ -7,6 +7,7 @@ from schemas.vrla.cellpack_model import CellPackModel
 from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.self_relation_model import SelfRelationModel
 from services.convert.cluster_display_util import ClusterDisplayUtil
+from services.convert.health_eval_util import HealthEvalUtil
 from services.convert.self_relation_util import SelfRelationUtil
 from services.dashboardManagerService import DashboardManagerService
 from services.metricMappingService import MetricMappingService
@@ -30,6 +31,9 @@ router = APIRouter(
     tags=["电池组历史统计微服务"],
     responses={404: {"description": "Not found"}},
 )
+
+
+# 定义规则，所有数据均取历史数据，都需要通过reqId获取
 
 
 # 回写电池评估数据
@@ -62,14 +66,12 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
         if pl is not None:
             payload = pl
 
-    # if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
-    #     BegForService(db).exec(equipCode, metrics, "EVAL", payload)
-    # else:
+    # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
     result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
     allMetrics = ",".join(metricName for metricName in result.values())
     if timeGrapUtil.canClick() is True:
         # 调用模型
-        BegForService(db).exec(equipCode, allMetrics, "EVAL", payload)
+        BegForService(db).exec(equipCode, allMetrics, HealthEvalUtil.DISPLAY_HEALTH_EVAL, payload)
 
     # 数据展示
     so = CellPackService(db)
@@ -101,17 +103,7 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
             payload = pl
 
     # 调用模型
-    # 如果为散点图，折线图时，下载数据。
-    if displayType in [ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE]:
-        if constants.MODEL_SCHEDULE_PREFECT_MATCH is True:
-            BegForService(db).exec(equipCode, metrics, displayType, payload)
-        else:
-            devs = equipCode.split(",")
-            result = MetricMappingService(db).get_all_mapping_by_equip_type_code(devs[0])
-            allMetrics = ",".join(metricName for metricName in result.values())
-            BegForService(db).exec(equipCode, allMetrics, displayType, payload)
-    else:
-        BegForService(db).exec(equipCode, metrics, displayType, payload)
+    BegForService(db).exec(equipCode, metrics, displayType, payload)
 
     # 数据展示
     so = ClusterDisplayService(db)

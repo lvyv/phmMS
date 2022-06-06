@@ -176,23 +176,22 @@ def soh_task(sohin, reqid):
     # 下载装备数据
     dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
 
-    logging.info("下载的数据内容:" + json.dumps(dataS, ensure_ascii=False))
+    logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
     # 获取测点映射
     devices = json.loads(sohin.devices)
 
-    logging.info("测点内容:" + json.dumps(devices, ensure_ascii=False))
     if len(devices) > 0:
         mappingS = dataCenter.query_metric_mapping(devices[0])
     else:
         mappingS = dataCenter.query_metric_mapping()
-    logging.info("测点内容:" + json.dumps(mappingS, ensure_ascii=False))
+    logging.info("下载测点:" + json.dumps(mappingS, ensure_ascii=False))
     # 测点反转
     convertMapping = {}
     if mappingS is not None:
         for k, v in mappingS.items():
             convertMapping[v] = k
 
-    logging.info("测点内容:" + json.dumps(convertMapping, ensure_ascii=False))
+    logging.info("测点映射:" + json.dumps(convertMapping, ensure_ascii=False))
 
     # 计算SOH
     res = phm.calculate_soh(dataS, convertMapping)
