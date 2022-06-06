@@ -44,7 +44,7 @@ def dev_age_compute(vectors, segment, freq=None):
 def compute_mds_pos(vectors, dimension):
     similarities = euclidean_distances(vectors)
     # vecs = np.array([list(vec) for vec in vectors])
-    mds = manifold.MDS(n_components=dimension, max_iter=3000, eps=1e-9,
+    mds = manifold.MDS(n_components=dimension, max_iter=300, eps=1e-3,
                        dissimilarity="precomputed", n_jobs=1)
     pos = mds.fit(similarities).embedding_
 
