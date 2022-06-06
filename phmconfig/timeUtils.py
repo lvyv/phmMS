@@ -25,7 +25,10 @@ class TimeUtils:
             gap = int(interval / 60)
             gap = str(gap) + "M"
         else:
-            gap = str(0.1) + "M"
+            gap = int((interval / 60) * 10) / 10
+            if gap == 0.0:
+                gap = 0.05
+            gap = str(gap) + "M"
         return gap
 
     @staticmethod

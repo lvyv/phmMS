@@ -61,7 +61,7 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval: Optiona
         if interval.find(".") > 0:
             # 秒
             step = float(interval.replace("M", ""))
-            interval = int(step * 60)
+            interval = int(step * 60) * 10
             pass
         else:
             # 分
