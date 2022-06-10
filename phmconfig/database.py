@@ -1,3 +1,7 @@
+import contextlib
+import logging
+
+import sqlalchemy.exc
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -35,11 +39,20 @@ Base = declarative_base()
 
 def create_database():
     pos = constants.PHM_DATABASE_URL.rfind("/")
-    engine_prefix = constants.PHM_DATABASE_URL[0: pos + 1]
+    engine_prefix = constants.PHM_DATABASE_URL[0: pos]
     database = constants.PHM_DATABASE_URL[pos + 1:].split("?")[0]
-    with create_engine(engine_prefix,
-                       isolation_level='AUTOCOMMIT').connect() as connection:
-        connection.execute('CREATE DATABASE IF NOT EXISTS ' + database + ' charset="utf8"')
+    if constants.USING_DATABASE_TYPE == constants.DATABASE_TYPE_MYSQL:
+        with create_engine(engine_prefix,
+                           isolation_level='AUTOCOMMIT').connect() as connection:
+            connection.execute('CREATE DATABASE IF NOT EXISTS ' + database + ' charset="utf8"')
+    elif constants.USING_DATABASE_TYPE == constants.DATABASE_TYPE_PGSQL:
+        with contextlib.suppress(sqlalchemy.exc.ProgrammingError):
+            with create_engine(engine_prefix,
+                               isolation_level='AUTOCOMMIT').connect() as connection:
+                connection.execute('CREATE DATABASE ' + database)
+        pass
+    else:
+        logging.INFO("目前MS只支持pgsql、mysql")
 
 
 def create_tables() -> list:
