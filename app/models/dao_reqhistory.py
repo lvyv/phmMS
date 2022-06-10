@@ -49,7 +49,7 @@ class RequestHistoryCRUD(AppCRUD):
     def get_records(self, equipCode: str, metrics: str, displayType: str, start: int, end: int) -> TReqHistory:
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.metrics == metrics,
-                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
+                                                         # TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          TReqHistory.displayType == displayType,
                                                          or_(TReqHistory.startTs.between(start, end),
                                                              TReqHistory.endTs.between(start, end),
@@ -65,7 +65,7 @@ class RequestHistoryCRUD(AppCRUD):
                                   displayType: str, start: int, end: int) -> TReqHistory:
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.metrics == metrics,
-                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
+                                                         # TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          TReqHistory.displayType == displayType,
                                                          and_(TReqHistory.startTs == start,
                                                               TReqHistory.endTs == end))).all()
