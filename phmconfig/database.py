@@ -47,12 +47,12 @@ def create_database():
             connection.execute('CREATE DATABASE IF NOT EXISTS ' + database + ' charset="utf8"')
     elif constants.USING_DATABASE_TYPE == constants.DATABASE_TYPE_PGSQL:
         with contextlib.suppress(sqlalchemy.exc.ProgrammingError):
-            with create_engine(engine_prefix,
+            with create_engine(engine_prefix + "/postgres",
                                isolation_level='AUTOCOMMIT').connect() as connection:
                 connection.execute('CREATE DATABASE ' + database)
         pass
     else:
-        logging.INFO("目前MS只支持pgsql、mysql")
+        logging.info("目前MS只支持pgsql、mysql")
 
 
 def create_tables() -> list:
