@@ -163,19 +163,19 @@ def calculate_cluster(dataS, display):
         out = None
         if display == ClusterDisplayUtil.DISPLAY_2D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
-            logging.info("cluster data prepare to complete =>" + display)
+            logging.info("2d cluster data prepare to complete")
             out = calculate_cluster_2d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_3D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
-            logging.info("cluster data prepare to complete =>" + display)
+            logging.info("3d cluster data prepare to complete")
             out = calculate_cluster_3d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_AGG2D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_agg2d(dataS)
-            logging.info("cluster data prepare to complete =>" + display)
+            logging.info("agg2d cluster data prepare to complete")
             out = calculate_cluster_agg2d(dataList, ageList, devList)
         elif display == ClusterDisplayUtil.DISPLAY_AGG3D:
             dataList, ageList, devList = dataCenter.process_zb_history_data_2d_3d_agg3d(dataS)
-            logging.info("cluster data prepare to complete =>" + display)
+            logging.info("agg3d cluster data prepare to complete")
             out = calculate_cluster_agg3d(dataList, ageList, devList)
         else:
             pass
