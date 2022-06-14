@@ -64,11 +64,11 @@ class ClusterDisplayService(AppService):
         else:
             items = None
 
-        if items is None:
-            return ServiceResult(None)
+        if items is None or len(items) == 0:
+            return ServiceResult("趋势分析模型正在调度中，请稍等...")
         convertor = ConvertorFactory.get_convertor(clz)
         if convertor is None:
-            return ServiceResult(None)
+            return ServiceResult("equipType只支持battery、cellpack")
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                            ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
             # 2D 3D AGG2D AGG3D
@@ -78,5 +78,5 @@ class ClusterDisplayService(AppService):
         elif displayType in [ClusterDisplayUtil.DISPLAY_POLYLINE, SelfRelationUtil.DISPLAY_SELF_RELATION_POLYLINE]:
             convertItems = convertor.convertClusterDisplayPolyline(items, code, metrics)
         else:
-            return ServiceResult(None)
+            return ServiceResult("不支持的绘图模型")
         return ServiceResult(convertItems)

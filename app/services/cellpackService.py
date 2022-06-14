@@ -47,10 +47,10 @@ class CellPackService(AppService):
         else:
             items = CellPackCRUD(self.db).get_records_by_reqIds(hisRecordId)
 
-        if items is None:
-            return ServiceResult(None)
+        if items is None or len(items) == 0:
+            return ServiceResult("评估模型正在调度中，请稍等...")
         convertor = ConvertorFactory.get_convertor(clz)
         if convertor is None:
-            return ServiceResult(None)
+            return ServiceResult("equipType只支持battery、cellpack")
         convertItems = convertor.convert(items, metrics)
         return ServiceResult(convertItems)
