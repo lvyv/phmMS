@@ -34,7 +34,7 @@ class IConvertor:
         useMetrics = metrics.split(",")
         useMetrics = self.get_right_metrics(useMetrics)
         useMetrics.insert(0, "ts")
-        print(useMetrics)
+        # print(useMetrics)
         self.tmpDict.clear()
         for item in items:
             for m in useMetrics:

@@ -16,6 +16,10 @@ class SelfRelationService(AppService):
         item = SelfRelationCRUD(self.db).create_record(pi)
         return ServiceResult(item)
 
+    def create_batch(self, reqid, batch) -> ServiceResult:
+        items = SelfRelationCRUD(self.db).create_batch(reqid, batch)
+        return ServiceResult(items)
+
     def selfRelation(self, clz, code, metrics, leftTag, rightTag, step, unit, payload) -> ServiceResult:
 
         start = PayloadUtil.get_start_time(payload)

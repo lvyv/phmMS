@@ -2,11 +2,10 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends
 
-import constants
+import json
 from schemas.vrla.cellpack_model import CellPackModel
 from schemas.vrla.cluster_model import ClusterModel
 from schemas.vrla.self_relation_model import SelfRelationModel
-from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.health_eval_util import HealthEvalUtil
 from services.convert.self_relation_util import SelfRelationUtil
 from services.dashboardManagerService import DashboardManagerService
@@ -41,6 +40,14 @@ router = APIRouter(
 async def writeHealthEval(item: CellPackModel, db: get_db = Depends()):
     so = CellPackService(db)
     result = so.create_item(item)
+    return handle_result(result)
+
+
+# 回写电池评估数据
+@router.post("/writeEvalBatch")
+async def writeHealthEvalBatch(reqid: int, payload: dict,  db: get_db = Depends()):
+    so = CellPackService(db)
+    result = so.create_batch(reqid, json.loads(payload["items"]))
     return handle_result(result)
 
 
@@ -119,6 +126,13 @@ async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
     return handle_result(result)
 
 
+@router.post("/writeClusterBatch")
+async def writeClusterDisplay(reqid: int, displayType: str, payload: dict, db: get_db = Depends()):
+    so = ClusterDisplayService(db)
+    result = so.create_batch(reqid, displayType, json.loads(payload["items"]))
+    return handle_result(result)
+
+
 # 自相关接口  针对单个设备，单个测点进行
 # 注意：(自相关折线图数据 复用聚类折线图)  &from=$__from&to=$__to
 @router.post("/relation")
@@ -166,6 +180,13 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
 async def writeClusterDisplay(item: SelfRelationModel, db: get_db = Depends()):
     so = SelfRelationService(db)
     result = so.create_item(item)
+    return handle_result(result)
+
+
+@router.post("/writeRelationBatch")
+async def writeClusterDisplay(reqid: int, payload: dict, db: get_db = Depends()):
+    so = SelfRelationService(db)
+    result = so.create_batch(reqid, json.loads(payload["items"]))
     return handle_result(result)
 
 

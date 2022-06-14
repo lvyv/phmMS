@@ -1,3 +1,4 @@
+from phmconfig.dataConvertUtil import DataConvertUtil
 from services.main import AppCRUD
 from models.tables import TCellPack
 from schemas.vrla.cellpack_model import CellPackModel
@@ -42,6 +43,46 @@ class CellPackCRUD(AppCRUD):
         self.db.commit()
         self.db.refresh(record)
         return record
+
+    def create_batch(self, reqid, items) -> TCellPack:
+        records = []
+        for im in items:
+            item = DataConvertUtil.SOH(reqid, im)
+            record = TCellPack(ts=item["ts"],
+                               did=item["did"],
+                               dclz=item["dclz"],
+                               reqId=reqid,
+                               remainLife=item["remainLife"],
+                               voc=item["voc"],
+                               workVoc=item["workVoc"],
+                               soc=item["soc"],
+                               soh=item["soh"],
+                               imbalance=item["imbalance"],
+                               current=item["current"],
+                               minTemp=item["minTemp"],
+                               maxTemp=item["maxTemp"],
+                               cellMaxVoc=item["cellMaxVoc"],
+                               cellMinVoc=item["cellMinVoc"],
+                               cellMaxVol=item["cellMaxVol"],
+                               cellMinVol=item["cellMinVol"],
+                               cellAvgVol=item["cellAvgVol"],
+                               envTemp=item["envTemp"],
+                               cellVol=item["cellVol"],
+                               cellSoc=item["cellSoc"],
+                               state=item["state"],
+                               M1=item["M1"],
+                               M2=item["M2"],
+                               M3=item["M3"],
+                               M4=item["M4"],
+                               M5=item["M5"],
+                               M6=item["M6"],
+                               M7=item["M7"],
+                               M8=item["M8"]
+                               )
+            records.append(record)
+        self.db.add_all(records)
+        self.db.commit()
+        return records
 
     def get_records_by_reqIds(self, reqIds: []) -> TCellPack:
         records = self.db.query(TCellPack).filter(and_(TCellPack.reqId.in_(reqIds))).all()

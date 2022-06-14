@@ -15,6 +15,10 @@ class CellPackService(AppService):
         item = CellPackCRUD(self.db).create_record(pi)
         return ServiceResult(item)
 
+    def create_batch(self, reqid,  items) -> ServiceResult:
+        items = CellPackCRUD(self.db).create_batch(reqid, items)
+        return ServiceResult(items)
+
     def health_eval(self, clz, code, metrics, payload, allMetrics) -> ServiceResult:
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)

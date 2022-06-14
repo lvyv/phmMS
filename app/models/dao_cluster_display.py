@@ -1,3 +1,4 @@
+from phmconfig.dataConvertUtil import DataConvertUtil
 from services.main import AppCRUD
 from models.tables import TCluster
 from schemas.vrla.cluster_model import ClusterModel
@@ -19,6 +20,25 @@ class ClusterCRUD(AppCRUD):
         self.db.add(reqdao)
         self.db.commit()
         self.db.refresh(reqdao)
+        return reqdao
+
+    def create_batch(self, reqid, displayType, items) -> TCluster:
+        batch = []
+        for did in items.keys():
+            item = DataConvertUtil.cluster(reqid, displayType, did, items)
+            reqdao = TCluster(ts=item["ts"],  # 主键
+                              reqId=reqid,
+                              x=item["x"],
+                              y=item["y"],
+                              z=item["z"],
+                              color=item["color"],
+                              size=item["size"],
+                              shape=item["shape"],
+                              name=item["name"]
+                              )
+            batch.append(reqdao)
+        self.db.add_all(batch)
+        self.db.commit()
         return reqdao
 
     def get_records(self, reqIds: []) -> TCluster:

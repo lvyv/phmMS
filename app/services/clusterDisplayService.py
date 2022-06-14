@@ -18,6 +18,10 @@ class ClusterDisplayService(AppService):
         item = ClusterCRUD(self.db).create_record(pi)
         return ServiceResult(item)
 
+    def create_batch(self, reqid, displayType,  batch) -> ServiceResult:
+        items = ClusterCRUD(self.db).create_batch(reqid, displayType, batch)
+        return ServiceResult(items)
+
     def clusterDisplay(self, clz, code, metrics, displayType, payload) -> ServiceResult:
 
         start = PayloadUtil.get_start_time(payload)
