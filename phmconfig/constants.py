@@ -50,6 +50,12 @@ REST_REQUEST_TIMEOUT = 10
 PREFECT_MATCH_HISTORY_QUERY_RECORD = cfg[
     "time_segment_prefect_match"] if "time_segment_prefect_match" in cfg_keys else True
 
+
+# 点击时间间隔
+CLICK_GRAP = cfg["click_gap"] if 'click_gap' in cfg_keys else 60
+
+EQUIP_METRIC_SYNC_GAP = cfg["equip_metric_sync_gap"] if 'equip_metric_sync_gap' in cfg_keys else 300
+
 # ------------------------- api ------------------------------
 
 # 配置服务启动模式

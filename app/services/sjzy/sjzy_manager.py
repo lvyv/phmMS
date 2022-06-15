@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from phmconfig import constants
 from services.http.dataCenterService import DataCenterService
 from services.metricMappingService import MetricMappingService
 import logging
@@ -12,7 +13,7 @@ class SjzyManager:
     def dataSync(self, equipCode, equipType, db):
         # 每隔5分钟，同步测点
         now_time = int(datetime.now().timestamp())
-        if self.LastTime == 0 or now_time - self.LastTime > 300:
+        if self.LastTime == 0 or now_time - self.LastTime > constants.EQUIP_METRIC_SYNC_GAP:
             self.LastTime = now_time
             logging.info("sync equip metric ...")
         else:
