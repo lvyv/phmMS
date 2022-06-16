@@ -60,3 +60,26 @@ class ReqHistoryService(AppService):
             # })
             ret.append(ReqHistoryService.convert_time_segment(item.startTs, item.endTs))
         return ServiceResult(ret)
+
+    def get_equip_code(self, displayType):
+        record = RequestHistoryCRUD(self.db).get_equip_code(displayType)
+        if len(record) <= 0:
+            return ServiceResult(None)
+        ret = []
+        for item in record:
+            disguise = ",".join(it for it in json.loads(item.memo))
+            ret.append(disguise)
+        return ServiceResult(ret)
+
+    def get_equip_metric(self,  equipCode, displayType):
+        devs = equipCode.split(",")
+        devs.sort()
+
+        record = RequestHistoryCRUD(self.db).get_equip_metric(displayType, json.dumps(devs, ensure_ascii=False))
+        if len(record) <= 0:
+            return ServiceResult(None)
+        ret = []
+        for item in record:
+            disguise = ",".join(it for it in json.loads(item.metrics))
+            ret.append(disguise)
+        return ServiceResult(ret)

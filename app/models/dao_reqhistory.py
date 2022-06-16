@@ -1,6 +1,6 @@
 import time
 
-from sqlalchemy import and_, desc, or_
+from sqlalchemy import and_, desc, or_, distinct
 
 from services.main import AppCRUD
 from models.tables import TReqHistory
@@ -82,4 +82,15 @@ class RequestHistoryCRUD(AppCRUD):
     def get_records_by_displayType(self, displayType):
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.displayType == displayType,
                                                          TReqHistory.status == ct.REQ_STATUS_SETTLED)).all()
+        return records
+
+    def get_equip_code(self, displayType):
+        records = self.db.query(TReqHistory).filter(TReqHistory.displayType == displayType)\
+            .distinct(TReqHistory.memo).all()
+        return records
+
+    def get_equip_metric(self, displayType, equipCode):
+        records = self.db.query(TReqHistory).filter(and_(TReqHistory.displayType == displayType,
+                                                         TReqHistory.memo == equipCode))\
+            .distinct(TReqHistory.metrics).all()
         return records

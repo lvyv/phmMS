@@ -62,15 +62,39 @@ async def updateHistoryRecord(reqid: str, res: str, db: get_db = Depends()):
     return handle_result(result)
 
 
-@router.get("/plugin/timeSegment")
-async def getTimeSegment(equipCode, metric, displayType, db: get_db = Depends()):
-    so = ReqHistoryService(db)
-    result = so.get_time_segment(equipCode, metric, displayType)
-    return handle_result(result)
-
-
 # @router.get("/plugin/info")
 async def getPluginAllInfo(displayType, db: get_db = Depends()):
     so = ReqHistoryService(db)
     result = so.get_plugin_all_info(displayType)
+    return handle_result(result)
+
+
+# 获取装备类型
+@router.get("/plugin/equipType")
+async def getEquipTypeByPlugin():
+    result = ServiceResult(["battery", "cellpack"])
+    return handle_result(result)
+
+
+# 获取装备编码
+@router.get("/plugin/equipCode")
+async def getEquipCodeByPlugin(equipType, displayType, db: get_db = Depends()):
+    so = ReqHistoryService(db)
+    result = so.get_equip_code(displayType)
+    return handle_result(result)
+
+
+# 获取装备编码
+@router.get("/plugin/metric")
+async def getMetricByPlugin(equipType, equipCode, displayType, db: get_db = Depends()):
+    so = ReqHistoryService(db)
+    result = so.get_equip_metric(equipCode, displayType)
+    return handle_result(result)
+
+
+# 获取时间段
+@router.get("/plugin/timeSegment")
+async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: get_db = Depends()):
+    so = ReqHistoryService(db)
+    result = so.get_time_segment(equipCode, metric, displayType)
     return handle_result(result)
