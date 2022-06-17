@@ -3,6 +3,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends
 
+from services.convert.health_eval_util import HealthEvalUtil
 from services.convert.metric_mapping_utils import MetricMappingUtils
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
@@ -96,5 +97,24 @@ async def getMetricByPlugin(equipType, equipCode, displayType, db: get_db = Depe
 @router.get("/plugin/timeSegment")
 async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: get_db = Depends()):
     so = ReqHistoryService(db)
-    result = so.get_time_segment(equipCode, metric, displayType)
+    if displayType in [HealthEvalUtil.DISPLAY_HEALTH_EVAL]:
+        # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
+        result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
+        allMetrics = ",".join(metricName for metricName in result.values())
+        result = so.get_time_segment(equipCode, allMetrics, displayType)
+    else:
+        result = so.get_time_segment(equipCode, metric, displayType)
+    return handle_result(result)
+
+
+# 提供给 IOT-Json 插件测量标志
+@router.get("/plugin/indicator")
+async def getEquipTypeByPlugin():
+    result = ServiceResult(["$equipType.$equipCode.$metrics.2D", "$equipType.$equipCode.$metrics.3D",
+                            "$equipType.$equipCode.$metrics.AGG2D", "$equipType.$equipCode.$metrics.AGG3D",
+                            "$equipType.$equipCode.$metrics.SELF_RELATION",
+                            "$equipType.$equipCode.$metrics.SELF_POLYLINE",
+                            "$equipType.$equipCode.$metrics.SCATTER",
+                            "$equipType.$equipCode.$metrics.POLYLINE",
+                            "$equipType.$equipCode.SOH.EVAL"])
     return handle_result(result)

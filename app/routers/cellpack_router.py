@@ -67,20 +67,20 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
     # 数据同步
     sjzyManager.dataSync(equipCode, equipType, db)
 
+    # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
+    result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
+    allMetrics = ",".join(metricName for metricName in result.values())
+    if timeGrapUtil.canClick() is True:
+        # 调用模型 (使用payload)
+        BegForService(db).exec(equipCode, allMetrics, HealthEvalUtil.DISPLAY_HEALTH_EVAL, payload)
+
     # 更新playload
     if timeSegment is not None:
         pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
         if pl is not None:
             payload = pl
 
-    # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
-    result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
-    allMetrics = ",".join(metricName for metricName in result.values())
-    if timeGrapUtil.canClick() is True:
-        # 调用模型
-        BegForService(db).exec(equipCode, allMetrics, HealthEvalUtil.DISPLAY_HEALTH_EVAL, payload)
-
-    # 数据展示
+    # 数据展示 （使用timeSegment, 如果没有timeSegment使用payload）
     so = CellPackService(db)
     result = so.health_eval(equipType, equipCode, metrics, payload, allMetrics)
     return handle_result(result)
@@ -103,14 +103,14 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
     # 数据同步
     sjzyManager.dataSync(equipCode, equipType, db)
 
+    # 调用模型
+    BegForService(db).exec(equipCode, metrics, displayType, payload)
+
     # 更新playload
     if timeSegment is not None:
         pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
         if pl is not None:
             payload = pl
-
-    # 调用模型
-    BegForService(db).exec(equipCode, metrics, displayType, payload)
 
     # 数据展示
     so = ClusterDisplayService(db)
@@ -152,12 +152,6 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     # 注意自相关模型，将payload 中的值赋给 tag
     left_tag_time, right_tag_time = SelfRelationUtil.getTagInfoByPayload(payload)
 
-    # 更新playload
-    if timeSegment is not None:
-        pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
-        if pl is not None:
-            payload = pl
-
     # 根据left_tag_time, right_tag_time, payload 获取 step, unit
     tag_step, tag_unit = SelfRelationUtil.getStepUintByTagAndPayload(left_tag_time, right_tag_time, payload)
 
@@ -170,6 +164,13 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     # 调用模型
     BegForService(db).exec(equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
                            leftTag, rightTag, step, unit)
+
+    # 更新playload
+    if timeSegment is not None:
+        pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
+        if pl is not None:
+            payload = pl
+
     # 数据展示
     so = SelfRelationService(db)
     result = so.selfRelation(equipType, equipCode, metrics, leftTag, rightTag, step, unit, payload)
