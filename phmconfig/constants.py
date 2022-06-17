@@ -56,6 +56,8 @@ CLICK_GRAP = cfg["click_gap"] if 'click_gap' in cfg_keys else 60
 
 EQUIP_METRIC_SYNC_GAP = cfg["equip_metric_sync_gap"] if 'equip_metric_sync_gap' in cfg_keys else 300
 
+TIME_SEGMENT_SHOW_UTF8 = cfg["time_segment_show_utf_8"] if "time_segment_show_utf_8" in cfg_keys else True
+
 # ------------------------- api ------------------------------
 
 # 配置服务启动模式

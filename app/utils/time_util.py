@@ -1,5 +1,6 @@
 import time
 import calendar
+from phmconfig.timeUtils import  TimeUtils
 
 
 class TimeUtil:
@@ -17,3 +18,7 @@ class TimeUtil:
         time_tuple = time.localtime(int(timeStamp / 1000) - 8 * 3600)
         timeStr = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time_tuple)
         return timeStr
+
+    @staticmethod
+    def convert_time_utc_8_str(timeStamp):
+        return TimeUtils.convert_time_str(timeStamp)

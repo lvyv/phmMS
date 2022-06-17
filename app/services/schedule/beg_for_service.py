@@ -9,6 +9,7 @@ from utils.payload_util import PayloadUtil
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from services.convert.self_relation_util import SelfRelationUtil
 from phmconfig import constants
+from utils.time_util import TimeUtil
 
 
 class BegForService(AppService):
@@ -76,5 +77,10 @@ class BegForService(AppService):
         ts = timeSegment.split(",")
         if len(ts) != 2:
             return None
-        payload = {"range": {"from": ts[0], "to": ts[1]}}
+        if constants.TIME_SEGMENT_SHOW_UTF8 is True:
+            from_ = TimeUtil.convert_time_utc_str(BegForService.convert_time_stamp_utc(ts[0]))
+            to_ = TimeUtil.convert_time_utc_str(BegForService.convert_time_stamp_utc(ts[1]))
+            payload = {"range": {"from": from_, "to": to_}}
+        else:
+            payload = {"range": {"from": ts[0], "to": ts[1]}}
         return payload
