@@ -79,7 +79,7 @@ class BegForService(AppService):
 
     @staticmethod
     def getPlayLoadByTimeSegment(timeSegment):
-        ts = timeSegment.split(",")
+        ts = timeSegment.split("至")
         if len(ts) != 2:
             return None
         if constants.TIME_SEGMENT_SHOW_UTF8 is True:

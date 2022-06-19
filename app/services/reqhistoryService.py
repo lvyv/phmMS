@@ -43,9 +43,9 @@ class ReqHistoryService(AppService):
     @staticmethod
     def convert_time_segment(start, end):
         if constants.TIME_SEGMENT_SHOW_UTF8 is True:
-            segment = TimeUtil.convert_time_utc_8_str(start) + "," + TimeUtil.convert_time_utc_8_str(end)
+            segment = TimeUtil.convert_time_utc_8_str(start) + "至" + TimeUtil.convert_time_utc_8_str(end)
         else:
-            segment = TimeUtil.convert_time_utc_str(start) + "," + TimeUtil.convert_time_utc_str(end)
+            segment = TimeUtil.convert_time_utc_str(start) + "至" + TimeUtil.convert_time_utc_str(end)
         return segment
 
     def get_plugin_all_info(self, displayType):
