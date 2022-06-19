@@ -26,7 +26,7 @@ class ReqHistoryService(AppService):
         record = RequestHistoryCRUD(self.db).get_time_segment(json.dumps(devs, ensure_ascii=False),
                                                               json.dumps(tags, ensure_ascii=False), displayType)
         if len(record) <= 0:
-            return ServiceResult(None)
+            return ServiceResult([])
         ret = []
         for item in record:
             if item.startTs <= 0 or item.endTs <= 0:
