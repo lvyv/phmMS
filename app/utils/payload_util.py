@@ -2,6 +2,19 @@ from utils.time_util import TimeUtil
 
 
 class PayloadUtil:
+
+    @staticmethod
+    def check_relative_time_valid(payload):
+        try:
+            start = payload["rangeRaw"]["from"]
+            end = payload["rangeRaw"]["to"]
+            if "now" in start or "now" in end:
+                return False
+        except Exception as e:
+            print(e)
+            return True
+
+
     @staticmethod
     def get_start_time(payload):
         start = TimeUtil.convert_time_stamp(payload["range"]["from"])

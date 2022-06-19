@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 
 from models.dao_reqhistory import RequestHistoryCRUD
@@ -20,6 +21,10 @@ class BegForService(AppService):
     # payload  负载， 包含 start end  interval
     def exec(self, equipCode: str, metrics: str, displayType: str, payload: dict,
              leftTag: int = None, rightTag: int = None, step: int = None, unit: int = None):
+
+        if PayloadUtil.check_relative_time_valid(payload) is False:
+            logging.info("输入的时间不合法,不进行调度")
+            return
         # 转换成时间戳
         start_orgin = start = PayloadUtil.get_start_time(payload)
         end_orgin = end = PayloadUtil.get_end_time(payload)
