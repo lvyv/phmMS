@@ -76,7 +76,8 @@ class RequestHistoryCRUD(AppCRUD):
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          TReqHistory.metrics == metrics,
-                                                         TReqHistory.displayType == displayType)).all()
+                                                         TReqHistory.displayType == displayType))\
+            .order_by(desc(TReqHistory.startTs), desc(TReqHistory.endTs)).all()
         return records
 
     def get_records_by_displayType(self, displayType):

@@ -1,5 +1,6 @@
 import calendar
 import time
+from phmconfig import constants
 
 
 class TimeUtils:
@@ -13,7 +14,7 @@ class TimeUtils:
     @staticmethod
     def get_time_interval(start, end):
         diff = int(end / 1000 - start / 1000)
-        maxPoints = 1000
+        maxPoints = constants.EQUIP_DATA_MAX_POINT
         interval = int(diff / maxPoints)
         if interval > 24 * 60 * 60:
             gap = int(interval / (24 * 60 * 60))
