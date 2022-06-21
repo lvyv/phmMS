@@ -36,3 +36,7 @@ class SelfRelationCRUD(AppCRUD):
     def get_records(self, reqIds: []) -> TSelfRelation:
         records = self.db.query(TSelfRelation).filter(TSelfRelation.reqId.in_(reqIds)).all()
         return records
+
+    def delete_record(self, reqid):
+        self.db.query(TSelfRelation).filter(TSelfRelation.reqId == reqid).delete()
+        self.db.commit()

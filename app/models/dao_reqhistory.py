@@ -95,3 +95,8 @@ class RequestHistoryCRUD(AppCRUD):
                                                          TReqHistory.memo == equipCode))\
             .distinct(TReqHistory.metrics).all()
         return records
+
+    def delete_record(self, reqid):
+        self.db.query(TReqHistory).filter(TReqHistory.id == reqid).delete()
+        self.db.commit()
+

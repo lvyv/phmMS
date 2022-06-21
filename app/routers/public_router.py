@@ -107,14 +107,28 @@ async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: 
     return handle_result(result)
 
 
+# 删除时间段
+@router.delete("/plugin/timeSegment")
+async def deleteTimeSegmentByPlugin(equipType, equipCode, metric, displayType, timeSegment, db:get_db = Depends()):
+    so = ReqHistoryService(db)
+    if displayType in [HealthEvalUtil.DISPLAY_HEALTH_EVAL]:
+        # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
+        result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
+        allMetrics = ",".join(metricName for metricName in result.values())
+        result = so.delete_time_segment(equipCode, allMetrics, timeSegment, displayType)
+    else:
+        result = so.delete_time_segment(equipCode, metric, timeSegment, displayType)
+    return handle_result(result)
+
+
 # 提供给 IOT-Json 插件测量标志
 @router.get("/plugin/indicator")
 async def getEquipTypeByPlugin():
-    result = ServiceResult(["$equipType.$equipCode.$metrics.2D", "$equipType.$equipCode.$metrics.3D",
-                            "$equipType.$equipCode.$metrics.AGG2D", "$equipType.$equipCode.$metrics.AGG3D",
-                            "$equipType.$equipCode.$metrics.SELF_RELATION",
-                            "$equipType.$equipCode.$metrics.SELF_POLYLINE",
-                            "$equipType.$equipCode.$metrics.SCATTER",
-                            "$equipType.$equipCode.$metrics.POLYLINE",
-                            "$equipType.$equipCode.SOH.EVAL"])
+    result = ServiceResult(["$equipType.$equipCode.$metrics.2D.$host", "$equipType.$equipCode.$metrics.3D.$host",
+                            "$equipType.$equipCode.$metrics.AGG2D.$host", "$equipType.$equipCode.$metrics.AGG3D.$host",
+                            "$equipType.$equipCode.$metrics.SELF_RELATION.$host",
+                            "$equipType.$equipCode.$metrics.SELF_POLYLINE.$host",
+                            "$equipType.$equipCode.$metrics.SCATTER.$host",
+                            "$equipType.$equipCode.$metrics.POLYLINE.$host",
+                            "$equipType.$equipCode.SOH.EVAL.$host"])
     return handle_result(result)

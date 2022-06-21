@@ -119,3 +119,7 @@ class CellPackCRUD(AppCRUD):
         if len(items) == 0:
             return None
         return items
+
+    def delete_record(self, reqid):
+        self.db.query(TCellPack).filter(TCellPack.reqId == reqid).delete()
+        self.db.commit()

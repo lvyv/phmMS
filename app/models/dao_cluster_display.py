@@ -44,3 +44,7 @@ class ClusterCRUD(AppCRUD):
     def get_records(self, reqIds: []) -> TCluster:
         records = self.db.query(TCluster).filter(TCluster.reqId.in_(reqIds)).all()
         return records
+
+    def delete_record(self, reqid):
+        self.db.query(TCluster).filter(TCluster.reqId == reqid).delete()
+        self.db.commit()

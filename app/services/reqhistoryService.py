@@ -1,8 +1,16 @@
 import json
 
+from models.dao_cellpack import CellPackCRUD
+from models.dao_cluster_display import ClusterCRUD
+from models.dao_self_relation import SelfRelationCRUD
 from phmconfig import constants
+from services.convert.cluster_display_util import ClusterDisplayUtil
+from services.convert.health_eval_util import HealthEvalUtil
+from services.convert.self_relation_util import SelfRelationUtil
 from services.main import AppService
 from models.dao_reqhistory import RequestHistoryCRUD
+from services.schedule.beg_for_service import BegForService
+from utils.payload_util import PayloadUtil
 from utils.service_result import ServiceResult
 
 # from utils.app_exceptions import AppException
@@ -40,6 +48,46 @@ class ReqHistoryService(AppService):
             ret.append(ReqHistoryService.convert_time_segment(item.startTs, item.endTs))
         return ServiceResult(ret)
 
+    def delete_time_segment(self, equipCode, metric, timeSegment, displayType):
+        devs = equipCode.split(",")
+        devs.sort()
+        tags = metric.split(",")
+        tags.sort()
+
+        payload = BegForService.getPlayLoadByTimeSegment(timeSegment)
+        start = PayloadUtil.get_start_time(payload)
+        end = PayloadUtil.get_end_time(payload)
+
+        record = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                       json.dumps(tags, ensure_ascii=False),
+                                                                       displayType, start, end)
+
+        success = True
+
+        if len(record) > 0:
+            for his in record:
+                # TODO 删除历史记录
+                RequestHistoryCRUD(self.db).delete_record(his.id)
+                # TODO 删除数据表
+                if displayType in [HealthEvalUtil.DISPLAY_HEALTH_EVAL,
+                                   ClusterDisplayUtil.DISPLAY_SCATTER,
+                                   ClusterDisplayUtil.DISPLAY_POLYLINE,
+                                   SelfRelationUtil.DISPLAY_SELF_RELATION_POLYLINE]:
+                    CellPackCRUD(self.db).delete_record(his.id)
+                elif displayType in [ClusterDisplayUtil.DISPLAY_2D,
+                                     ClusterDisplayUtil.DISPLAY_3D,
+                                     ClusterDisplayUtil.DISPLAY_AGG2D,
+                                     ClusterDisplayUtil.DISPLAY_AGG3D]:
+                    ClusterCRUD(self.db).delete_record(his.id)
+                elif displayType in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
+                    SelfRelationCRUD(self.db).delete_record(his.id)
+                else:
+                    success = False
+        else:
+            success = False
+
+        return ServiceResult(success)
+
     @staticmethod
     def convert_time_segment(start, end):
         if constants.TIME_SEGMENT_SHOW_UTF8 is True:
@@ -75,7 +123,7 @@ class ReqHistoryService(AppService):
             ret.append(disguise)
         return ServiceResult(ret)
 
-    def get_equip_metric(self,  equipCode, displayType):
+    def get_equip_metric(self, equipCode, displayType):
         devs = equipCode.split(",")
         devs.sort()
 
