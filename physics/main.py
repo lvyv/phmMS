@@ -144,7 +144,7 @@ def soh_task(sohin, reqid):
         mappingS = dataCenter.query_metric_mapping(devices[0])
     else:
         mappingS = dataCenter.query_metric_mapping()
-    logging.info("下载测点:" + json.dumps(mappingS, ensure_ascii=False))
+    # logging.info("下载测点:" + json.dumps(mappingS, ensure_ascii=False))
     # 测点反转
     convertMapping = {}
     if mappingS is not None:
@@ -159,12 +159,16 @@ def soh_task(sohin, reqid):
     # 处理结果
     post_process_vrla_soh(reqid, res)
 
+    logging.info("计算SOH完成")
+
 
 def cluster_task(clusterin, reqid, displayType):
     dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
     # logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
     res = phm.calculate_cluster(dataS, displayType)
     post_process_vrla_cluster(reqid, res, displayType)
+
+    logging.info("聚类计算完成: " + displayType)
 
 
 def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
@@ -179,6 +183,8 @@ def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
     # logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
     res = phm.calculate_relate(dataS, leftTag, rightTag, step, unit)
     post_process_vrla_relation(reqid, res)
+
+    logging.info("自相关计算完成")
 
 
 # IF11:REST MODEL 外部接口-phmMD与phmMS之间接口
