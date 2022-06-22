@@ -46,7 +46,7 @@ cluster_shape = ["circle", "square", "diamond", "cross", "x",
                  ]
 
 cluster_color = [
-    '#ff3c00',
+    '#778899',
     '#5b15a5',
     '#014ab6',
     '#00ef11',

@@ -68,7 +68,11 @@ SCHEMA_HEADER = "https" if SCHEMA_HTTPS is True else "http"
 
 # prefix
 PHMMS_CONTAINER_NAME = cfg["phmms_container_name"]
-PHMMS_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMS_CONTAINER_NAME + ":" + str(PHMMS_PORT)
+
+if len(PHMMS_CONTAINER_NAME.split(":")) == 2:
+    PHMMS_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMS_CONTAINER_NAME
+else:
+    PHMMS_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMS_CONTAINER_NAME + ":" + str(PHMMS_PORT)
 # 写评估数据
 URL_MD_WRITE_EVAL = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeEval"
 # 写健康指标URL地址
@@ -85,7 +89,11 @@ URL_MD_QUERY_METRIC_MAPPING = PHMMS_URL_PREFIX + "/api/v1/public/getMapping"
 
 # prefix
 PHMMD_CONTAINER_NAME = cfg["phmmd_container_name"]
-PHMMD_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMD_CONTAINER_NAME + ":" + str(PHMMD_PORT)
+
+if len(PHMMD_CONTAINER_NAME.split(":")) == 2:
+    PHMMD_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMD_CONTAINER_NAME
+else:
+    PHMMD_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMD_CONTAINER_NAME + ":" + str(PHMMD_PORT)
 # 调用评估
 URL_MS_CALL_SOH = PHMMD_URL_PREFIX + "/api/v1/soh"
 # 调用聚类
