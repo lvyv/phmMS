@@ -153,21 +153,24 @@ def soh_task(sohin, reqid):
 
     logging.info("测点映射:" + json.dumps(convertMapping, ensure_ascii=False))
 
-    # 计算SOH
-    res = phm.calculate_soh(dataS, convertMapping)
-
-    # 处理结果
-    post_process_vrla_soh(reqid, res)
-
+    try:
+        # 计算SOH
+        res = phm.calculate_soh(dataS, convertMapping)
+        # 处理结果
+        post_process_vrla_soh(reqid, res)
+    except Exception as e:
+        print(e)
     logging.info("计算SOH完成")
 
 
 def cluster_task(clusterin, reqid, displayType):
     dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
     # logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
-    res = phm.calculate_cluster(dataS, displayType)
-    post_process_vrla_cluster(reqid, res, displayType)
-
+    try:
+        res = phm.calculate_cluster(dataS, displayType)
+        post_process_vrla_cluster(reqid, res, displayType)
+    except Exception as e:
+        print(e)
     logging.info("聚类计算完成: " + displayType)
 
 
@@ -181,9 +184,11 @@ def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
 
     dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
     # logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
-    res = phm.calculate_relate(dataS, leftTag, rightTag, step, unit)
-    post_process_vrla_relation(reqid, res)
-
+    try:
+        res = phm.calculate_relate(dataS, leftTag, rightTag, step, unit)
+        post_process_vrla_relation(reqid, res)
+    except Exception as e:
+        print(e)
     logging.info("自相关计算完成")
 
 
