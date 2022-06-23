@@ -68,7 +68,7 @@ class ClusterDisplayService(AppService):
             return ServiceResult("趋势分析模型正在调度中，请稍等...")
         convertor = ConvertorFactory.get_convertor(clz)
         if convertor is None:
-            return ServiceResult("equipType只支持battery、cellpack")
+            return ServiceResult("equipType只支持battery")
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                            ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
             # 2D 3D AGG2D AGG3D

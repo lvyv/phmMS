@@ -52,6 +52,6 @@ class SelfRelationService(AppService):
             return ServiceResult("自相关模型正在调度中，请稍等...")
         convertor = ConvertorFactory.get_convertor(clz)
         if convertor is None:
-            return ServiceResult("equipType只支持battery、cellpack")
+            return ServiceResult("equipType只支持battery")
         convertItems = convertor.convertSelfRelation(items)
         return ServiceResult(convertItems)

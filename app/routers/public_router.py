@@ -97,7 +97,7 @@ async def getPluginAllInfo(displayType, db: get_db = Depends()):
 # 获取装备类型
 @router.get("/plugin/equipType")
 async def getEquipTypeByPlugin():
-    result = ServiceResult(["battery", "cellpack"])
+    result = ServiceResult(["battery"])
     return handle_result(result)
 
 
