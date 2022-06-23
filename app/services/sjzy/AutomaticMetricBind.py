@@ -3,7 +3,6 @@ import logging
 
 
 class AutomaticMetricBind:
-
     ownMetrics = ["remainLife", "voc", "workVoc", "soc",
                   "soh", "imbalance", "current", "minTemp",
                   "maxTemp",

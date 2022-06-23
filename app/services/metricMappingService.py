@@ -90,6 +90,11 @@ class MetricMappingService(AppService):
                         elif item.equip_type != equipType:
                             item.equip_type = equipType
                             self.update_item(item.metric_code, item)
+                        # TODO:
+                        if "metricAlias" in mapping.keys():
+                            item.metric_alias = mapping["metricAlias"]
+                            self.update_item(item.metric_code, item)
+
                 if found is False:
                     # 新增记录
                     if mapping["equipTypeCode"] != equipTypeCode:

@@ -56,7 +56,7 @@ async def getEquipType(equipTypeCode: str, db: get_db = Depends()):
 
 # equipTypeCode 设备类型编码
 @router.post("/sync")
-async def dataSync(equipTypeCode: str, db: get_db = Depends()):
+async def dataSync(equipTypeCode: str, auto: Optional[bool] = False,  db: get_db = Depends()):
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipTypeCode)
     if equipType is None or equipType is '':
@@ -65,8 +65,8 @@ async def dataSync(equipTypeCode: str, db: get_db = Depends()):
     so = MetricMappingService(db)
     metrics = DataCenterService.download_zb_metric(equipTypeCode)
 
-    # add for test
-    # metrics = AutomaticMetricBind.autoRun(metrics)
+    if auto is True:
+        metrics = AutomaticMetricBind.autoRun(metrics)
 
     # 同步电池测点映射数据
     result = so.update_all_mapping(equipTypeCode, metrics, equipType)
