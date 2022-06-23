@@ -60,7 +60,7 @@ class MetricMappingService(AppService):
                                          equip_type=equipType,
                                          equip_type_code=mapping["equipTypeCode"],
                                          equip_code=mapping["equipCode"],
-                                         metric_alias='',
+                                         metric_alias=mapping["metricAlias"] if "metricAlias" in mapping.keys() else '',
                                          metric_unit=mapping["metricUnit"],
                                          metric_describe='')
                 self.create_item(mmm)
@@ -101,7 +101,7 @@ class MetricMappingService(AppService):
                         equip_type=equipType,
                         equip_type_code=mapping["equipTypeCode"],
                         equip_code=mapping["equipCode"],
-                        metric_alias='',
+                        metric_alias=mapping["metricAlias"] if "metricAlias" in mapping.keys() else '',
                         metric_unit=mapping["metricUnit"],
                         metric_describe=''
                     )

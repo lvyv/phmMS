@@ -10,6 +10,7 @@ from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
 from services.http.dataCenterService import DataCenterService
 from services.reqhistoryService import ReqHistoryService
+from services.sjzy.AutomaticMetricBind import AutomaticMetricBind
 from utils.service_result import handle_result, ServiceResult
 
 router = APIRouter(
@@ -63,6 +64,10 @@ async def dataSync(equipTypeCode: str, db: get_db = Depends()):
 
     so = MetricMappingService(db)
     metrics = DataCenterService.download_zb_metric(equipTypeCode)
+
+    # add for test
+    # metrics = AutomaticMetricBind.autoRun(metrics)
+
     # 同步电池测点映射数据
     result = so.update_all_mapping(equipTypeCode, metrics, equipType)
     return handle_result(result)
