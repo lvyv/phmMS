@@ -9,6 +9,7 @@ from schemas.vrla.self_relation_model import SelfRelationModel
 from services.convert.health_eval_util import HealthEvalUtil
 from services.convert.self_relation_util import SelfRelationUtil
 from services.dashboardManagerService import DashboardManagerService
+from services.equipTypeMappingService import EquipTypeMappingService
 from services.metricMappingService import MetricMappingService
 from services.schedule.beg_for_service import BegForService
 from services.schedule.time_grap_util import TimeGrapUtil
@@ -59,6 +60,10 @@ async def writeHealthEvalBatch(reqid: int, payload: dict,  db: get_db = Depends(
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict,
                      timeSegment: Optional[str] = None, db: get_db = Depends()):
 
+    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
+    if equipType is None or equipType is '':
+        return "请先建立装备类型编码与装备类型映射表。"
+
     # 评估模型校验
     support = EvalModelValidate.support(equipCode)
     if support is False:
@@ -89,6 +94,11 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
 # 健康指标
 @router.post("/healthIndicator")
 async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_db = Depends()):
+
+    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
+    if equipType is None or equipType is '':
+        return "请先建立装备类型编码与装备类型映射表。"
+
     so = HealthIndicatorService(db)
     result = so.health_indicator(equipType, equipCode, reqType)
     return handle_result(result)
@@ -100,6 +110,11 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
 async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayType: str, payload: dict,
                          timeSegment: Optional[str] = None,
                          db: get_db = Depends()):
+
+    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
+    if equipType is None or equipType is '':
+        return "请先建立装备类型编码与装备类型映射表。"
+
     # 数据同步
     sjzyManager.dataSync(equipCode, equipType, db)
 
@@ -140,6 +155,10 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
                         leftTag: Optional[int] = None, rightTag: Optional[int] = None,
                         step: Optional[int] = None, unit: Optional[int] = None,
                         timeSegment: Optional[str] = None, db: get_db = Depends()):
+
+    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
+    if equipType is None or equipType is '':
+        return "请先建立装备类型编码与装备类型映射表。"
 
     # 自相关模型支持判断
     support = RelationModelValidate.support(equipCode, metrics)

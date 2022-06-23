@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 
 from services.convert.health_eval_util import HealthEvalUtil
 from services.convert.metric_mapping_utils import MetricMappingUtils
+from services.equipTypeMappingService import EquipTypeMappingService
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
 from services.http.dataCenterService import DataCenterService
@@ -20,19 +21,28 @@ router = APIRouter(
 
 # 查询装备编码类型
 @router.get("/getEquipTypeCode")
-async def getEquipTypeCode():
+async def getEquipTypeCode(db: get_db = Depends()):
     metrics = DataCenterService.download_zb_metric()
     equipTypeCode = DataCenterService.filter_zb_equip_type_code(metrics)
+
+    # TODO 更新装备类型编码 和 装备类型 映射关系
+    EquipTypeMappingService(db).create_batch(equipTypeCode)
+
     return equipTypeCode
 
 
 # equipTypeCode 设备类型编码
 @router.post("/sync")
 async def dataSync(equipTypeCode: str, db: get_db = Depends()):
+
+    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipTypeCode)
+    if equipType is None or equipType is '':
+        return "请先建立装备类型编码与装备类型映射表。"
+
     so = MetricMappingService(db)
     metrics = DataCenterService.download_zb_metric(equipTypeCode)
     # 同步电池测点映射数据
-    result = so.update_all_mapping(equipTypeCode, metrics)
+    result = so.update_all_mapping(equipTypeCode, metrics, equipType)
     return handle_result(result)
 
 
@@ -46,6 +56,20 @@ async def dataMapping(equipTypeCode: str, metricName: str, metric_alias: str,
     # 设置
     MetricMappingUtils.init_first = False
     return handle_result(result)
+
+
+@router.post("/equipTypeMapping")
+async def equipTypeMapping(equipTypeCode: str, equipType, db: get_db = Depends()):
+    so = EquipTypeMappingService(db)
+    result = so.updateMapping(equipTypeCode, equipType)
+    return handle_result(result)
+
+
+@router.get("/equipType")
+async def equipTypeMapping(equipTypeCode: str, db: get_db = Depends()):
+    so = EquipTypeMappingService(db)
+    result = so.getEquipTypeMapping(equipTypeCode)
+    return handle_result(ServiceResult(result))
 
 
 # 根据装备类型获取mapping

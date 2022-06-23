@@ -144,5 +144,12 @@ class TMetricMapping(Base):
     metric_unit = Column(TEXT)     # 测点类型
 
 
+class TEquipTypeMapping(Base):
+    __tablename__ = "xc_equip_type_mapping"
+    id = Column(Integer, primary_key=True, index=True)
+    equip_type_code = Column(TEXT)  # 装备类型编码
+    equip_type = Column(TEXT)  # 装备类型
+
+
 # create all tables
 TABLES = create_tables()

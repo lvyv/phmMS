@@ -36,9 +36,9 @@ class DataCenterService:
             return None
         result = data["result"]
         for res in result:
-            equipCode = res["equipCode"]
-            equipName = res["equipName"]
-            equipTypeCode = res["equipTypeCode"]
+            equipCode = res["equipCode"] if "equipCode" in res.keys() else ''
+            equipName = res["equipName"] if "equipName" in res.keys() else ''
+            equipTypeCode = res["equipTypeCode"] if "equipTypeCode" in res.keys() else ''
             for item in res["measurePoints"]:
                 code = item["pointCode"]
                 name = item["pointName"]

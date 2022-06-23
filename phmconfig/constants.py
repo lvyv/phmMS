@@ -106,7 +106,7 @@ URL_SJZY_API_PREFIX = cfg["url_sjzy_host"]
 # 从数据资源获取装备所有测点
 API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT = URL_SJZY_API_PREFIX + "/api/equip/query_equip_info_with_measure_point"
 # 从数据资源获取装备的测点数据
-API_QUERY_HISTORY_DATA = URL_SJZY_API_PREFIX + "/api/devices/query_history_data"
+API_QUERY_HISTORY_DATA = URL_SJZY_API_PREFIX + "/api/devices/query_history_data_v2"
 
 # 对接grafana
 URL_MS_GET_DASHBOARD_LIST = cfg["url_ms_get_dashboard_list"]

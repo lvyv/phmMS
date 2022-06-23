@@ -42,11 +42,9 @@ class MetricMappingService(AppService):
                     mapping[item.metric_alias] = item.metric_name
         return mapping
 
-    def update_all_mapping(self, equipTypeCode, mappings, equipType=None):
+    def update_all_mapping(self, equipTypeCode, mappings, equipType):
         if mappings is None:
             return
-
-        equipType = "battery" if equipType in ["cellpack", "battery"] else ''
 
         items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
 
@@ -59,7 +57,7 @@ class MetricMappingService(AppService):
                 mmm = MetricMappingModel(metric_name=mapping["metricName"],
                                          metric_code=mapping["metricCode"],
                                          equip_name=mapping["equipName"],
-                                         equip_type=equipType if equipType is not None else '',
+                                         equip_type=equipType,
                                          equip_type_code=mapping["equipTypeCode"],
                                          equip_code=mapping["equipCode"],
                                          metric_alias='',
@@ -77,14 +75,20 @@ class MetricMappingService(AppService):
                             item.metric_name = mapping["metricName"]
                             item.equip_name = mapping["equipName"]
                             item.metric_unit = mapping["metricUnit"]
+                            item.equip_type = equipType
                             self.update_item(item.metric_code, item)
                         elif item.equip_name != mapping["equipName"]:
                             # 更新数据库
+                            item.equip_type = equipType
                             item.equip_name = mapping["equipName"]
                             item.metric_unit = mapping["metricUnit"]
                             self.update_item(item.metric_code, item)
                         elif item.metric_unit != mapping["metricUnit"]:
+                            item.equip_type = equipType
                             item.metric_unit = mapping["metricUnit"]
+                            self.update_item(item.metric_code, item)
+                        elif item.equip_type != equipType:
+                            item.equip_type = equipType
                             self.update_item(item.metric_code, item)
                 if found is False:
                     # 新增记录
@@ -94,7 +98,7 @@ class MetricMappingService(AppService):
                         metric_name=mapping["metricName"],
                         metric_code=mapping["metricCode"],
                         equip_name=mapping["equipName"],
-                        equip_type=equipType if equipType is not None else '',
+                        equip_type=equipType,
                         equip_type_code=mapping["equipTypeCode"],
                         equip_code=mapping["equipCode"],
                         metric_alias='',
