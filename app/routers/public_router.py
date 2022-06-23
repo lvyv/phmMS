@@ -20,15 +20,37 @@ router = APIRouter(
 
 
 # 查询装备编码类型
-@router.get("/getEquipTypeCode")
-async def getEquipTypeCode(db: get_db = Depends()):
+@router.get("/getAllEquipTypeCode")
+async def getAllEquipTypeCode():
+    metrics = DataCenterService.download_zb_metric(hasFilter=False)
+    equipTypeCode = DataCenterService.filter_zb_equip_type_code(metrics)
+    return equipTypeCode
+
+
+# 查询装备编码类型
+@router.get("/getValidEquipTypeCode")
+async def getValidEquipTypeCode(db: get_db = Depends()):
     metrics = DataCenterService.download_zb_metric()
     equipTypeCode = DataCenterService.filter_zb_equip_type_code(metrics)
 
-    # TODO 更新装备类型编码 和 装备类型 映射关系
+    # 更新装备类型编码 和 装备类型 映射关系
     EquipTypeMappingService(db).create_batch(equipTypeCode)
 
     return equipTypeCode
+
+
+@router.post("/updateEquipTypeMapping")
+async def updateEquipTypeMapping(equipTypeCode: str, equipType, db: get_db = Depends()):
+    so = EquipTypeMappingService(db)
+    result = so.updateMapping(equipTypeCode, equipType)
+    return handle_result(result)
+
+
+@router.get("/getEquipType")
+async def getEquipType(equipTypeCode: str, db: get_db = Depends()):
+    so = EquipTypeMappingService(db)
+    result = so.getEquipTypeMapping(equipTypeCode)
+    return handle_result(ServiceResult(result))
 
 
 # equipTypeCode 设备类型编码
@@ -58,20 +80,6 @@ async def dataMapping(equipTypeCode: str, metricName: str, metric_alias: str,
     return handle_result(result)
 
 
-@router.post("/equipTypeMapping")
-async def equipTypeMapping(equipTypeCode: str, equipType, db: get_db = Depends()):
-    so = EquipTypeMappingService(db)
-    result = so.updateMapping(equipTypeCode, equipType)
-    return handle_result(result)
-
-
-@router.get("/equipType")
-async def equipTypeMapping(equipTypeCode: str, db: get_db = Depends()):
-    so = EquipTypeMappingService(db)
-    result = so.getEquipTypeMapping(equipTypeCode)
-    return handle_result(ServiceResult(result))
-
-
 # 根据装备类型获取mapping
 @router.get("/getMapping")
 async def getMapping(equipCode: str, db: get_db = Depends()):
@@ -96,8 +104,10 @@ async def getPluginAllInfo(displayType, db: get_db = Depends()):
 
 # 获取装备类型
 @router.get("/plugin/equipType")
-async def getEquipTypeByPlugin():
-    result = ServiceResult(["battery"])
+async def getEquipTypeByPlugin(db: get_db = Depends()):
+    so = EquipTypeMappingService(db)
+    result = ServiceResult(so.getAllEquipTypeMapping())
+    # result = ServiceResult(["battery"])
     return handle_result(result)
 
 
@@ -148,11 +158,11 @@ async def deleteTimeSegmentByPlugin(equipType, equipCode, metric, displayType, t
 # 提供给 IOT-Json 插件测量标志
 @router.get("/plugin/indicator")
 async def getEquipTypeByPlugin():
-    result = ServiceResult(["$equipType.$equipCode.$metrics.2D.$host", "$equipType.$equipCode.$metrics.3D.$host",
-                            "$equipType.$equipCode.$metrics.AGG2D.$host", "$equipType.$equipCode.$metrics.AGG3D.$host",
-                            "$equipType.$equipCode.$metrics.SELF_RELATION.$host",
-                            "$equipType.$equipCode.$metrics.SELF_POLYLINE.$host",
-                            "$equipType.$equipCode.$metrics.SCATTER.$host",
-                            "$equipType.$equipCode.$metrics.POLYLINE.$host",
-                            "$equipType.$equipCode.SOH.EVAL.$host"])
+    result = ServiceResult(["$equipType^$equipCode^$metrics^2D^$host", "$equipType^$equipCode^$metrics^3D^$host",
+                            "$equipType^$equipCode^$metrics^AGG2D^$host", "$equipType^$equipCode^$metrics^AGG3D^$host",
+                            "$equipType^$equipCode^$metrics^SELF_RELATION^$host",
+                            "$equipType^$equipCode^$metrics^SELF_POLYLINE^$host",
+                            "$equipType^$equipCode^$metrics^SCATTER^$host",
+                            "$equipType^$equipCode^$metrics^POLYLINE^$host",
+                            "$equipType^$equipCode^SOH^EVAL^$host"])
     return handle_result(result)

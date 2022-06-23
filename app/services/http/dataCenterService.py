@@ -8,7 +8,7 @@ class DataCenterService:
     # equipCode: 装备编码
     # equipTypeCode: 装备类型编码
     @staticmethod
-    def download_zb_metric(equipTypeCode=None, equipCode=None, equipName=None):
+    def download_zb_metric(equipTypeCode=None, equipCode=None, equipName=None, hasFilter=True):
         with httpx.Client(timeout=None, verify=False) as client:
             if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
                 url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetric"
@@ -26,11 +26,11 @@ class DataCenterService:
             else:
                 r = client.post(url, params=params)
             dataS = r.json()
-            return DataCenterService.process_zb_metric(dataS)
+            return DataCenterService.process_zb_metric(dataS, hasFilter)
         return None
 
     @staticmethod
-    def process_zb_metric(data):
+    def process_zb_metric(data, hasFilter=True):
         mappings = []
         if data is None:
             return None
@@ -39,12 +39,16 @@ class DataCenterService:
             equipCode = res["equipCode"] if "equipCode" in res.keys() else ''
             equipName = res["equipName"] if "equipName" in res.keys() else ''
             equipTypeCode = res["equipTypeCode"] if "equipTypeCode" in res.keys() else ''
-            for item in res["measurePoints"]:
-                code = item["pointCode"]
-                name = item["pointName"]
-                unit = item["pointUnit"] if "pointUnit" in item.keys() else ''
-                mappings.append({"equipCode": equipCode, "equipName": equipName, "equipTypeCode": equipTypeCode,
-                                 "metricCode": code, "metricName": name, "metricUnit": unit})
+            if hasFilter is True:
+                if "measurePoints" in res.keys():
+                    for item in res["measurePoints"]:
+                        code = item["pointCode"] if "pointCode" in item.keys() else ''
+                        name = item["pointName"] if "pointName" in item.keys() else ''
+                        unit = item["pointUnit"] if "pointUnit" in item.keys() else ''
+                        mappings.append({"equipCode": equipCode, "equipName": equipName, "equipTypeCode": equipTypeCode,
+                                         "metricCode": code, "metricName": name, "metricUnit": unit})
+            else:
+                mappings.append({"equipCode": equipCode, "equipName": equipName, "equipTypeCode": equipTypeCode})
         return mappings
 
     @staticmethod
@@ -55,8 +59,11 @@ class DataCenterService:
             if mapping["equipTypeCode"] not in tmpDict.keys():
                 tmpDict[mapping["equipTypeCode"]] = mapping
         for key in tmpDict.keys():
-            tmpDict[key].pop("metricCode")
-            tmpDict[key].pop("metricName")
-            tmpDict[key].pop("equipCode")
+            if "metricCode" in tmpDict[key].keys():
+                tmpDict[key].pop("metricCode")
+            if "metricName" in tmpDict[key].keys():
+                tmpDict[key].pop("metricName")
+            if "equipCode" in tmpDict[key].keys():
+                tmpDict[key].pop("equipCode")
             ret.append(tmpDict[key])
         return ret

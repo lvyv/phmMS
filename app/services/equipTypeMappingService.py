@@ -63,3 +63,10 @@ class EquipTypeMappingService(AppService):
         if item is None:
             return None
         return item.equip_type
+
+    def getAllEquipTypeMapping(self):
+        items = EquipTypeMappingCRUD(self.db).get_all()
+        types = []
+        for item in items:
+            types.append(item.equip_type_code)
+        return types
