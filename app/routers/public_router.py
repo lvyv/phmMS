@@ -56,7 +56,9 @@ async def getEquipType(equipTypeCode: str, db: get_db = Depends()):
 
 # equipTypeCode 设备类型编码
 @router.post("/sync")
-async def dataSync(equipTypeCode: str, auto: Optional[bool] = False,  db: get_db = Depends()):
+async def dataSync(equipTypeCode: str, auto: Optional[bool] = False,
+                   autoPassword: Optional[str] = None,
+                   db: get_db = Depends()):
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipTypeCode)
     if equipType is None or equipType is '':
@@ -65,7 +67,7 @@ async def dataSync(equipTypeCode: str, auto: Optional[bool] = False,  db: get_db
     so = MetricMappingService(db)
     metrics = DataCenterService.download_zb_metric(equipTypeCode)
 
-    if auto is True:
+    if auto is True and autoPassword is not None and autoPassword == "admin@123":
         metrics = AutomaticMetricBind.autoRun(metrics)
 
     # 同步电池测点映射数据
