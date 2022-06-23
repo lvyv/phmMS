@@ -109,12 +109,11 @@ class MetricMappingService(AppService):
         items = MetricMappingCRUD(self.db).get_all(equipTypeCode)
         return ServiceResult(items)
 
-    def update_all_metric_alias(self, equipTypeCode, metricName, metric_alias, equipType, metric_describe):
+    def update_all_metric_alias(self, equipTypeCode, metricName, metric_alias, metric_describe):
         items = MetricMappingCRUD(self.db).get_record_by_type_and_name(equipTypeCode, metricName)
         for item in items:
             item.metric_alias = metric_alias
             item.metric_describe = metric_describe
-            item.equip_type = equipType
             self.update_item(item.metric_code, item)
         items = MetricMappingCRUD(self.db).get_record_by_type_and_name(equipTypeCode, metricName)
         return ServiceResult(items)

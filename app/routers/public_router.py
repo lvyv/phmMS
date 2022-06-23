@@ -49,10 +49,10 @@ async def dataSync(equipTypeCode: str, db: get_db = Depends()):
 # 根据装备类型
 @router.post("/mapping")
 async def dataMapping(equipTypeCode: str, metricName: str, metric_alias: str,
-                      equipType, metric_describe: Optional[str] = '',
+                      metric_describe: Optional[str] = '',
                       db: get_db = Depends()):
     so = MetricMappingService(db)
-    result = so.update_all_metric_alias(equipTypeCode, metricName, metric_alias, equipType, metric_describe)
+    result = so.update_all_metric_alias(equipTypeCode, metricName, metric_alias, metric_describe)
     # 设置
     MetricMappingUtils.init_first = False
     return handle_result(result)
