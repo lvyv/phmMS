@@ -51,11 +51,11 @@ class IConvertor:
         for item in items:
             for i in item:
                 if i.did in tmpDict.keys():
-                    tmpDict[i.did]["soh"].append(i.soh)
+                    tmpDict[i.did]["soh"].append(i.FM1)
                 else:
                     ret = {
-                        "state": i.state,
-                        "soh": [i.soh],
+                        "state": i.IM1,
+                        "soh": [i.FM1],
                         "equipCode": i.did
                     }
                     tmpDict[i.did] = ret

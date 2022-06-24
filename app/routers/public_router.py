@@ -68,6 +68,7 @@ async def dataSync(equipTypeCode: str, auto: Optional[bool] = False,
     metrics = DataCenterService.download_zb_metric(equipTypeCode)
 
     if auto is True and autoPassword is not None and autoPassword == "admin@123":
+        # TODO fix: 清空绑定
         metrics = AutomaticMetricBind.autoRun(metrics)
 
     # 同步电池测点映射数据

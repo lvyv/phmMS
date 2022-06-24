@@ -62,29 +62,12 @@ class TReqHistory(Base):
 class TCellPack(Base):
     __tablename__ = "xc_cell_pack"
     id = Column(Integer, primary_key=True, index=True)  # 主键
+    reqId = Column(Integer)  # 执行请求ID 关联历史记录表
     ts = Column(BigInteger)  # 时间
     did = Column(TEXT)  # 装备ID
     dclz = Column(TEXT)  # 装备类型
-    remainLife = Column(FLOAT)  # 剩余寿命
-    voc = Column(FLOAT)  # 开路电压 【电池处于断路状态时的电压，即非工作电压】
-    workVoc = Column(FLOAT)  # 端电压 【电池处于闭路状态时的电池正负极之间的电压，即工作电压】
-    soc = Column(FLOAT)  # 容量 【state of charge】
-    soh = Column(FLOAT)  # 健康指标 【state of health】
-    imbalance = Column(FLOAT)  # 内阻不平衡度
-    current = Column(FLOAT)  # 冲放电电流
-    minTemp = Column(FLOAT)  # 最小温度
-    maxTemp = Column(FLOAT)  # 最大温度
-    cellMaxVoc = Column(FLOAT)  # 电池单元的最大开路电压
-    cellMinVoc = Column(FLOAT)  # 电池单元的最小开路电压
-    cellMaxVol = Column(FLOAT)  # 电池单元的最大端电压
-    cellMinVol = Column(FLOAT)  # 电池单元的最小端电压
-    cellAvgVol = Column(FLOAT)  # 电池单元的均值端电压
-    envTemp = Column(TEXT)  # 电池组的环境温度（存在多个测点）
-    cellVol = Column(TEXT)  # 电池单元端电压集合
-    cellSoc = Column(TEXT)  # 电池单元容量集合
-    state = Column(Integer)  # 健康状态
-    reqId = Column(Integer)  # 执行请求ID 关联历史记录表
-    # extend
+
+    # 普通测点   可采集的测点
     M1 = Column(FLOAT)
     M2 = Column(FLOAT)
     M3 = Column(FLOAT)
@@ -93,6 +76,54 @@ class TCellPack(Base):
     M6 = Column(FLOAT)
     M7 = Column(FLOAT)
     M8 = Column(FLOAT)
+    M9 = Column(FLOAT)
+    M10 = Column(FLOAT)
+    M11 = Column(FLOAT)
+    M12 = Column(FLOAT)
+    M13 = Column(FLOAT)
+    M14 = Column(FLOAT)
+    M15 = Column(FLOAT)
+    M16 = Column(FLOAT)
+    M17 = Column(FLOAT)
+    M18 = Column(FLOAT)
+    M19 = Column(FLOAT)
+    M20 = Column(FLOAT)
+    M21 = Column(FLOAT)
+    M22 = Column(FLOAT)
+    M23 = Column(FLOAT)
+    M24 = Column(FLOAT)
+    M25 = Column(FLOAT)
+    M26 = Column(FLOAT)
+    M27 = Column(FLOAT)
+    M28 = Column(FLOAT)
+    M29 = Column(FLOAT)
+    M30 = Column(FLOAT)
+    M31 = Column(FLOAT)
+    M32 = Column(FLOAT)
+    M33 = Column(FLOAT)
+    M34 = Column(FLOAT)
+    M35 = Column(FLOAT)
+    M36 = Column(FLOAT)
+    M37 = Column(FLOAT)
+    M38 = Column(FLOAT)
+    M39 = Column(FLOAT)
+
+    # 组测点  eg: # 电池组的环境温度集合,  # 电池单元端电压集合 , # 电池单元容量集合
+    AM1 = Column(TEXT)
+    AM2 = Column(TEXT)
+    AM3 = Column(TEXT)
+    AM4 = Column(TEXT)
+    AM5 = Column(TEXT)
+
+    # 整型测点 eg: # 健康状态
+    IM1 = Column(Integer)
+
+    # 用于计算模型结果存放字段
+    FM1 = Column(FLOAT)
+    FM2 = Column(FLOAT)
+    FM3 = Column(FLOAT)
+    FM4 = Column(FLOAT)
+    FM5 = Column(FLOAT)
 
 
 class TSchedule(Base):  # 装备数据分析调度表

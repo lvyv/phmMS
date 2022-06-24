@@ -8,38 +8,25 @@ class DataConvertUtil:
     @staticmethod
     def SOH(reqid, item):
         keys = item.keys()
+
         eqi = {
             "did": item['did'] if 'did' in keys else "unknown",
-            "dclz": "battery",
+            "dclz": "N/A",
             "reqId": reqid,
-            "remainLife": item['remainLife'] if "remainLife" in keys else 0,
-            "voc": item['voc'] if "voc" in keys else 0,
-            "workVoc": item['workVoc'] if "workVoc" in keys else 0,
-            "current": item['current'] if "current" in keys else 0,
-            "minTemp": item['minTemp'] if "minTemp" in keys else 0,
-            "maxTemp": item['maxTemp'] if "maxTemp" in keys else 0,
-            "cellMaxVoc": item['cellMaxVoc'] if "cellMaxVoc" in keys else 0,
-            "cellMinVoc": item['cellMinVoc'] if "cellMinVoc" in keys else 0,
-            "cellMaxVol": item['cellMaxVol'] if "cellMaxVol" in keys else 0,
-            "cellMinVol": item['cellMinVol'] if "cellMinVol" in keys else 0,
-            "cellAvgVol": item['cellAvgVol'] if "cellAvgVol" in keys else 0,
-            "envTemp": json.dumps([item['envTemp']]) if "envTemp" in keys else "[0, 0]",
-            "cellVol": json.dumps([item['cellVol']]) if "cellVol" in keys else "[0, 0, 0, 0, 0, 0]",
-            "cellSoc": json.dumps([item['cellSoc']]) if "cellSoc" in keys else "[0, 0, 0, 0, 0, 0]",
-            "soh": item['soh'] if "soh" in keys else 0,
-            "soc": item['soc'] if 'soc' in keys else 0,
-            "imbalance": item['imbalance'] if 'imbalance' in keys else 0,
             "ts": item['ts'] if 'ts' in keys else 0,
-            "state": item['state'] if 'state' in keys else 0,
-            "M1": item['M1'] if 'M1' in keys else 0,
-            "M2": item['M2'] if 'M2' in keys else 0,
-            "M3": item['M3'] if 'M3' in keys else 0,
-            "M4": item['M4'] if 'M4' in keys else 0,
-            "M5": item['M5'] if 'M5' in keys else 0,
-            "M6": item['M6'] if 'M6' in keys else 0,
-            "M7": item['M7'] if 'M7' in keys else 0,
-            "M8": item['M8'] if 'M8' in keys else 0
         }
+        for i in range(39):
+            key = "M" + str(i + 1)
+            eqi.update({key: item[key] if key in keys else 0})
+        for i in range(1):
+            key = "IM" + str(i + 1)
+            eqi.update({key: item[key] if key in keys else 0})
+        for i in range(5):
+            key = "AM" + str(i + 1)
+            eqi.update({key: json.dumps(item[key]) if key in keys else "[0]"})
+        for i in range(5):
+            key = "FM" + str(i + 1)
+            eqi.update({key: item[key] if key in keys else 0})
         return eqi
 
     @staticmethod

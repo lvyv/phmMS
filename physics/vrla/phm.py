@@ -1,4 +1,4 @@
-from random import random
+from random import random, choice
 import requests
 import json
 
@@ -41,13 +41,13 @@ def fix_cluster_age(df):
         if age >= 1000000:
             ag = 18
         elif age >= 100000:
-            ag = 17 + age/100000
+            ag = 17 + age / 100000
         elif age >= 10000:
-            ag = 16 + age/10000
+            ag = 16 + age / 10000
         elif age >= 1000:
-            ag = 15 + age/1000
+            ag = 15 + age / 1000
         elif age >= 100:
-            ag = 14 + age/1000
+            ag = 14 + age / 1000
         elif age >= 90:
             ag = 13 + age / 100
         elif age >= 80:
@@ -69,7 +69,7 @@ def fix_cluster_age(df):
         elif age >= 5:
             ag = 4 + age / 10
         else:
-            ag = 3 + age/5
+            ag = 3 + age / 5
         df.loc[idx, 'age'] = ag
 
 
@@ -218,9 +218,12 @@ def calculate_relate(inData, leftTag, rightTag, step, unit):
 def evaluate_soh(datas):
     # in
     # [{'ts':时间戳, 'did': 'BATTERY', '测点1':'值1', '测点2':'值2' }]
-    # 进行 健康指标（SOH） 内阻不平衡度(imbalance) 健康状态(state) 电压不平衡度(M8)
+    # 进行 健康指标（FM1） 内阻不平衡度(FM2) 电压不平衡度(FM3) 健康状态(IM1)
     for item in datas:
-        item.update({"M8": int(random() * 100)})
+        item.update({"FM1": int(random() * 100),
+                     "FM2": int(random() * 100),
+                     "FM3": int(random() * 100),
+                     "IM1": choice([0, 1, 2])})
     return datas
 
 
