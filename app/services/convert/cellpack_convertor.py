@@ -9,11 +9,11 @@ class CellPackConvertor(IConvertor):
     # _instance_lock = threading.Lock()
     # init_first = False
 
-    def __init__(self):
+    def __init__(self, equipType):
         IConvertor.__init__(self)
         # if CellPackConvertor.init_first is False:
         #     CellPackConvertor.init_first = True
-        self.metricMappingUtils = MetricMappingUtils("battery")
+        self.metricMappingUtils = MetricMappingUtils(equipType)
 
         self.ownMetrics = self.metricMappingUtils.get_own_metrics(["ts",
                                                                    "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9",

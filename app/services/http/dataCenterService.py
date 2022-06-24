@@ -39,6 +39,11 @@ class DataCenterService:
             equipCode = res["equipCode"] if "equipCode" in res.keys() else ''
             equipName = res["equipName"] if "equipName" in res.keys() else ''
             equipTypeCode = res["equipTypeCode"] if "equipTypeCode" in res.keys() else ''
+
+            # TODO 过滤空
+            if equipTypeCode is '':
+                continue
+
             if hasFilter is True:
                 if "measurePoints" in res.keys():
                     for item in res["measurePoints"]:

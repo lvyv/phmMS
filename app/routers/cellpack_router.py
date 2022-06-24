@@ -60,6 +60,8 @@ async def writeHealthEvalBatch(reqid: int, payload: dict,  db: get_db = Depends(
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict,
                      timeSegment: Optional[str] = None, db: get_db = Depends()):
 
+    equipTypeCode = equipType
+
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
     if equipType is None or equipType is '':
         return "请先建立装备类型编码与装备类型映射表。"
@@ -70,7 +72,7 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
         return handle_result(ServiceResult("评估只支持单设备模型建立..."))
 
     # 数据同步
-    sjzyManager.dataSync(equipCode, equipType, db)
+    sjzyManager.dataSync(equipTypeCode, equipType, db)
 
     # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
     result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
@@ -111,12 +113,14 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
                          timeSegment: Optional[str] = None,
                          db: get_db = Depends()):
 
+    equipTypeCode = equipType
+
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
     if equipType is None or equipType is '':
         return "请先建立装备类型编码与装备类型映射表。"
 
     # 数据同步
-    sjzyManager.dataSync(equipCode, equipType, db)
+    sjzyManager.dataSync(equipTypeCode, equipType, db)
 
     # 调用模型
     BegForService(db).exec(equipCode, metrics, displayType, payload)
@@ -156,6 +160,8 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
                         step: Optional[int] = None, unit: Optional[int] = None,
                         timeSegment: Optional[str] = None, db: get_db = Depends()):
 
+    equipTypeCode = equipType
+
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
     if equipType is None or equipType is '':
         return "请先建立装备类型编码与装备类型映射表。"
@@ -166,7 +172,7 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
         return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
 
     # 数据同步
-    sjzyManager.dataSync(equipCode, equipType, db)
+    sjzyManager.dataSync(equipTypeCode, equipType, db)
 
     # 注意自相关模型，将payload 中的值赋给 tag
     left_tag_time, right_tag_time = SelfRelationUtil.getTagInfoByPayload(payload)

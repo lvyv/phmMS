@@ -10,7 +10,7 @@ class SjzyManager:
     LastTime = 0
 
     # 根据装备名称，同步测点数据
-    def dataSync(self, equipCode, equipType, db):
+    def dataSync(self,  equipTypeCode, equipType, db):
         # 每隔5分钟，同步测点
         now_time = int(datetime.now().timestamp())
         if self.LastTime == 0 or now_time - self.LastTime > constants.EQUIP_METRIC_SYNC_GAP:
@@ -18,14 +18,6 @@ class SjzyManager:
             logging.info("sync equip metric ...")
         else:
             return None
-        # 取一个设备编码
-        dev = equipCode.split(",")[0]
-        # 通过装备下载测点信息
-        data = DataCenterService.download_zb_metric(equipCode=dev)
-        if data is None:
-            return None
-        # 获取装备类型编码
-        equipTypeCode = data[0]["equipTypeCode"]
         # 通过测点
         so = MetricMappingService(db)
         metrics = DataCenterService.download_zb_metric(equipTypeCode)

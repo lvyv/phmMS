@@ -13,7 +13,7 @@ class MetricMappingUtils:
             MetricMappingUtils.init_first = True
             db = database.SessionLocal()
             so = MetricMappingService(db)
-            self.items = so.get_all_mapping("battery")
+            self.items = so.get_all_mapping(clz)
         # db = database.SessionLocal()
         # so = MetricMappingService(db)
         # self.items = so.get_all_mapping(clz)
