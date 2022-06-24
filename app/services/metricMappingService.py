@@ -116,6 +116,8 @@ class MetricMappingService(AppService):
 
     def update_all_metric_alias(self, equipTypeCode, metricName, metric_alias, metric_describe):
         items = MetricMappingCRUD(self.db).get_record_by_type_and_name(equipTypeCode, metricName)
+        if items is None:
+            return ServiceResult("测点名称在数据库中不存在")
         for item in items:
             item.metric_alias = metric_alias
             item.metric_describe = metric_describe
