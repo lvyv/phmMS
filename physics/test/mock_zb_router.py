@@ -31,9 +31,7 @@ async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[s
                               {"pointCode": "M0010", "pointName": "电池单元端电压集合"},
                               {"pointCode": "M0011", "pointName": "电池单元容量集合"},
                               {"pointCode": "M0012", "pointName": "健康状态"},
-                              {"pointCode": "M0013", "pointName": "电压不平衡度"},
-                              {"pointCode": "M0038", "pointName": "abc", "pointUnit": "%"},
-                              {"pointCode": "M0014", "pointName": "未知"}]
+                              {"pointCode": "M0013", "pointName": "电压不平衡度"}]
         },
             {
                 "equipCode": "B002", "equipName": "电池2", "equipTypeCode": "N0001",
@@ -47,8 +45,7 @@ async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[s
                                   {"pointCode": "M0022", "pointName": "最小温度"},
                                   {"pointCode": "M0023", "pointName": "最大温度"},
                                   {"pointCode": "M0024", "pointName": "电池单元的最大开路电压"},
-                                  {"pointCode": "M0025", "pointName": "电压不平衡度"},
-                                  {"pointCode": "M0026", "pointName": "未知"}]
+                                  {"pointCode": "M0025", "pointName": "电压不平衡度"}]
             }
         ]
     }
