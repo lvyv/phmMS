@@ -69,6 +69,8 @@ async def dataSync(equipTypeCode: str, auto: Optional[bool] = False,
 
     if auto is True and autoPassword is not None and autoPassword == "admin@123":
         # TODO fix: 清空绑定
+        so.delete_by_equip_type_code(equipTypeCode)
+        # 自动建立映射
         metrics = AutomaticMetricBind.autoRun(metrics)
 
     # 同步电池测点映射数据

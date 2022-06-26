@@ -124,3 +124,6 @@ class MetricMappingService(AppService):
             self.update_item(item.metric_code, item)
         items = MetricMappingCRUD(self.db).get_record_by_type_and_name(equipTypeCode, metricName)
         return ServiceResult(items)
+
+    def delete_by_equip_type_code(self, equip_type_code):
+        MetricMappingCRUD(self.db).delete_record(equip_type_code)
