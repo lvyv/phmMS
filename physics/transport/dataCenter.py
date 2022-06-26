@@ -24,10 +24,13 @@ def download_zb_history_data_from(equipCode, metricName, startTime, endTime, int
             url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData"
         else:
             url = constants.API_QUERY_HISTORY_DATA
-        r = client.post(url,
-                        params={"equipCode": equipCode, "metricName": metricName,
-                                "startTime": startTime, "endTime": endTime,
-                                "interval": interval})
+
+        params = {"equipCode": equipCode, "metricName": metricName,
+                  "startTime": startTime, "endTime": endTime}
+        if interval is not None:
+            params.update({"interval": interval})
+
+        r = client.post(url, params=params)
         dataS = r.json()
         return dataS
     return None

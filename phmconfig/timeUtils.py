@@ -26,10 +26,13 @@ class TimeUtils:
             gap = int(interval / 60)
             gap = str(gap) + "M"
         else:
-            gap = int((interval / 60) * 10) / 10
-            if gap == 0.0:
-                gap = 0.05
-            gap = str(gap) + "M"
+            if constants.MOCK_ZB_DATA is True:
+                gap = int((interval / 60) * 10) / 10
+                if gap == 0.0:
+                    gap = 0.05
+                gap = str(gap) + "M"
+            else:
+                gap = None
         return gap
 
     @staticmethod
