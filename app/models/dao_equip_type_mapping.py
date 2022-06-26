@@ -19,8 +19,8 @@ class EquipTypeMappingCRUD(AppCRUD):
         batch = []
         for im in items:
             record = TEquipTypeMapping(
-                               equip_type_code=im["equipTypeCode"],
-                               equip_type=im["equipType"] if 'equipType' in im.keys() else ''
+                               equip_type_code=im.equip_type_code,
+                               equip_type=im.equip_type
                                )
             batch.append(record)
         self.db.add_all(batch)
