@@ -30,12 +30,12 @@ async def getAllEquipTypeCode():
 
 # 查询装备编码类型
 @router.get("/getValidEquipTypeCode")
-async def getValidEquipTypeCode(db: get_db = Depends()):
+async def getValidEquipTypeCode(auto: Optional[bool] = False, db: get_db = Depends()):
     metrics = DataCenterService.download_zb_metric()
     equipTypeCode = DataCenterService.filter_zb_equip_type_code(metrics)
 
     # 更新装备类型编码 和 装备类型 映射关系
-    EquipTypeMappingService(db).create_batch(equipTypeCode)
+    EquipTypeMappingService(db).create_batch(equipTypeCode, auto)
 
     return equipTypeCode
 

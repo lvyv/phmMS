@@ -10,7 +10,7 @@ class EquipTypeMappingService(AppService):
         item = EquipTypeMappingCRUD(self.db).create_record(pi)
         return ServiceResult(item)
 
-    def create_batch(self, batch):
+    def create_batch(self, batch, auto=False):
         items = EquipTypeMappingCRUD(self.db).get_all()
         if items is None:
             mappings = []
@@ -18,7 +18,7 @@ class EquipTypeMappingService(AppService):
                 mappings.append(EquipTypeMappingModel(
                         equip_type_code=bt["equipTypeCode"],
                         # equip_type=bt["equipType"] if 'equipType' in bt.keys() else ''
-                        equip_type=bt["equipTypeCode"]
+                        equip_type=bt["equipTypeCode"] if auto is True else ''
                     ))
             items = EquipTypeMappingCRUD(self.db).create_batch(mappings)
         else:
@@ -32,7 +32,7 @@ class EquipTypeMappingService(AppService):
                     mmm = EquipTypeMappingModel(
                         equip_type_code=bt["equipTypeCode"],
                         # equip_type=bt["equipType"] if 'equipType' in bt.keys() else ''
-                        equip_type=bt["equipTypeCode"]
+                        equip_type=bt["equipTypeCode"] if auto is True else ''
                     )
                     self.create_item(mmm)
         return ServiceResult(items)
