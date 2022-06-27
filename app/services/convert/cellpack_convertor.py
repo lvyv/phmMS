@@ -1,20 +1,14 @@
 import json
-# import threading
 
 from services.convert.convertor import IConvertor
 from services.convert.metric_mapping_utils import MetricMappingUtils
 
 
 class CellPackConvertor(IConvertor):
-    # _instance_lock = threading.Lock()
-    # init_first = False
 
     def __init__(self, equipType):
         IConvertor.__init__(self)
-        # if CellPackConvertor.init_first is False:
-        #     CellPackConvertor.init_first = True
         self.metricMappingUtils = MetricMappingUtils(equipType)
-
         self.ownMetrics = self.metricMappingUtils.get_own_metrics(["ts",
                                                                    "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9",
                                                                    "M10", "M11", "M12", "M13", "M14", "M15", "M16",
@@ -23,13 +17,6 @@ class CellPackConvertor(IConvertor):
                                                                    "M31", "M32", "M33", "M34", "M35", "M36", "M37",
                                                                    "M38", "M39", "AM1", "AM2", "AM3", "AM4", "AM5",
                                                                    "FM1", "FM2", "FM3", "FM4", "FM5", "IM1"])
-
-    # def __new__(cls, *args, **kwargs):
-    #     if not hasattr(cls, '_instance'):
-    #         with CellPackConvertor._instance_lock:
-    #             if not hasattr(CellPackConvertor, '_instance'):
-    #                 CellPackConvertor._instance = super().__new__(cls)
-    #     return CellPackConvertor._instance
 
     @staticmethod
     def __parse_str_to_json(value):
