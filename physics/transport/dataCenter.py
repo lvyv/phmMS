@@ -175,6 +175,11 @@ def process_zb_history_data_soh(data, mapping):
             equipData = item["equipData"]  # 装备数据
             for ed in equipData:
                 metricName = ed["metricName"]  # 测点名称
+
+                # 兼容未绑定的测点
+                if metricName not in mapping.keys():
+                    continue
+
                 metricCode = ed["metricCode"]  # 测点编码
                 metricData = ed["metricData"]  # 测点数据
                 for i, md in enumerate(metricData):

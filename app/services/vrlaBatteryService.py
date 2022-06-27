@@ -16,6 +16,13 @@ class VRLABatteryService(AppService):
     电池模型业务逻辑服务。
     """
 
+    @staticmethod
+    def checkReqValid(devs: list, tags: list):
+        if len(devs) == 0 or len(tags) == 0 or devs == [""] or tags == [""]:
+            logging.info("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
+            return False
+        return True
+
     async def soh(self, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
         """
         健康指标计算。
@@ -25,6 +32,10 @@ class VRLABatteryService(AppService):
         :param endts:
         :return:
         """
+
+        if VRLABatteryService.checkReqValid(devs, tags) is False:
+            return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
+
         dev_type = ct.DEV_VRLA
 
         devs.sort()
@@ -67,6 +78,10 @@ class VRLABatteryService(AppService):
         :param endts:
         :return:
         """
+
+        if VRLABatteryService.checkReqValid(devs, tags) is False:
+            return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
+
         dev_type = ct.DEV_VRLA
 
         # FIX
@@ -103,6 +118,9 @@ class VRLABatteryService(AppService):
 
     async def relation(self, devs: list, tags: list, startts: int, endts: int,
                        leftTag: int, rightTag: int, step: int, unit: int) -> ServiceResult:
+
+        if VRLABatteryService.checkReqValid(devs, tags) is False:
+            return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
         dev_type = ct.DEV_VRLA
         # FIX
