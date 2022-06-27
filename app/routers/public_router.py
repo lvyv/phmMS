@@ -86,7 +86,7 @@ async def dataMapping(equipTypeCode: str, metricName: str, metric_alias: str,
     so = MetricMappingService(db)
     result = so.update_all_metric_alias(equipTypeCode, metricName, metric_alias, metric_describe)
     # 设置
-    MetricMappingUtils.init_first = False
+    # MetricMappingUtils.init_first = False
     return handle_result(result)
 
 

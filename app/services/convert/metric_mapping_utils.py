@@ -9,21 +9,21 @@ class MetricMappingUtils:
     init_first = False
 
     def __init__(self, clz):
-        if MetricMappingUtils.init_first is False:
-            MetricMappingUtils.init_first = True
-            db = database.SessionLocal()
-            so = MetricMappingService(db)
-            self.items = so.get_all_mapping(clz)
-        # db = database.SessionLocal()
-        # so = MetricMappingService(db)
-        # self.items = so.get_all_mapping(clz)
+        # if MetricMappingUtils.init_first is False:
+        #     MetricMappingUtils.init_first = True
+        #     db = database.SessionLocal()
+        #     so = MetricMappingService(db)
+        #     self.items = so.get_all_mapping(clz)
+        db = database.SessionLocal()
+        so = MetricMappingService(db)
+        self.items = so.get_all_mapping(clz)
 
-    def __new__(cls, *args, **kwargs):
-        if not hasattr(cls, '_instance'):
-            with MetricMappingUtils._instance_lock:
-                if not hasattr(cls, '_instance'):
-                    MetricMappingUtils._instance = super().__new__(cls)
-        return MetricMappingUtils._instance
+    # def __new__(cls, *args, **kwargs):
+    #     if not hasattr(cls, '_instance'):
+    #         with MetricMappingUtils._instance_lock:
+    #             if not hasattr(cls, '_instance'):
+    #                 MetricMappingUtils._instance = super().__new__(cls)
+    #     return MetricMappingUtils._instance
 
     def get_own_metrics(self, metrics):
         ret = []
