@@ -1,5 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends
+
+from phmconfig import constants
 from services.convert.health_eval_util import HealthEvalUtil
 from services.equipTypeMappingService import EquipTypeMappingService
 from services.metricMappingService import MetricMappingService
@@ -26,12 +28,14 @@ async def getAllEquipTypeCode():
 
 # 查询装备编码类型
 @router.get("/getValidEquipTypeCode")
-async def getValidEquipTypeCode(auto: Optional[bool] = False, db: get_db = Depends()):
+async def getValidEquipTypeCode(auto: Optional[bool] = False,
+                                autoPassword: Optional[str] = None,
+                                db: get_db = Depends()):
     metrics = DataCenterService.download_zb_metric()
     equipTypeCode = DataCenterService.filter_zb_equip_type_code(metrics)
 
     # 更新装备类型编码 和 装备类型 映射关系
-    EquipTypeMappingService(db).create_batch(equipTypeCode, auto)
+    EquipTypeMappingService(db).create_batch(equipTypeCode, auto, autoPassword)
 
     return equipTypeCode
 
@@ -63,7 +67,7 @@ async def dataSync(equipTypeCode: str, auto: Optional[bool] = False,
     so = MetricMappingService(db)
     metrics = DataCenterService.download_zb_metric(equipTypeCode)
 
-    if auto is True and autoPassword is not None and autoPassword == "admin@123":
+    if auto is True and autoPassword is not None and autoPassword == constants.API_AUTH_AUTO_PASSWORD:
         # TODO fix: 清空绑定
         so.delete_by_equip_type_code(equipTypeCode)
         # 自动建立映射

@@ -1,3 +1,6 @@
+import logging
+
+from phmconfig import constants
 from models.dao_equip_type_mapping import EquipTypeMappingCRUD
 from schemas.equipTypeMappingModel import EquipTypeMappingModel
 from services.main import AppService
@@ -10,15 +13,18 @@ class EquipTypeMappingService(AppService):
         item = EquipTypeMappingCRUD(self.db).create_record(pi)
         return ServiceResult(item)
 
-    def create_batch(self, batch, auto=False):
+    def create_batch(self, batch, auto=False, autoPassword=None):
         items = EquipTypeMappingCRUD(self.db).get_all()
         if items is None:
             mappings = []
             for bt in batch:
+                if auto is True and autoPassword is not None and autoPassword == constants.API_AUTH_AUTO_PASSWORD:
+                    equip_type = bt["equipTypeCode"]
+                else:
+                    equip_type = ''
                 mappings.append(EquipTypeMappingModel(
                         equip_type_code=bt["equipTypeCode"],
-                        # equip_type=bt["equipType"] if 'equipType' in bt.keys() else ''
-                        equip_type=bt["equipTypeCode"] if auto is True else ''
+                        equip_type=equip_type
                     ))
             items = EquipTypeMappingCRUD(self.db).create_batch(mappings)
         else:
@@ -27,12 +33,16 @@ class EquipTypeMappingService(AppService):
                 for item in items:
                     if item.equip_type_code == bt["equipTypeCode"]:
                         found = True
-                        # TODO nothing
+                        # TODO
+                        logging.info("设备类型编码已经绑定，不需要重新绑定。")
                 if found is False:
+                    if auto is True and autoPassword is not None and autoPassword == constants.API_AUTH_AUTO_PASSWORD:
+                        equip_type = bt["equipTypeCode"]
+                    else:
+                        equip_type = ''
                     mmm = EquipTypeMappingModel(
                         equip_type_code=bt["equipTypeCode"],
-                        # equip_type=bt["equipType"] if 'equipType' in bt.keys() else ''
-                        equip_type=bt["equipTypeCode"] if auto is True else ''
+                        equip_type=equip_type
                     )
                     self.create_item(mmm)
         return ServiceResult(items)

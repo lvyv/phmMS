@@ -58,6 +58,8 @@ EQUIP_METRIC_SYNC_GAP = cfg["equip_metric_sync_gap"] if 'equip_metric_sync_gap' 
 
 TIME_SEGMENT_SHOW_UTF8 = cfg["time_segment_show_utf_8"] if "time_segment_show_utf_8" in cfg_keys else True
 
+API_AUTH_AUTO_PASSWORD = cfg["api_auth_auto_password"] if "api_auth_auto_password" in cfg_keys else "admin@123"
+
 # ------------------------- api ------------------------------
 
 # 配置服务启动模式
