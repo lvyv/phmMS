@@ -34,7 +34,7 @@ class EquipTypeMappingService(AppService):
                     if item.equip_type_code == bt["equipTypeCode"]:
                         found = True
                         # TODO
-                        logging.info("设备类型编码已经绑定，不需要重新绑定。")
+                        # logging.info("设备类型编码已经绑定，不需要重新绑定。")
                 if found is False:
                     if auto is True and autoPassword is not None and autoPassword == constants.API_AUTH_AUTO_PASSWORD:
                         equip_type = bt["equipTypeCode"]

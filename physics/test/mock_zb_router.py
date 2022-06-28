@@ -109,7 +109,7 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval: Optiona
             for inx in range(maxPoints):
                 genTag["metricData"].append({
                     "timestamp": genTime[inx],
-                    "metricValue": int(random() * 100)
+                    "metricValue": int(random() * 100) if constants.MOCK_ZB_DATA_ALL_ZERO is False else 0
                 })
 
             genDev["equipData"].append(genTag)

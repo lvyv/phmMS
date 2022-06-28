@@ -23,7 +23,7 @@ class BegForService(AppService):
              leftTag: int = None, rightTag: int = None, step: int = None, unit: int = None):
 
         if PayloadUtil.check_relative_time_valid(payload) is False:
-            logging.info("输入的时间不合法,不进行调度")
+            # logging.info("输入的时间不合法,不进行调度")
             return
         # 转换成时间戳
         start_orgin = start = PayloadUtil.get_start_time(payload)

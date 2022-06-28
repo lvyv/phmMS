@@ -117,6 +117,7 @@ URL_MS_GET_DASHBOARD_LIST = cfg["url_ms_get_dashboard_list"]
 
 # 模拟装备数据
 MOCK_ZB_DATA = cfg["mock_zb_data"] if "mock_zb_data" in cfg_keys else False
+MOCK_ZB_DATA_ALL_ZERO = cfg["mock_zb_data_all_zero"] if "mock_zb_data_all_zero" in cfg_keys else False
 
 # 批量写入
 CALCULATE_RESULT_BATCH_OPERATOR = cfg["batch_operator"] if "batch_operator" in cfg_keys else True

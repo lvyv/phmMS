@@ -247,7 +247,10 @@ def evaluate_soh(datas, devType):
 def calculate_soh(dataS, mappingS, dev_type):
     #  返回设备数据
     devDatas = dataCenter.process_zb_history_data_soh(dataS, mappingS)
-    # 进行 SOH、SOC、 内阻不平衡度、健康状态
-    evaluate_soh(devDatas, dev_type)
+    try:
+        # 进行 SOH、SOC、 内阻不平衡度、健康状态
+        evaluate_soh(devDatas, dev_type)
+    finally:
+        pass
     # 返回数据
     return devDatas
