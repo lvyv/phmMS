@@ -38,8 +38,7 @@ def get_database_type():
 USING_DATABASE_TYPE = get_database_type()
 
 #  --------------------------- COMMON -------------------------
-# 所有后端的科学计算模型，phmMD类型
-DEV_VRLA = 'vrla'
+
 # 各种状态常量
 REQ_STATUS_PENDING = 'pending'
 REQ_STATUS_SETTLED = 'settled'
@@ -86,6 +85,9 @@ URL_MD_WRITE_REQ_HISTORY = PHMMS_URL_PREFIX + "/api/v1/public/updateHistoryRecor
 
 # 查询Mapping表
 URL_MD_QUERY_METRIC_MAPPING = PHMMS_URL_PREFIX + "/api/v1/public/getMapping"
+
+# 通过装备编码查询装备类型
+URL_MD_QUERY_EQUIP_TYPE_BY_EQUIP_CODE = PHMMS_URL_PREFIX + "/api/v1/public/getEquipTypeByEquipCode"
 
 # prefix
 PHMMD_CONTAINER_NAME = cfg["phmmd_container_name"]

@@ -56,3 +56,6 @@ class MetricMappingCRUD(AppCRUD):
     def delete_record(self, equip_type_code):
         self.db.query(TMetricMapping).filter(TMetricMapping.equip_type_code == equip_type_code).delete()
         self.db.commit()
+
+    def get_equip_type_by_equip_code(self, equip_code):
+        return self.get_one_by_equip_code(equip_code)

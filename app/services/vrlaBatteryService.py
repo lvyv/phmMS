@@ -2,6 +2,8 @@ import logging
 import httpx
 import time
 import json
+
+from models.dao_metric_mapping import MetricMappingCRUD
 from schemas.reqhistory_model import ReqItemCreate
 from services.convert.self_relation_util import SelfRelationUtil
 from services.main import AppService
@@ -24,25 +26,17 @@ class VRLABatteryService(AppService):
         return True
 
     async def soh(self, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
-        """
-        健康指标计算。
-        :param devs:
-        :param tags:
-        :param startts:
-        :param endts:
-        :return:
-        """
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        dev_type = ct.DEV_VRLA
+        mm = MetricMappingCRUD(self.db).get_equip_type_by_equip_code(devs[0])
 
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': dev_type,
+            'model': "" if mm is None else mm.equip_type,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
@@ -70,26 +64,17 @@ class VRLABatteryService(AppService):
             return ServiceResult(AppException.HttpRequestTimeout())
 
     async def cluster(self, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
-        """
-        聚类计算。
-        :param devs:
-        :param tags:
-        :param startts:
-        :param endts:
-        :return:
-        """
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        dev_type = ct.DEV_VRLA
+        mm = MetricMappingCRUD(self.db).get_equip_type_by_equip_code(devs[0])
 
-        # FIX
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': dev_type,
+            'model': "" if mm is None else mm.equip_type,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
@@ -122,13 +107,13 @@ class VRLABatteryService(AppService):
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        dev_type = ct.DEV_VRLA
-        # FIX
+        mm = MetricMappingCRUD(self.db).get_equip_type_by_equip_code(devs[0])
+
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': dev_type,
+            'model': "" if mm is None else mm.equip_type,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),

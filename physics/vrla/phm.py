@@ -215,7 +215,11 @@ def calculate_relate(inData, leftTag, rightTag, step, unit):
 
 
 #  TODO  fix 评估模型计算
-def evaluate_soh(datas):
+def evaluate_soh(datas, devType):
+
+    # 根据devType 计算不同测测量指标
+    logging.info("参数评估模型计算的设备类型为:" + devType)
+
     # in
     # [{'ts':时间戳, 'did': 'BATTERY', '测点1':'值1', '测点2':'值2' }]
     # 进行 健康指标（FM1） 内阻不平衡度(FM2) 电压不平衡度(FM3) 健康状态(IM1)
@@ -240,10 +244,10 @@ def evaluate_soh(datas):
 #   }]
 # }]
 
-def calculate_soh(dataS, mappingS):
+def calculate_soh(dataS, mappingS, dev_type):
     #  返回设备数据
     devDatas = dataCenter.process_zb_history_data_soh(dataS, mappingS)
     # 进行 SOH、SOC、 内阻不平衡度、健康状态
-    evaluate_soh(devDatas)
+    evaluate_soh(devDatas, dev_type)
     # 返回数据
     return devDatas

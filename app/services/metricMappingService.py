@@ -127,3 +127,10 @@ class MetricMappingService(AppService):
 
     def delete_by_equip_type_code(self, equip_type_code):
         MetricMappingCRUD(self.db).delete_record(equip_type_code)
+
+    def get_equip_type_by_equip_code(self, equip_code):
+        record = MetricMappingCRUD(self.db).get_equip_type_by_equip_code(equip_code)
+        if record is None:
+            return ""
+        else:
+            return record.equip_type

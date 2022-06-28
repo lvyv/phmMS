@@ -215,3 +215,11 @@ def query_metric_mapping(deviceCode=None):
         return dataS
     return None
 
+
+def query_equip_type_by_equip_code(equipCode):
+    with httpx.Client(timeout=None, verify=False) as client:
+        url = constants.URL_MD_QUERY_EQUIP_TYPE_BY_EQUIP_CODE
+        r = client.get(url, params={"equipCode": equipCode})
+        return r.text
+    return ""
+

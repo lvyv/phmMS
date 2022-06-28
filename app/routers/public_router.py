@@ -36,18 +36,18 @@ async def getValidEquipTypeCode(auto: Optional[bool] = False, db: get_db = Depen
     return equipTypeCode
 
 
-@router.post("/updateEquipTypeMapping")
-async def updateEquipTypeMapping(equipTypeCode: str, equipType, db: get_db = Depends()):
-    so = EquipTypeMappingService(db)
-    result = so.updateMapping(equipTypeCode, equipType)
-    return handle_result(result)
-
-
 @router.get("/getEquipType")
 async def getEquipType(equipTypeCode: str, db: get_db = Depends()):
     so = EquipTypeMappingService(db)
     result = so.getEquipTypeMapping(equipTypeCode)
     return handle_result(ServiceResult(result))
+
+
+@router.post("/updateEquipTypeMapping")
+async def updateEquipTypeMapping(equipTypeCode: str, equipType, db: get_db = Depends()):
+    so = EquipTypeMappingService(db)
+    result = so.updateMapping(equipTypeCode, equipType)
+    return handle_result(result)
 
 
 # equipTypeCode 设备类型编码
@@ -90,6 +90,12 @@ async def getMapping(equipCode: str, db: get_db = Depends()):
     so = MetricMappingService(db)
     result = so.get_all_mapping_by_equip_type_code(equipCode)
     return handle_result(ServiceResult(result))
+
+
+@router.get("/getEquipTypeByEquipCode")
+async def getEquipTypeByEquipCode(equipCode: str, db: get_db = Depends()):
+    so = MetricMappingService(db)
+    return so.get_equip_type_by_equip_code(equipCode)
 
 
 @router.put("/updateHistoryRecord")

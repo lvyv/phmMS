@@ -154,8 +154,13 @@ def soh_task(sohin, reqid):
     logging.info("测点映射:" + json.dumps(convertMapping, ensure_ascii=False))
 
     try:
+        if len(devices) > 0:
+            dev_type = dataCenter.query_equip_type_by_equip_code(devices[0])
+        else:
+            dev_type = ""
+
         # 计算SOH
-        res = phm.calculate_soh(dataS, convertMapping)
+        res = phm.calculate_soh(dataS, convertMapping, dev_type)
         # 处理结果
         post_process_vrla_soh(reqid, res)
     except Exception as e:
