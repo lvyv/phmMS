@@ -126,18 +126,6 @@ class TCellPack(Base):
     FM5 = Column(FLOAT)
 
 
-class TSchedule(Base):  # 装备数据分析调度表
-    __tablename__ = "xc_schedule"
-    id = Column(Integer, primary_key=True, index=True)  # 主键
-    dids = Column(TEXT)  # 设备ID列表
-    dtags = Column(TEXT)  # 设备测点列表
-    enable = Column(Boolean)  # 启用任务
-    initDelay = Column(Integer)  # 初始任务延迟时间
-    delay = Column(Integer)  # 定时延迟时间
-    execUrl = Column(TEXT)  # 执行调用的 URL
-    startTime = Column(BigInteger)  # 调度执行时间
-
-
 class TCluster(Base):
     __tablename__ = "xc_cluster"
     id = Column(Integer, primary_key=True, index=True)  # 主键
@@ -164,14 +152,14 @@ class TSelfRelation(Base):
 class TMetricMapping(Base):
     __tablename__ = "xc_metric_mapping"
     id = Column(Integer, primary_key=True, index=True)
-    metric_code = Column(TEXT)     # 测点编码
+    metric_code = Column(TEXT)     # 测点编码      ignore
     metric_name = Column(TEXT)     # 测点名称
     metric_alias = Column(TEXT)    # 测点别名
-    equip_code = Column(TEXT)      # 装备编码
-    equip_name = Column(TEXT)      # 装备名称
+    equip_code = Column(TEXT)      # 装备编码      ignore
+    equip_name = Column(TEXT)      # 装备名称      ignore
     equip_type = Column(TEXT)      # 装备类型
     equip_type_code = Column(TEXT)  # 装备类型编码
-    metric_describe = Column(TEXT)        # 描述
+    metric_describe = Column(TEXT)        # 描述   ignore
     metric_unit = Column(TEXT)     # 测点类型
 
 

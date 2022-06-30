@@ -87,9 +87,8 @@ URL_MD_WRITE_REQ_HISTORY = PHMMS_URL_PREFIX + "/api/v1/public/updateHistoryRecor
 
 # 查询Mapping表
 URL_MD_QUERY_METRIC_MAPPING = PHMMS_URL_PREFIX + "/api/v1/public/getMapping"
-
 # 通过装备编码查询装备类型
-URL_MD_QUERY_EQUIP_TYPE_BY_EQUIP_CODE = PHMMS_URL_PREFIX + "/api/v1/public/getEquipTypeByEquipCode"
+URL_MD_QUERY_EQUIP_TYPE_BY_EQUIP_TYPE_CODE = PHMMS_URL_PREFIX + "/api/v1/public/getEquipType"
 
 # prefix
 PHMMD_CONTAINER_NAME = cfg["phmmd_container_name"]
@@ -111,6 +110,8 @@ URL_SJZY_API_PREFIX = cfg["url_sjzy_host"]
 API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT = URL_SJZY_API_PREFIX + "/api/equip/query_equip_info_with_measure_point"
 # 从数据资源获取装备的测点数据
 API_QUERY_HISTORY_DATA = URL_SJZY_API_PREFIX + "/api/devices/query_history_data_v2"
+
+API_QUERY_MEASUSRE_POINT_BY_EQUIP_TYPE_CODE = URL_SJZY_API_PREFIX + "api/query/equip_measure_point"
 
 # 对接grafana
 URL_MS_GET_DASHBOARD_LIST = cfg["url_ms_get_dashboard_list"]

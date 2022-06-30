@@ -23,7 +23,7 @@ class MetricMappingCRUD(AppCRUD):
         self.db.refresh(record)
         return record
 
-    def update_record(self, metric_code: str, item) -> TMetricMapping:
+    def update_record(self, item) -> TMetricMapping:
         self.db.add(item)
         self.db.commit()
         return None
@@ -47,15 +47,6 @@ class MetricMappingCRUD(AppCRUD):
             return records
         return None
 
-    def get_one_by_equip_code(self, equip_code) -> TMetricMapping:
-        records = self.db.query(TMetricMapping).filter(TMetricMapping.equip_code == equip_code).first()
-        if records:
-            return records
-        return None
-
     def delete_record(self, equip_type_code):
         self.db.query(TMetricMapping).filter(TMetricMapping.equip_type_code == equip_type_code).delete()
         self.db.commit()
-
-    def get_equip_type_by_equip_code(self, equip_code):
-        return self.get_one_by_equip_code(equip_code)

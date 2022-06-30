@@ -135,30 +135,14 @@ def post_process_vrla_relation(reqid, items):
 def soh_task(sohin, reqid):
     # 下载装备数据
     dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
-
-    # logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
-    # 获取测点映射
-    devices = json.loads(sohin.devices)
-
-    if len(devices) > 0:
-        mappingS = dataCenter.query_metric_mapping(devices[0])
-    else:
-        mappingS = dataCenter.query_metric_mapping()
-    # logging.info("下载测点:" + json.dumps(mappingS, ensure_ascii=False))
-    # 测点反转
+    mappingS = dataCenter.query_metric_mapping(sohin.equipTypeCode)
     convertMapping = {}
     if mappingS is not None:
         for k, v in mappingS.items():
             convertMapping[v] = k
-
     logging.info("测点映射:" + json.dumps(convertMapping, ensure_ascii=False))
-
     try:
-        if len(devices) > 0:
-            dev_type = dataCenter.query_equip_type_by_equip_code(devices[0])
-        else:
-            dev_type = ""
-
+        dev_type = dataCenter.query_equip_type_by_equip_type_code(sohin.equipTypeCode)
         # 计算SOH
         res = phm.calculate_soh(dataS, convertMapping, dev_type)
         # 处理结果
@@ -170,7 +154,6 @@ def soh_task(sohin, reqid):
 
 def cluster_task(clusterin, reqid, displayType):
     dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
-    # logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
     try:
         res = phm.calculate_cluster(dataS, displayType)
         post_process_vrla_cluster(reqid, res, displayType)
@@ -186,9 +169,7 @@ def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
                  " rightTag: " + TimeUtils.convert_time_str(rightTag) +
                  " step: " + str(step) +
                  " unit: " + str(unit))
-
     dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
-    # logging.info("下载的数据:" + json.dumps(dataS, ensure_ascii=False))
     try:
         res = phm.calculate_relate(dataS, leftTag, rightTag, step, unit)
         post_process_vrla_relation(reqid, res)
@@ -203,6 +184,7 @@ class SohInputParams(BaseModel):
     tags: str = '[\"soc\",\"soh\"]'  # json string
     startts: int = 1652170492000  # timestamp ms
     endts: int = 1652256892000  # timestamp ms
+    equipTypeCode: str = ''
 
 
 @app.post("/api/v1/soh")

@@ -3,9 +3,9 @@ import httpx
 import time
 import json
 
-from models.dao_metric_mapping import MetricMappingCRUD
 from schemas.reqhistory_model import ReqItemCreate
 from services.convert.self_relation_util import SelfRelationUtil
+from services.equipTypeMappingService import EquipTypeMappingService
 from services.main import AppService
 from models.dao_reqhistory import RequestHistoryCRUD
 from utils.service_result import ServiceResult
@@ -25,18 +25,18 @@ class VRLABatteryService(AppService):
             return False
         return True
 
-    async def soh(self, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
+    async def soh(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        mm = MetricMappingCRUD(self.db).get_equip_type_by_equip_code(devs[0])
+        mm = EquipTypeMappingService(self.db).getEquipTypeMapping(equipTypeCode)
 
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': "" if mm is None else mm.equip_type,
+            'model': "" if mm is None else mm,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
@@ -54,7 +54,8 @@ class VRLABatteryService(AppService):
                     "devices": json.dumps(devs, ensure_ascii=False),
                     "tags": json.dumps(tags, ensure_ascii=False),
                     "startts": startts,
-                    "endts": endts
+                    "endts": endts,
+                    "equipTypeCode": equipTypeCode
                 }
                 params = {"reqid": soh_item.id}
                 r = await client.post(f'{ct.URL_MS_CALL_SOH}', json=payload, params=params)
@@ -63,18 +64,18 @@ class VRLABatteryService(AppService):
         except httpx.ConnectTimeout:
             return ServiceResult(AppException.HttpRequestTimeout())
 
-    async def cluster(self, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
+    async def cluster(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        mm = MetricMappingCRUD(self.db).get_equip_type_by_equip_code(devs[0])
+        mm = EquipTypeMappingService(self.db).getEquipTypeMapping(equipTypeCode)
 
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': "" if mm is None else mm.equip_type,
+            'model': "" if mm is None else mm,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
@@ -92,7 +93,8 @@ class VRLABatteryService(AppService):
                     "devices": json.dumps(devs, ensure_ascii=False),
                     "tags": json.dumps(tags, ensure_ascii=False),
                     "startts": startts,
-                    "endts": endts
+                    "endts": endts,
+                    "equipTypeCode": equipTypeCode
                 }
                 params = {"reqid": cluster_item.id, "displayType": displayType}
                 r = await client.post(f'{ct.URL_MS_CALL_CLUSTER}', json=payload, params=params)
@@ -101,19 +103,19 @@ class VRLABatteryService(AppService):
         except httpx.ConnectTimeout:
             return ServiceResult(AppException.HttpRequestTimeout())
 
-    async def relation(self, devs: list, tags: list, startts: int, endts: int,
+    async def relation(self, equipTypeCode: str,  devs: list, tags: list, startts: int, endts: int,
                        leftTag: int, rightTag: int, step: int, unit: int) -> ServiceResult:
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        mm = MetricMappingCRUD(self.db).get_equip_type_by_equip_code(devs[0])
+        mm = EquipTypeMappingService(self.db).getEquipTypeMapping(equipTypeCode)
 
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': "" if mm is None else mm.equip_type,
+            'model': "" if mm is None else mm,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
@@ -131,7 +133,8 @@ class VRLABatteryService(AppService):
                     "devices": json.dumps(devs, ensure_ascii=False),
                     "tags": json.dumps(tags, ensure_ascii=False),
                     "startts": startts,
-                    "endts": endts
+                    "endts": endts,
+                    "equipTypeCode": equipTypeCode
                 }
                 params = {"reqid": cluster_item.id, "leftTag": leftTag,
                           "rightTag": rightTag, "step": step, "unit": unit}

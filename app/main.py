@@ -11,7 +11,7 @@ from services.schedule.dynamic_task import DynamicTask
 from utils.app_exceptions import AppExceptionCase
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import schedule_model_router, cellpack_router, config_router, public_router
+from routers import schedule_model_router, cellpack_router, public_router, plugin_router, sjzy_router
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from utils.request_exceptions import (
@@ -57,14 +57,11 @@ async def custom_app_exception_handler(request, e):
 
 app.include_router(schedule_model_router.router)
 app.include_router(cellpack_router.router)
-# app.include_router(config_router.router)
+app.include_router(plugin_router.router)
+app.include_router(sjzy_router.router)
 app.include_router(public_router.router)
 
 
 @app.get("/")
 async def pluginAuth():
     return "plugin auth success."
-
-
-logging.info(f'dynamic task start up.')
-DynamicTask().start()

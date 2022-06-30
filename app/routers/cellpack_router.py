@@ -72,14 +72,14 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
         return handle_result(ServiceResult("评估只支持单设备模型建立..."))
 
     # 数据同步
-    sjzyManager.dataSync(equipTypeCode, equipType, db)
+    # sjzyManager.dataSync(equipTypeCode, equipType, db)
 
     # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
-    result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipCode)
+    result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipTypeCode)
     allMetrics = ",".join(metricName for metricName in result.values())
     if timeGrapUtil.canClick() is True:
         # 调用模型 (使用payload)
-        BegForService(db).exec(equipCode, allMetrics, HealthEvalUtil.DISPLAY_HEALTH_EVAL, payload)
+        BegForService(db).exec(equipTypeCode, equipCode, allMetrics, HealthEvalUtil.DISPLAY_HEALTH_EVAL, payload)
 
     # 更新playload
     if timeSegment is not None:
@@ -89,7 +89,7 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
 
     # 数据展示 （使用timeSegment, 如果没有timeSegment使用payload）
     so = CellPackService(db)
-    result = so.health_eval(equipType, equipCode, metrics, payload, allMetrics)
+    result = so.health_eval(equipTypeCode, equipCode, metrics, payload, allMetrics)
     return handle_result(result)
 
 
@@ -120,10 +120,10 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
         return "请先建立装备类型编码与装备类型映射表。"
 
     # 数据同步
-    sjzyManager.dataSync(equipTypeCode, equipType, db)
+    # sjzyManager.dataSync(equipTypeCode, equipType, db)
 
     # 调用模型
-    BegForService(db).exec(equipCode, metrics, displayType, payload)
+    BegForService(db).exec(equipTypeCode, equipCode, metrics, displayType, payload)
 
     # 更新playload
     if timeSegment is not None:
@@ -133,7 +133,7 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
 
     # 数据展示
     so = ClusterDisplayService(db)
-    result = so.clusterDisplay(equipType, equipCode, metrics, displayType, payload)
+    result = so.clusterDisplay(equipTypeCode, equipCode, metrics, displayType, payload)
     return handle_result(result)
 
 
@@ -172,7 +172,7 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
         return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
 
     # 数据同步
-    sjzyManager.dataSync(equipTypeCode, equipType, db)
+    # sjzyManager.dataSync(equipTypeCode, equipType, db)
 
     # 注意自相关模型，将payload 中的值赋给 tag
     left_tag_time, right_tag_time = SelfRelationUtil.getTagInfoByPayload(payload)
@@ -187,7 +187,7 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     unit = tag_unit
 
     # 调用模型
-    BegForService(db).exec(equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
+    BegForService(db).exec(equipTypeCode, equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
                            leftTag, rightTag, step, unit)
 
     # 更新playload
@@ -198,7 +198,7 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
 
     # 数据展示
     so = SelfRelationService(db)
-    result = so.selfRelation(equipType, equipCode, metrics, leftTag, rightTag, step, unit, payload)
+    result = so.selfRelation(equipTypeCode, equipCode, metrics, leftTag, rightTag, step, unit, payload)
     return handle_result(result)
 
 
@@ -214,8 +214,3 @@ async def writeClusterDisplay(reqid: int, payload: dict, db: get_db = Depends())
     so = SelfRelationService(db)
     result = so.create_batch(reqid, json.loads(payload["items"]))
     return handle_result(result)
-
-
-@router.get("/dashboards")
-async def get_trend_dashboard(query, filter):
-    return DashboardManagerService.getDashboardList(query, filter)

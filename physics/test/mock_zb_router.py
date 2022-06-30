@@ -118,3 +118,72 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval: Optiona
         ret["result"].append(genDev)
 
     return ret
+
+
+@router.get("/zbMetricByTypeCode")
+async def getZbMetricByTypeCode(equipTypeCode: Optional[str] = None):
+    ret = {
+        "result": {
+            "data": [
+                {"unit": "",
+                 "pointName": "容量"
+                 },
+                {"unit": "",
+                 "pointName": "健康指标"
+                 },
+                {"unit": "",
+                 "pointName": "最大温度"
+                 },
+                {"unit": "",
+                 "pointName": "最小温度"
+                 },
+                {"unit": "",
+                 "pointName": "剩余寿命"
+                 },
+                {"unit": "",
+                 "pointName": "开路电压"
+                 },
+                {"unit": "",
+                 "pointName": "端电压"
+                 },
+                {"unit": "",
+                 "pointName": "内阻不平衡度"
+                 },
+                {"unit": "",
+                 "pointName": "电池单元的最大开路电压"
+                 },
+                {"unit": "",
+                 "pointName": "电池单元的最小开路电压"
+                 },
+                {"unit": "",
+                 "pointName": "电池单元的最大端电压"
+                 },
+                {"unit": "",
+                 "pointName": "电池单元的最小端电压"
+                 },
+                {"unit": "",
+                 "pointName": "电池单元的均值端电压"
+                 }
+                ,
+                {"unit": "",
+                 "pointName": "电池组的环境温度（存在多个测点）"
+                 }
+                ,
+                {"unit": "",
+                 "pointName": "电池单元端电压集合"
+                 }
+                ,
+                {"unit": "",
+                 "pointName": "电池单元容量集合"
+                 }
+                ,
+                {"unit": "",
+                 "pointName": "健康状态"
+                 },
+                {"unit": "",
+                 "pointName": "冲放电电流"
+                 }
+            ]
+        }
+    }
+    return ret

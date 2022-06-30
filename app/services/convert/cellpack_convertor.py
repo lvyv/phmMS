@@ -6,9 +6,9 @@ from services.convert.metric_mapping_utils import MetricMappingUtils
 
 class CellPackConvertor(IConvertor):
 
-    def __init__(self, equipType):
+    def __init__(self, equipTypeCode):
         IConvertor.__init__(self)
-        self.metricMappingUtils = MetricMappingUtils(equipType)
+        self.metricMappingUtils = MetricMappingUtils(equipTypeCode)
         self.ownMetrics = self.metricMappingUtils.get_own_metrics(["ts",
                                                                    "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9",
                                                                    "M10", "M11", "M12", "M13", "M14", "M15", "M16",

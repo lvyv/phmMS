@@ -19,7 +19,7 @@ class BegForService(AppService):
     # metrics 测点名称
     # displayType 模型类型
     # payload  负载， 包含 start end  interval
-    def exec(self, equipCode: str, metrics: str, displayType: str, payload: dict,
+    def exec(self, equipTypeCode: str, equipCode: str, metrics: str, displayType: str, payload: dict,
              leftTag: int = None, rightTag: int = None, step: int = None, unit: int = None):
 
         if PayloadUtil.check_relative_time_valid(payload) is False:
@@ -58,7 +58,7 @@ class BegForService(AppService):
 
         # 若无历史记录，执行调度任务
         if len(hisRecords) <= 0:
-            DynamicTask().async_once_task(devs, tags, start_orgin, end_orgin,
+            DynamicTask().async_once_task(equipTypeCode, devs, tags, start_orgin, end_orgin,
                                           displayType, leftTag, rightTag, step, unit)
 
     @staticmethod

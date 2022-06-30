@@ -13,18 +13,14 @@ class EquipTypeMappingService(AppService):
         item = EquipTypeMappingCRUD(self.db).create_record(pi)
         return ServiceResult(item)
 
-    def create_batch(self, batch, auto=False, autoPassword=None):
+    def create_batch(self, batch):
         items = EquipTypeMappingCRUD(self.db).get_all()
         if items is None:
             mappings = []
             for bt in batch:
-                if auto is True and autoPassword is not None and autoPassword == constants.API_AUTH_AUTO_PASSWORD:
-                    equip_type = bt["equipTypeCode"]
-                else:
-                    equip_type = ''
                 mappings.append(EquipTypeMappingModel(
                         equip_type_code=bt["equipTypeCode"],
-                        equip_type=equip_type
+                        equip_type=''
                     ))
             items = EquipTypeMappingCRUD(self.db).create_batch(mappings)
         else:
@@ -33,16 +29,10 @@ class EquipTypeMappingService(AppService):
                 for item in items:
                     if item.equip_type_code == bt["equipTypeCode"]:
                         found = True
-                        # TODO
-                        # logging.info("设备类型编码已经绑定，不需要重新绑定。")
                 if found is False:
-                    if auto is True and autoPassword is not None and autoPassword == constants.API_AUTH_AUTO_PASSWORD:
-                        equip_type = bt["equipTypeCode"]
-                    else:
-                        equip_type = ''
                     mmm = EquipTypeMappingModel(
                         equip_type_code=bt["equipTypeCode"],
-                        equip_type=equip_type
+                        equip_type=''
                     )
                     self.create_item(mmm)
         return ServiceResult(items)
@@ -73,7 +63,7 @@ class EquipTypeMappingService(AppService):
                     equip_type_code=equipTypeCode,
                 )
                 self.create_item(mmm)
-        item = EquipTypeMappingCRUD(self.db).get_all()
+        item = EquipTypeMappingCRUD(self.db).get_one(equipTypeCode)
         return ServiceResult(item)
 
     def getEquipTypeMapping(self, equipTypeCode):

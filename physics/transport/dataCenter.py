@@ -204,22 +204,19 @@ def process_zb_history_data_relation(data):
     return process_zb_history_data_agg2d(data)
 
 
-def query_metric_mapping(deviceCode=None):
+def query_metric_mapping(equipTypeCode):
     with httpx.Client(timeout=None, verify=False) as client:
         url = constants.URL_MD_QUERY_METRIC_MAPPING
-        if deviceCode is None:
-            r = client.get(url)
-        else:
-            r = client.get(url, params={"equipCode": deviceCode})
+        r = client.get(url, params={"equipTypeCode": equipTypeCode})
         dataS = r.json()
         return dataS
     return None
 
 
-def query_equip_type_by_equip_code(equipCode):
+def query_equip_type_by_equip_type_code(equipTypeCode):
     with httpx.Client(timeout=None, verify=False) as client:
-        url = constants.URL_MD_QUERY_EQUIP_TYPE_BY_EQUIP_CODE
-        r = client.get(url, params={"equipCode": equipCode})
+        url = constants.URL_MD_QUERY_EQUIP_TYPE_BY_EQUIP_TYPE_CODE
+        r = client.get(url, params={"equipTypeCode": equipTypeCode})
         return r.text
     return ""
 

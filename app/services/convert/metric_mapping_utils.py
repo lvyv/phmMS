@@ -4,10 +4,10 @@ from services.metricMappingService import MetricMappingService
 
 class MetricMappingUtils:
 
-    def __init__(self, clz):
+    def __init__(self, equipTypeCode):
         db = database.SessionLocal()
         so = MetricMappingService(db)
-        self.items = so.get_all_mapping(clz)
+        self.items = so.get_all_mapping_by_equip_type_code(equipTypeCode)
 
     def get_own_metrics(self, metrics):
         ret = []
