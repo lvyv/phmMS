@@ -57,10 +57,11 @@ def startMqtt():
 threading.Thread(target=startMqtt()).start()
 
 
-def write_back_history_result(client, reqid):
-    # 回写历史状态
-    params = {'reqid': reqid, 'res': "settled"}
-    client.put(f'{bcf.URL_MD_WRITE_REQ_HISTORY}', params=params)
+def write_back_history_result(reqid):
+    with httpx.Client(timeout=None, verify=False) as client:
+        # 回写历史状态
+        params = {'reqid': reqid, 'res': "settled"}
+        client.put(f'{bcf.URL_MD_WRITE_REQ_HISTORY}', params=params)
 
 
 def publish_data_to_iot(reqid, data):
@@ -74,61 +75,39 @@ def publish_data_to_iot(reqid, data):
 
 
 def post_process_vrla_soh(reqid, items):
+
+    write_back_history_result(reqid)
+
     with httpx.Client(timeout=None, verify=False) as client:
-        write_back_history_result(client, reqid)
+        client.post(f'{bcf.URL_MD_WRITE_EVAL_BATCH}', params={"reqid": reqid},  json={"items": json.dumps(items)})
 
-        if bcf.CALCULATE_RESULT_BATCH_OPERATOR is False:
-            # 写回指标统计数据库表
-            for item in items:
-                client.post(f'{bcf.URL_MD_WRITE_EVAL}', json=DataConvertUtil.SOH(reqid, item))
-        else:
-            client.post(f'{bcf.URL_MD_WRITE_EVAL_BATCH}', params={"reqid": reqid},  json={"items": json.dumps(items)})
-
-        publish_data_to_iot(reqid, items)
+    publish_data_to_iot(reqid, items)
 
 
 def post_process_vrla_cluster(reqid, sohres, displayType):
+
+    write_back_history_result(reqid)
+
     with httpx.Client(timeout=None, verify=False) as client:
-
-        write_back_history_result(client, reqid)
-
         # 聚类模型需要数据转换
         items = phm.cluster_convert(sohres)
+        client.post(bcf.URL_MD_WRITE_CLUSTER_BATCH,
+                    params={"reqid": reqid, "displayType": displayType},
+                    json={"items": json.dumps(items)})
 
-        # 将数据写入数据库
-        if bcf.CALCULATE_RESULT_BATCH_OPERATOR is False:
-            for did in items.keys():
-                client.post(bcf.URL_MD_WRITE_CLUSTER, json=DataConvertUtil.cluster(reqid, displayType, did, items))
-        else:
-            client.post(bcf.URL_MD_WRITE_CLUSTER_BATCH,
-                        params={"reqid": reqid, "displayType": displayType},
-                        json={"items": json.dumps(items)})
-        publish_data_to_iot(reqid, sohres)
+    publish_data_to_iot(reqid, sohres)
 
 
 def post_process_vrla_relation(reqid, items):
+
+    write_back_history_result(reqid)
+
     with httpx.Client(timeout=None, verify=False) as client:
+        client.post(f'{bcf.URL_MD_WRITE_SELF_RELATION_BATCH}',
+                    params={"reqid": reqid},
+                    json={"items": json.dumps(items)})
 
-        write_back_history_result(client, reqid)
-
-        if bcf.CALCULATE_RESULT_BATCH_OPERATOR is False:
-            # 写回指标统计数据库表
-            for did in items.keys():
-                eqitem = items[did]
-                for index, item in enumerate(eqitem["lag"]):
-                    eqi = {
-                        "reqId": reqid,
-                        "lag": item,
-                        "value": eqitem["value"][index],
-                        "ts": int(time.time() * 1000),
-                    }
-                    client.post(f'{bcf.URL_MD_WRITE_SELF_RELATION}', json=eqi)
-        else:
-            client.post(f'{bcf.URL_MD_WRITE_SELF_RELATION_BATCH}',
-                        params={"reqid": reqid},
-                        json={"items": json.dumps(items)})
-
-        publish_data_to_iot(reqid, items)
+    publish_data_to_iot(reqid, items)
 
 
 # time intensive tasks

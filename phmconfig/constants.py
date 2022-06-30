@@ -74,14 +74,12 @@ if len(PHMMS_CONTAINER_NAME.split(":")) == 2:
     PHMMS_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMS_CONTAINER_NAME
 else:
     PHMMS_URL_PREFIX = SCHEMA_HEADER + "://" + PHMMS_CONTAINER_NAME + ":" + str(PHMMS_PORT)
-# 写评估数据
-URL_MD_WRITE_EVAL = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeEval"
-# 写健康指标URL地址
-URL_MS_WRITE_HEALTH_INDICATOR = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeHealthIndicator"
-# 写聚类数据
-URL_MD_WRITE_CLUSTER = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeCluster"
-# 写自相关数据
-URL_MD_WRITE_SELF_RELATION = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeRelation"
+
+# 批处理
+URL_MD_WRITE_EVAL_BATCH = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeEvalBatch"
+URL_MD_WRITE_CLUSTER_BATCH = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeClusterBatch"
+URL_MD_WRITE_SELF_RELATION_BATCH = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeRelationBatch"
+
 # 写更新历史请求记录
 URL_MD_WRITE_REQ_HISTORY = PHMMS_URL_PREFIX + "/api/v1/public/updateHistoryRecord"
 
@@ -120,8 +118,5 @@ URL_MS_GET_DASHBOARD_LIST = cfg["url_ms_get_dashboard_list"]
 MOCK_ZB_DATA = cfg["mock_zb_data"] if "mock_zb_data" in cfg_keys else False
 MOCK_ZB_DATA_ALL_ZERO = cfg["mock_zb_data_all_zero"] if "mock_zb_data_all_zero" in cfg_keys else False
 
-# 批量写入
-CALCULATE_RESULT_BATCH_OPERATOR = cfg["batch_operator"] if "batch_operator" in cfg_keys else True
-URL_MD_WRITE_EVAL_BATCH = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeEvalBatch"
-URL_MD_WRITE_CLUSTER_BATCH = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeClusterBatch"
-URL_MD_WRITE_SELF_RELATION_BATCH = PHMMS_URL_PREFIX + "/api/v1/cellpack/writeRelationBatch"
+
+

@@ -35,15 +35,6 @@ router = APIRouter(
 
 # 定义规则，所有数据均取历史数据，都需要通过reqId获取
 
-
-# 回写电池评估数据
-@router.post("/writeEval", response_model=CellPackModel)
-async def writeHealthEval(item: CellPackModel, db: get_db = Depends()):
-    so = CellPackService(db)
-    result = so.create_item(item)
-    return handle_result(result)
-
-
 # 回写电池评估数据
 @router.post("/writeEvalBatch")
 async def writeHealthEvalBatch(reqid: int, payload: dict,  db: get_db = Depends()):
@@ -137,14 +128,6 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
     return handle_result(result)
 
 
-# 回写聚类接口
-@router.post("/writeCluster", response_model=ClusterModel)
-async def writeClusterDisplay(item: ClusterModel, db: get_db = Depends()):
-    so = ClusterDisplayService(db)
-    result = so.create_item(item)
-    return handle_result(result)
-
-
 @router.post("/writeClusterBatch")
 async def writeClusterDisplay(reqid: int, displayType: str, payload: dict, db: get_db = Depends()):
     so = ClusterDisplayService(db)
@@ -199,13 +182,6 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     # 数据展示
     so = SelfRelationService(db)
     result = so.selfRelation(equipTypeCode, equipCode, metrics, leftTag, rightTag, step, unit, payload)
-    return handle_result(result)
-
-
-@router.post("/writeRelation")
-async def writeClusterDisplay(item: SelfRelationModel, db: get_db = Depends()):
-    so = SelfRelationService(db)
-    result = so.create_item(item)
     return handle_result(result)
 
 
