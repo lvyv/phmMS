@@ -25,6 +25,9 @@ class MetricMappingService(AppService):
                     mapping[item.metric_alias] = item.metric_name
         return mapping
 
+    def get_items_by_equip_type_code(self, equipTypeCode):
+        return ServiceResult(MetricMappingCRUD(self.db).get_all(equipTypeCode))
+
     def update_all_mapping(self, equipTypeCode, mappings, equipType):
         if mappings is None:
             return

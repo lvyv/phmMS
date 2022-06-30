@@ -18,7 +18,6 @@ router = APIRouter(
 async def getEquipTypeByPlugin(db: get_db = Depends()):
     so = EquipTypeMappingService(db)
     result = ServiceResult(so.getAllEquipTypeMapping())
-    # result = ServiceResult(["battery"])
     return handle_result(result)
 
 
