@@ -180,7 +180,7 @@ def calculate_cluster(dataS, display):
         else:
             pass
         logging.info("complete cluster =>" + display)
-    except requests.exceptions.ConnectionError as ce:
+    except Exception as ce:
         logging.info("stop cluster =>" + display)
         logging.error(ce)
     return out
