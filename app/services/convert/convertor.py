@@ -90,6 +90,7 @@ class IConvertor:
         tmpDict = {}
         # TODO fix 时间选择
         initTs = False
+        ownTs = False
         for dev in devs:
             for item in items:
                 if item.did == dev:
@@ -103,11 +104,13 @@ class IConvertor:
                                     tmpDict[m] = [self.get_metric_value(item, mtr[1])]
                         else:
                             if initTs is False:
+                                ownTs = True
                                 if m in tmpDict.keys():
                                     tmpDict[m].append(self.get_metric_value(item, m))
                                 else:
                                     tmpDict[m] = [self.get_metric_value(item, m)]
-            initTs = True
+            if ownTs is True:
+                initTs = True
         for key in tmpDict.keys():
             rets.append({"name": key, "type": ClusterDisplayUtil.get_metric_type(key), "values": tmpDict[key]})
         return rets
