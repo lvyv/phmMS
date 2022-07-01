@@ -4,6 +4,7 @@ from services.equipTypeMappingService import EquipTypeMappingService
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
 from services.reqhistoryService import ReqHistoryService
+from services.validate.publicModelValidate import PublicModelValidate
 from utils.service_result import handle_result, ServiceResult
 
 router = APIRouter(
@@ -40,6 +41,11 @@ async def getMetricByPlugin(equipType, equipCode, displayType, db: get_db = Depe
 # 获取时间段
 @router.get("/timeSegment")
 async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: get_db = Depends()):
+
+    support, equipCode, metric = PublicModelValidate.support(equipCode, metric)
+    if support is False:
+        return "请输入不为空的设备编码或测点"
+
     so = ReqHistoryService(db)
     if displayType in [HealthEvalUtil.DISPLAY_HEALTH_EVAL]:
         # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
@@ -54,6 +60,11 @@ async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: 
 # 删除时间段
 @router.delete("/timeSegment")
 async def deleteTimeSegmentByPlugin(equipType, equipCode, metric, displayType, timeSegment, db:get_db = Depends()):
+
+    support, equipCode, metric = PublicModelValidate.support(equipCode, metric)
+    if support is False:
+        return "请输入不为空的设备编码或测点"
+
     so = ReqHistoryService(db)
     if displayType in [HealthEvalUtil.DISPLAY_HEALTH_EVAL]:
         # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度

@@ -15,6 +15,7 @@ from services.schedule.beg_for_service import BegForService
 from services.schedule.time_grap_util import TimeGrapUtil
 from services.sjzy.sjzy_manager import SjzyManager
 from services.validate.evalModelValidate import EvalModelValidate
+from services.validate.publicModelValidate import PublicModelValidate
 from services.validate.relationModelValidate import RelationModelValidate
 from utils.service_result import handle_result, ServiceResult
 from phmconfig.database import get_db
@@ -62,6 +63,10 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
     if equipType is None or equipType is '':
         return "请先建立装备类型编码与装备类型映射表。"
+
+    support, equipCode, metrics = PublicModelValidate.support(equipCode, metrics)
+    if support is False:
+        return "请输入不为空的设备编码或测点"
 
     # 评估模型校验
     support = EvalModelValidate.support(equipCode)
@@ -111,6 +116,10 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
     if equipType is None or equipType is '':
         return "请先建立装备类型编码与装备类型映射表。"
 
+    support, equipCode, metrics = PublicModelValidate.support(equipCode, metrics)
+    if support is False:
+        return "请输入不为空的设备编码或测点"
+
     # 数据同步
     # sjzyManager.dataSync(equipTypeCode, equipType, db)
 
@@ -149,6 +158,10 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
     if equipType is None or equipType is '':
         return "请先建立装备类型编码与装备类型映射表。"
+
+    support, equipCode, metrics = PublicModelValidate.support(equipCode, metrics)
+    if support is False:
+        return "请输入不为空的设备编码或测点"
 
     # 自相关模型支持判断
     support = RelationModelValidate.support(equipCode, metrics)
