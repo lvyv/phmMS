@@ -109,7 +109,7 @@ API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT = URL_SJZY_API_PREFIX + "/api/equip/quer
 # 从数据资源获取装备的测点数据
 API_QUERY_HISTORY_DATA = URL_SJZY_API_PREFIX + "/api/devices/query_history_data_v2"
 
-API_QUERY_MEASUSRE_POINT_BY_EQUIP_TYPE_CODE = URL_SJZY_API_PREFIX + "api/query/equip_measure_point"
+API_QUERY_MEASUSRE_POINT_BY_EQUIP_TYPE_CODE = URL_SJZY_API_PREFIX + "/api/query/equip_measure_point"
 
 # 对接grafana
 URL_MS_GET_DASHBOARD_LIST = cfg["url_ms_get_dashboard_list"]
