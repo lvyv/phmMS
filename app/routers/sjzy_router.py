@@ -16,6 +16,12 @@ router = APIRouter(
 )
 
 
+# 查询装备编码类型
+@router.get("/getTypeByName")
+async def getEquipTypeCodeByName(equipName: str, equipCode: Optional[str] = None):
+    return DataCenterService.filter_zb_equip_type_code(DataCenterService.download_zb_type_code(equipName, equipCode))
+
+
 # 绑定装备类型映射
 @router.post("/updateEquipType")
 async def updateEquipType(equipTypeCode: str, equipType, db: get_db = Depends()):
@@ -74,9 +80,3 @@ async def dataSync(equipTypeCode: str, db: get_db = Depends()):
     result = mms.update_all_mapping(equipTypeCode, metrics, equipType)
 
     return handle_result(result)
-
-
-# 查询装备编码类型
-@router.get("/getALLEquipTypeCode")
-async def getAllEquipTypeCode():
-    return DataCenterService.filter_zb_equip_type_code(DataCenterService.download_zb_type_code())

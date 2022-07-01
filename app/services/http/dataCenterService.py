@@ -8,13 +8,17 @@ class DataCenterService:
     # equipCode: 装备编码
     # equipTypeCode: 装备类型编码
     @staticmethod
-    def download_zb_type_code():
+    def download_zb_type_code(equipName: str, equipCode: str = None):
         with httpx.Client(timeout=None, verify=False) as client:
             if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
                 url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetric"
             else:
                 url = constants.API_QUERY_EQUIP_INFO_WITH_MEASURE_POINT
-            r = client.post(url)
+            params = {}
+            if equipCode is not None:
+                params["equipCode"] = equipCode
+            params["equipName"] = equipName
+            r = client.post(url, params=params)
             dataS = r.json()
             return DataCenterService._process_zb_metric(dataS)
         return None
