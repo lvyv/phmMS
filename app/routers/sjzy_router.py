@@ -2,7 +2,6 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 
 from models.dao_metric_mapping import MetricMappingCRUD
-from phmconfig import constants
 from services.equipTypeMappingService import EquipTypeMappingService
 from services.http.dataCenterService import DataCenterService
 from services.metricMappingService import MetricMappingService
@@ -11,8 +10,8 @@ from services.sjzy.AutomaticMetricBind import AutomaticMetricBind
 from utils.service_result import handle_result
 
 router = APIRouter(
-    prefix="/api/v1/public",
-    tags=["数据资源"],
+    prefix="/api/v1/mapping",
+    tags=["映射配置"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -54,3 +53,30 @@ async def getAllMetrics(equipTypeCode: str, db: get_db = Depends()):
     so = MetricMappingService(db)
     result = so.get_items_by_equip_type_code(equipTypeCode)
     return handle_result(result)
+
+
+@router.post("/syncMetrics")
+async def dataSync(equipTypeCode: str, db: get_db = Depends()):
+    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipTypeCode)
+    if equipType is None or equipType is '':
+        return "请先建立装备类型编码与装备类型映射表。"
+    # TODO 同步测点
+    metrics = DataCenterService.download_zb_metric_by_type_code(equipTypeCode)
+    # TODO 自动绑定
+    ownMetrics = MetricMappingCRUD(db).get_all(equipTypeCode)
+    if ownMetrics is None:
+        metrics = AutomaticMetricBind.autoRun(metrics)
+    else:
+        metrics = AutomaticMetricBind.autobind(metrics, ownMetrics)
+
+    # TODO 更新测定绑定
+    mms = MetricMappingService(db)
+    result = mms.update_all_mapping(equipTypeCode, metrics, equipType)
+
+    return handle_result(result)
+
+
+# 查询装备编码类型
+@router.get("/getALLEquipTypeCode")
+async def getAllEquipTypeCode():
+    return DataCenterService.filter_zb_equip_type_code(DataCenterService.download_zb_type_code())

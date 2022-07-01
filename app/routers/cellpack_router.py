@@ -28,19 +28,25 @@ timeGrapUtil = TimeGrapUtil()
 
 router = APIRouter(
     prefix="/api/v1/cellpack",
-    tags=["电池组历史统计微服务"],
+    tags=["微服务"],
     responses={404: {"description": "Not found"}},
 )
 
 
-# 定义规则，所有数据均取历史数据，都需要通过reqId获取
+# 健康指标
+@router.post("/healthIndicator")
+async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_db = Depends()):
 
-# 回写电池评估数据
-@router.post("/writeEvalBatch")
-async def writeHealthEvalBatch(reqid: int, payload: dict,  db: get_db = Depends()):
-    so = CellPackService(db)
-    result = so.create_batch(reqid, json.loads(payload["items"]))
+    equipTypeCode = equipType
+    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
+    if equipType is None or equipType is '':
+        return "请先建立装备类型编码与装备类型映射表。"
+
+    so = HealthIndicatorService(db)
+    result = so.health_indicator(equipTypeCode, equipCode, reqType)
     return handle_result(result)
+
+# 定义规则，所有数据均取历史数据，都需要通过reqId获取
 
 
 # 电池评估只针对单个电池 或者 单个电池组
@@ -84,16 +90,11 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
     return handle_result(result)
 
 
-# 健康指标
-@router.post("/healthIndicator")
-async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_db = Depends()):
-
-    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
-    if equipType is None or equipType is '':
-        return "请先建立装备类型编码与装备类型映射表。"
-
-    so = HealthIndicatorService(db)
-    result = so.health_indicator(equipType, equipCode, reqType)
+# 回写电池评估数据
+@router.post("/writeEvalBatch")
+async def writeHealthEvalBatch(reqid: int, payload: dict,  db: get_db = Depends()):
+    so = CellPackService(db)
+    result = so.create_batch(reqid, json.loads(payload["items"]))
     return handle_result(result)
 
 

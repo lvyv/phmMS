@@ -10,7 +10,7 @@ import logging
 
 router = APIRouter(
     prefix="/api/v1/phm/vrla",
-    tags=["阀控铅酸蓄电池模型"],
+    tags=["模型调度"],
     responses={404: {"description": "Not found"}},
 )
 
