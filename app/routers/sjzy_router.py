@@ -1,9 +1,13 @@
 from typing import Optional
 from fastapi import APIRouter, Depends
+
+from models.dao_metric_mapping import MetricMappingCRUD
+from phmconfig import constants
 from services.equipTypeMappingService import EquipTypeMappingService
 from services.http.dataCenterService import DataCenterService
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
+from services.sjzy.AutomaticMetricBind import AutomaticMetricBind
 from utils.service_result import handle_result
 
 router = APIRouter(
@@ -18,7 +22,18 @@ router = APIRouter(
 async def updateEquipType(equipTypeCode: str, equipType, db: get_db = Depends()):
     # TODO 同步测点
     metrics = DataCenterService.download_zb_metric_by_type_code(equipTypeCode)
-    MetricMappingService(db).update_all_mapping(equipTypeCode, metrics, equipType)
+
+    # TODO 自动绑定
+    ownMetrics = MetricMappingCRUD(db).get_all(equipTypeCode)
+    if ownMetrics is None:
+        metrics = AutomaticMetricBind.autoRun(metrics)
+    else:
+        metrics = AutomaticMetricBind.autobind(metrics, ownMetrics)
+
+    # TODO 更新测定绑定
+    mms = MetricMappingService(db)
+    mms.update_all_mapping(equipTypeCode, metrics, equipType)
+
     # TODO 类型绑定
     result = EquipTypeMappingService(db).updateMapping(equipTypeCode, equipType)
     return handle_result(result)

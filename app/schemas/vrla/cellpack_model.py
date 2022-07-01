@@ -23,15 +23,15 @@ from schemas.base_model import BaseDataModel
 
 class CellPackModel(BaseDataModel):
     # 普通采集测点
-    M1: float
-    M2: float
-    M3: float
-    M4: float
-    M5: float
-    M6: float
-    M7: float
-    M8: float
-    M9: float
+    M01: float
+    M02: float
+    M03: float
+    M04: float
+    M05: float
+    M06: float
+    M07: float
+    M08: float
+    M09: float
     M10: float
     M11: float
     M12: float

@@ -16,7 +16,10 @@ class DataConvertUtil:
             "ts": item['ts'] if 'ts' in keys else 0,
         }
         for i in range(39):
-            key = "M" + str(i + 1)
+            if i < 9:
+                key = "M0" + str(i + 1)
+            else:
+                key = "M" + str(i + 1)
             eqi.update({key: item[key] if key in keys else 0})
         for i in range(1):
             key = "IM" + str(i + 1)
