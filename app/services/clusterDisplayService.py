@@ -33,15 +33,9 @@ class ClusterDisplayService(AppService):
         tags.sort()
 
         hisRecordId = []
-
-        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                                 json.dumps(tags, ensure_ascii=False),
-                                                                 displayType, start, end)
-        else:
-            hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
-                                                                               json.dumps(tags, ensure_ascii=False),
-                                                                               displayType, start, end)
+        hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                           json.dumps(tags, ensure_ascii=False),
+                                                                           displayType, start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)
 

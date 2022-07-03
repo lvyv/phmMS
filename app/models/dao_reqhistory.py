@@ -22,7 +22,9 @@ class RequestHistoryCRUD(AppCRUD):
                              metrics=item.metrics,
                              displayType=item.displayType,
                              startTs=item.startTs,
-                             endTs=item.endTs)
+                             endTs=item.endTs,
+                             params=item.params
+                             )
         self.db.add(record)
         self.db.commit()
         self.db.refresh(record)

@@ -1,14 +1,11 @@
+import logging
 from typing import Optional
 
 from fastapi import APIRouter, Depends
 
 import json
-from schemas.vrla.cellpack_model import CellPackModel
-from schemas.vrla.cluster_model import ClusterModel
-from schemas.vrla.self_relation_model import SelfRelationModel
 from services.convert.health_eval_util import HealthEvalUtil
 from services.convert.self_relation_util import SelfRelationUtil
-from services.dashboardManagerService import DashboardManagerService
 from services.equipTypeMappingService import EquipTypeMappingService
 from services.metricMappingService import MetricMappingService
 from services.schedule.beg_for_service import BegForService
@@ -37,7 +34,6 @@ router = APIRouter(
 # 健康指标
 @router.post("/healthIndicator")
 async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_db = Depends()):
-
     equipTypeCode = equipType
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
     if equipType is None or equipType is '':
@@ -46,6 +42,7 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
     so = HealthIndicatorService(db)
     result = so.health_indicator(equipTypeCode, equipCode, reqType)
     return handle_result(result)
+
 
 # 定义规则，所有数据均取历史数据，都需要通过reqId获取
 
@@ -57,7 +54,6 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
 @router.post("/eval")
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict,
                      timeSegment: Optional[str] = None, db: get_db = Depends()):
-
     equipTypeCode = equipType
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
@@ -72,9 +68,6 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
     support = EvalModelValidate.support(equipCode)
     if support is False:
         return handle_result(ServiceResult("评估只支持单设备模型建立..."))
-
-    # 数据同步
-    # sjzyManager.dataSync(equipTypeCode, equipType, db)
 
     # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
     result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipTypeCode)
@@ -97,7 +90,7 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
 
 # 回写电池评估数据
 @router.post("/writeEvalBatch")
-async def writeHealthEvalBatch(reqid: int, payload: dict,  db: get_db = Depends()):
+async def writeHealthEvalBatch(reqid: int, payload: dict, db: get_db = Depends()):
     so = CellPackService(db)
     result = so.create_batch(reqid, json.loads(payload["items"]))
     return handle_result(result)
@@ -109,7 +102,6 @@ async def writeHealthEvalBatch(reqid: int, payload: dict,  db: get_db = Depends(
 async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayType: str, payload: dict,
                          timeSegment: Optional[str] = None,
                          db: get_db = Depends()):
-
     equipTypeCode = equipType
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
@@ -119,9 +111,6 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
     support, equipCode, metrics = PublicModelValidate.support(equipCode, metrics)
     if support is False:
         return "请输入不为空的设备编码或测点"
-
-    # 数据同步
-    # sjzyManager.dataSync(equipTypeCode, equipType, db)
 
     # 调用模型
     BegForService(db).exec(equipTypeCode, equipCode, metrics, displayType, payload)
@@ -149,10 +138,8 @@ async def writeClusterDisplay(reqid: int, displayType: str, payload: dict, db: g
 # 注意：(自相关折线图数据 复用聚类折线图)  &from=$__from&to=$__to
 @router.post("/relation")
 async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: dict,
-                        leftTag: Optional[int] = None, rightTag: Optional[int] = None,
-                        step: Optional[int] = None, unit: Optional[int] = None,
+                        subfrom: Optional[str] = None, subto: Optional[str] = None,
                         timeSegment: Optional[str] = None, db: get_db = Depends()):
-
     equipTypeCode = equipType
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
@@ -168,24 +155,16 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     if support is False:
         return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
 
-    # 数据同步
-    # sjzyManager.dataSync(equipTypeCode, equipType, db)
-
-    # 注意自相关模型，将payload 中的值赋给 tag
-    left_tag_time, right_tag_time = SelfRelationUtil.getTagInfoByPayload(payload)
-
-    # 根据left_tag_time, right_tag_time, payload 获取 step, unit
-    tag_step, tag_unit = SelfRelationUtil.getStepUintByTagAndPayload(left_tag_time, right_tag_time, payload)
-
-    # 弃用leftTag rightTag step unit
-    leftTag = left_tag_time
-    rightTag = right_tag_time
-    step = tag_step
-    unit = tag_unit
+    try:
+        sub_from = SelfRelationUtil.getTagInfoByPayload(subfrom)
+        sub_to = SelfRelationUtil.getTagInfoByPayload(subto)
+    except Exception as e:
+        logging.info(e)
+        sub_from = sub_to = -1
 
     # 调用模型
     BegForService(db).exec(equipTypeCode, equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
-                           leftTag, rightTag, step, unit)
+                           sub_from, sub_to)
 
     # 更新playload
     if timeSegment is not None:
@@ -195,7 +174,7 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
 
     # 数据展示
     so = SelfRelationService(db)
-    result = so.selfRelation(equipTypeCode, equipCode, metrics, leftTag, rightTag, step, unit, payload)
+    result = so.selfRelation(equipTypeCode, equipCode, metrics, payload, sub_from, sub_to)
     return handle_result(result)
 
 

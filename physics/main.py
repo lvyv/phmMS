@@ -142,16 +142,20 @@ def cluster_task(clusterin, reqid, displayType):
     logging.info("聚类计算完成: " + displayType)
 
 
-def relation_task(relationin, reqid, leftTag, rightTag, step, unit):
-    logging.info("relation param, startTime: " + TimeUtils.convert_time_str(relationin.startts) +
-                 " endTime: " + TimeUtils.convert_time_str(relationin.endts) +
-                 " leftTag: " + TimeUtils.convert_time_str(leftTag) +
-                 " rightTag: " + TimeUtils.convert_time_str(rightTag) +
-                 " step: " + str(step) +
-                 " unit: " + str(unit))
+def relation_task(relationin, reqid, subFrom, subTo):
+    if subFrom == -1 and subTo == -1:
+        logging.info("relation param, startTime: " + TimeUtils.convert_time_str(relationin.startts) +
+                     " endTime: " + TimeUtils.convert_time_str(relationin.endts) +
+                     " subFrom: " + str(subFrom) +
+                     " subTo: " + str(subTo))
+    else:
+        logging.info("relation param, startTime: " + TimeUtils.convert_time_str(relationin.startts) +
+                     " endTime: " + TimeUtils.convert_time_str(relationin.endts) +
+                     " subFrom: " + TimeUtils.convert_time_str(subFrom) +
+                     " subTo: " + TimeUtils.convert_time_str(subTo))
     dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
     try:
-        res = phm.calculate_relate(dataS, leftTag, rightTag, step, unit)
+        res = phm.calculate_relate(dataS, subFrom, subTo)
         post_process_vrla_relation(reqid, res)
     except Exception as e:
         logging.error(e)
@@ -182,8 +186,8 @@ async def calculate_cluster(sohin: SohInputParams, reqid: int, displayType: str)
 
 
 @app.post("/api/v1/relation")
-async def calculate_relation(sohin: SohInputParams, reqid: int, leftTag: int, rightTag: int, step: int, unit: int):
-    executor_.submit(relation_task, sohin, reqid, leftTag, rightTag, step, unit)
+async def calculate_relation(sohin: SohInputParams, reqid: int, subFrom: int, subTo: int):
+    executor_.submit(relation_task, sohin, reqid, subFrom, subTo)
     return {'task': reqid, 'status': 'submitted to work thread.'}
 
 

@@ -31,15 +31,10 @@ class CellPackService(AppService):
 
         hisRecordId = []
 
-        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                                 json.dumps(tags, ensure_ascii=False),
-                                                                 HealthEvalUtil.DISPLAY_HEALTH_EVAL, start, end)
-        else:
-            hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
-                                                                               json.dumps(tags, ensure_ascii=False),
-                                                                               HealthEvalUtil.DISPLAY_HEALTH_EVAL,
-                                                                               start, end)
+        hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                           json.dumps(tags, ensure_ascii=False),
+                                                                           HealthEvalUtil.DISPLAY_HEALTH_EVAL,
+                                                                           start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)
         if len(hisRecordId) == 0:

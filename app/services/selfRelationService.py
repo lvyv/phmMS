@@ -20,7 +20,7 @@ class SelfRelationService(AppService):
         items = SelfRelationCRUD(self.db).create_batch(reqid, batch)
         return ServiceResult(items)
 
-    def selfRelation(self, clz, code, metrics, leftTag, rightTag, step, unit, payload) -> ServiceResult:
+    def selfRelation(self, clz, code, metrics, payload, subFrom, subTo) -> ServiceResult:
 
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
@@ -29,21 +29,15 @@ class SelfRelationService(AppService):
         devs.sort()
         tags = metrics.split(",")
         tags.sort()
-
         hisRecordId = []
-
-        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-            hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                                 json.dumps(tags, ensure_ascii=False),
-                                                                 SelfRelationUtil.DISPLAY_SELF_RELATION,
-                                                                 start, end)
-        else:
-            hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
-                                                                               json.dumps(tags, ensure_ascii=False),
-                                                                               SelfRelationUtil.DISPLAY_SELF_RELATION,
-                                                                               start, end)
+        hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                           json.dumps(tags, ensure_ascii=False),
+                                                                           SelfRelationUtil.DISPLAY_SELF_RELATION,
+                                                                           start, end)
         for his in hisRecords:
-            hisRecordId.append(his.id)
+            params = json.loads(his.params)
+            if params["subFrom"] == subFrom and params["subTo"] == subTo:
+                hisRecordId.append(his.id)
         if len(hisRecordId) == 0:
             items = None
         else:

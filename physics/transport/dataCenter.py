@@ -60,6 +60,17 @@ def download_zb_real_data(devs, metrics, start, end):
 # 2022-05-10 16:14:52  -> 1652170492000  | 2022-05-11 16:14:52 -> 1652256892000
 
 
+# ---聚类的数据结构
+# 2D 3D
+# 设备1  时间戳  测点1 测点2
+# 设备1  时间戳  测点1 测点2
+# 设备2  时间戳  测点1 测点2
+
+# 聚类时间演化 （3D） x戳表示时间  2D聚类
+# 设备1  时间戳  测点1 测点2
+# 设备1  时间戳  测点1 测点2
+# 设备2  时间戳  测点1 测点2
+
 # 生成2D,3D, 聚类时间演化数据格式
 def process_zb_history_data_2d_3d_agg3d(data):
     if data is None:
@@ -98,7 +109,11 @@ def process_zb_history_data_2d_3d_agg3d(data):
         return None, None, None
 
 
-# 生成聚类时间演化格式数据
+# 时序聚类 （2D）
+# 设备1 时间段 测点1 测点2
+# 设备2 时间段 测点1 测点2
+
+# 生成时序聚类格式数据
 def process_zb_history_data_agg2d(data):
     if data is None:
         return None, None, None
@@ -134,33 +149,12 @@ def process_zb_history_data_agg2d(data):
         return None, None, None
 
 
-# ---聚类的数据结构
-# 2D 3D
+# ---计算SOH 数据结构
 # 设备1  时间戳  测点1 测点2
 # 设备1  时间戳  测点1 测点2
 # 设备2  时间戳  测点1 测点2
-
-# 时序聚类 （2D）
-# 设备1 时间段 测点1 测点2
-# 设备2 时间段 测点1 测点2
-
-# 聚类时间演化 （3D） x戳表示时间  2D聚类
-# 设备1  时间戳  测点1 测点2
-# 设备1  时间戳  测点1 测点2
 # 设备2  时间戳  测点1 测点2
 
-
-#          for item in data:
-#             equipCode = item["equipCode"]  # 装备编码
-#             equipName = item["equipName"]  # 装备名称
-#             equipData = item["equipData"]  # 装备数据
-#             for ed in equipData:
-#                 metricName = ed["metricName"]  # 测点名称
-#                 metricCode = ed["metricCode"]  # 测点编码
-#                 metricData = ed["metricData"]  # 测点数据
-#                 for md in metricData:
-#                     timestamp = md["timestamp"]  # 时间戳
-#                     metricValue = md["metricValue"]  # 测点值
 # 生成计算SOH、SOC、内阻不平衡度、电压不平衡度格式数据
 def process_zb_history_data_soh(data, mapping):
     if data is None:
@@ -199,9 +193,57 @@ def process_zb_history_data_soh(data, mapping):
         return None
 
 
+# 计算自相关的数据格式
+# 设备1 时间段 测点1 测点2
+# 设备2 时间段 测点1 测点2
+
 # 生成自相关数据格式
-def process_zb_history_data_relation(data):
-    return process_zb_history_data_agg2d(data)
+def process_zb_history_data_relation(data, subfrom, subto):
+    if data is None:
+        return None, None, None
+    code = data["code"]
+    if code == "success":
+        dataList = []
+        subDataList = []
+        devList = []
+        tmpDic = {}
+        subTmpDic = {}
+        for item in data["result"]:
+            equipCode = item["equipCode"]  # 装备编码
+            equipName = item["equipName"]  # 装备名称
+            equipData = item["equipData"]  # 装备数据
+            for ed in equipData:
+                metricName = ed["metricName"]  # 测点名称
+                metricCode = ed["metricCode"]  # 测点编码
+                metricData = ed["metricData"]  # 测点数据
+                devKey = equipName + metricName
+                for md in metricData:
+                    timestamp = md["timestamp"]  # 时间戳
+                    metricValue = md["metricValue"]  # 测点值
+                    if devKey in tmpDic.keys():
+                        tmpDic[devKey].append(metricValue)
+                    else:
+                        tmpDic[devKey] = [metricValue]
+                    if subfrom == -1 or subto == -1:
+                        pass
+                    else:
+                        timestampLong = TimeUtils.convert_time_stamp(timestamp)
+                        if subfrom <= timestampLong <= subto:
+                            if devKey in subTmpDic.keys():
+                                subTmpDic[devKey].append(metricValue)
+                            else:
+                                subTmpDic[devKey] = [metricValue]
+
+            devList.append(equipName)
+
+        for key in tmpDic.keys():
+            dataList.append(tmpDic[key])
+        for key in subTmpDic.keys():
+            subDataList.append(subTmpDic[key])
+
+        return dataList, subDataList, devList
+    else:
+        return None, None, None
 
 
 def query_metric_mapping(equipTypeCode):
@@ -219,4 +261,3 @@ def query_equip_type_by_equip_type_code(equipTypeCode):
         r = client.get(url, params={"equipTypeCode": equipTypeCode})
         return r.text
     return ""
-

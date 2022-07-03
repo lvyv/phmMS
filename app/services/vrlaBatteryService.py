@@ -25,7 +25,8 @@ class VRLABatteryService(AppService):
             return False
         return True
 
-    async def soh(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
+    async def soh(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int,
+                  displayType: str) -> ServiceResult:
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
@@ -44,7 +45,8 @@ class VRLABatteryService(AppService):
             'metrics': json.dumps(tags, ensure_ascii=False),
             'startTs': startts,
             'endTs': endts,
-            'displayType': displayType
+            'displayType': displayType,
+            'params': ''
         }
         item = ReqItemCreate(**external_data)
         soh_item = RequestHistoryCRUD(self.db).create_record(item)
@@ -64,7 +66,8 @@ class VRLABatteryService(AppService):
         except httpx.ConnectTimeout:
             return ServiceResult(AppException.HttpRequestTimeout())
 
-    async def cluster(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int, displayType: str) -> ServiceResult:
+    async def cluster(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int,
+                      displayType: str) -> ServiceResult:
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
@@ -83,7 +86,8 @@ class VRLABatteryService(AppService):
             'metrics': json.dumps(tags, ensure_ascii=False),
             'displayType': displayType,
             'startTs': startts,
-            'endTs': endts
+            'endTs': endts,
+            'params': ''
         }
         item = ReqItemCreate(**external_data)
         cluster_item = RequestHistoryCRUD(self.db).create_record(item)
@@ -103,8 +107,8 @@ class VRLABatteryService(AppService):
         except httpx.ConnectTimeout:
             return ServiceResult(AppException.HttpRequestTimeout())
 
-    async def relation(self, equipTypeCode: str,  devs: list, tags: list, startts: int, endts: int,
-                       leftTag: int, rightTag: int, step: int, unit: int) -> ServiceResult:
+    async def relation(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int,
+                       subFrom: int, subTo: int) -> ServiceResult:
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
@@ -123,7 +127,8 @@ class VRLABatteryService(AppService):
             'metrics': json.dumps(tags, ensure_ascii=False),
             'displayType': SelfRelationUtil.DISPLAY_SELF_RELATION,
             'startTs': startts,
-            'endTs': endts
+            'endTs': endts,
+            'params': json.dumps({"subFrom": subFrom, "subTo": subTo}, ensure_ascii=False)
         }
         item = ReqItemCreate(**external_data)
         cluster_item = RequestHistoryCRUD(self.db).create_record(item)
@@ -136,8 +141,7 @@ class VRLABatteryService(AppService):
                     "endts": endts,
                     "equipTypeCode": equipTypeCode
                 }
-                params = {"reqid": cluster_item.id, "leftTag": leftTag,
-                          "rightTag": rightTag, "step": step, "unit": unit}
+                params = {"reqid": cluster_item.id, "subFrom": subFrom, "subTo": subTo}
                 r = await client.post(f'{ct.URL_MS_CALL_RELATION}', json=payload, params=params)
                 logging.debug(r)
                 return ServiceResult(r.content)

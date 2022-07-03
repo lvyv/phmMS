@@ -19,6 +19,7 @@ class ReqItemBase(BaseModel):
     displayType: str = ''
     startTs: int
     endTs: int
+    params: str
 
 
 class ReqItemCreate(ReqItemBase):

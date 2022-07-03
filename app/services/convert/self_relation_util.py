@@ -1,4 +1,4 @@
-from utils.payload_util import PayloadUtil
+from timeUtils import TimeUtils
 
 
 class SelfRelationUtil:
@@ -27,10 +27,9 @@ class SelfRelationUtil:
         return "number"
 
     @staticmethod
-    def getTagInfoByPayload(payload):
-        start = PayloadUtil.get_start_time(payload)
-        end = PayloadUtil.get_end_time(payload)
-        return start, end
+    def getTagInfoByPayload(subTime):
+        subTimeLong = TimeUtils.convert_time_stamp(subTime)
+        return subTimeLong
 
     @staticmethod
     def getStepUintByTagAndPayload(start, end, payload):

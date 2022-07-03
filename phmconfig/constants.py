@@ -45,10 +45,6 @@ REQ_STATUS_SETTLED = 'settled'
 # 后台ai模型的地址
 REST_REQUEST_TIMEOUT = 10
 
-# 精确查询
-PREFECT_MATCH_HISTORY_QUERY_RECORD = cfg[
-    "time_segment_prefect_match"] if "time_segment_prefect_match" in cfg_keys else True
-
 EQUIP_DATA_MAX_POINT = cfg["max_point"] if "max_point" in cfg_keys else 1000
 
 # 点击时间间隔

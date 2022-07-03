@@ -57,6 +57,7 @@ class TReqHistory(Base):
     displayType = Column(TEXT)
     startTs = Column(BigInteger)
     endTs = Column(BigInteger)
+    params = Column(TEXT)
 
 
 class TCellPack(Base):

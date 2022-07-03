@@ -20,7 +20,7 @@ class BegForService(AppService):
     # displayType 模型类型
     # payload  负载， 包含 start end  interval
     def exec(self, equipTypeCode: str, equipCode: str, metrics: str, displayType: str, payload: dict,
-             leftTag: int = None, rightTag: int = None, step: int = None, unit: int = None):
+             subfrom: int = None, subto: int = None):
 
         if PayloadUtil.check_relative_time_valid(payload) is False:
             # logging.info("输入的时间不合法,不进行调度")
@@ -28,10 +28,6 @@ class BegForService(AppService):
         # 转换成时间戳
         start_orgin = start = PayloadUtil.get_start_time(payload)
         end_orgin = end = PayloadUtil.get_end_time(payload)
-        # 通过时间戳 获取日期
-        if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-            start, _ = BegForService.enlarge_timeline(start)
-            _, end = BegForService.enlarge_timeline(end)
 
         # 装备编码、测点名称 排序
         devs = equipCode.split(",")
@@ -45,21 +41,30 @@ class BegForService(AppService):
                            SelfRelationUtil.DISPLAY_SELF_RELATION, SelfRelationUtil.DISPLAY_SELF_RELATION_POLYLINE,
                            ClusterDisplayUtil.DISPLAY_SCATTER, ClusterDisplayUtil.DISPLAY_POLYLINE,
                            HealthEvalUtil.DISPLAY_HEALTH_EVAL]:
-            if constants.PREFECT_MATCH_HISTORY_QUERY_RECORD is False:
-                hisRecords = RequestHistoryCRUD(self.db).get_records(json.dumps(devs, ensure_ascii=False),
-                                                                     json.dumps(tags, ensure_ascii=False),
-                                                                     displayType, start, end)
-            else:
-                hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
-                                                                                   json.dumps(tags, ensure_ascii=False),
-                                                                                   displayType, start, end)
+            hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                               json.dumps(tags, ensure_ascii=False),
+                                                                               displayType, start, end)
+
+            hisRecords = BegForService.process_special_his_records(hisRecords, displayType, subfrom, subto)
         else:
             return None
 
         # 若无历史记录，执行调度任务
         if len(hisRecords) <= 0:
             DynamicTask().async_once_task(equipTypeCode, devs, tags, start_orgin, end_orgin,
-                                          displayType, leftTag, rightTag, step, unit)
+                                          displayType, subfrom, subto)
+
+    @staticmethod
+    def process_special_his_records(hisRecords, displayType, subFrom, subTo):
+        found = False
+        if displayType in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
+            for it in hisRecords:
+                params = json.loads(it.params)
+                if params["subFrom"] == subFrom and params["subTo"] == subTo:
+                    found = True
+            if found is False:
+                return []
+        return hisRecords
 
     @staticmethod
     def convert_time_stamp_utc(timeStr):

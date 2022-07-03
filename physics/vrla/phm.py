@@ -202,15 +202,15 @@ def cluster_convert(dataS):
 
 # res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
 #        "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
-def calculate_relate(inData, leftTag, rightTag, step, unit):
-    x, ageList, devList = dataCenter.process_zb_history_data_relation(inData)
-    acf = stattools.acf(x[0], adjusted=True)
+def calculate_relate(inData, subFrom, subTo):
+    x, y, devList = dataCenter.process_zb_history_data_relation(inData, subFrom, subTo)
+
     res = {devList[0]: {"lag": [], "value": []}}
+    # TODO 自相关模型 目前支持自相关模型
+    acf = stattools.acf(x[0], adjusted=True)
     for index, item in enumerate(acf):
         res[devList[0]]["lag"].append(index)
         res[devList[0]]["value"].append(item)
-
-    # TODO fix 自相关模型计算
     return res
 
 

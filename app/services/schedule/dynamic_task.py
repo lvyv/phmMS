@@ -4,6 +4,7 @@ import httpx
 import logging
 import threading
 from services.convert.cluster_display_util import ClusterDisplayUtil
+from services.convert.health_eval_util import HealthEvalUtil
 from services.convert.self_relation_util import SelfRelationUtil
 import concurrent.futures
 
@@ -53,8 +54,8 @@ class DynamicTask(object):
             r = client.post(item.execUrl, json=params)
             logging.info(r)
 
-    def async_once_task(self, equipTypeCode, devs, tags, start, end, displayType, leftTag: int = None,
-                        rightTag: int = None, step: int = None, unit: int = None):
+    def async_once_task(self, equipTypeCode, devs, tags, start, end, displayType, subfrom: int = None,
+                        subto: int = None):
 
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                            ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
@@ -63,12 +64,15 @@ class DynamicTask(object):
             item.execUrl = API_SCHEDULE_CLUSTER + "?displayType=" + displayType
             self.__executor.submit(self.__async_task, item)
         elif displayType in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
-            item = DynamicTask.make_t_schedule(devs, tags, start, end)
-            item.equipTypeCode = equipTypeCode
-            item.execUrl = API_SCHEDULE_RELATION + "?leftTag=" + str(
-                leftTag) + "&rightTag=" + str(rightTag) + "&step=" + str(step) + "&unit=" + str(unit)
-            self.__executor.submit(self.__async_task, item)
-        else:
+            # 进行调度判断
+            if (start <= subfrom <= end and start <= subto <= end) or (subfrom == -1 and subto == -1):
+                item = DynamicTask.make_t_schedule(devs, tags, start, end)
+                item.equipTypeCode = equipTypeCode
+                item.execUrl = API_SCHEDULE_RELATION + "?subFrom=" + str(
+                    subfrom) + "&subTo=" + str(subto)
+                self.__executor.submit(self.__async_task, item)
+        elif displayType in [ClusterDisplayUtil.DISPLAY_POLYLINE, ClusterDisplayUtil.DISPLAY_SCATTER,
+                             SelfRelationUtil.DISPLAY_SELF_RELATION_POLYLINE, HealthEvalUtil.DISPLAY_HEALTH_EVAL]:
             item = DynamicTask.make_t_schedule(devs, tags, start, end)
             item.equipTypeCode = equipTypeCode
             item.execUrl = API_SCHEDULE_SOH + "?displayType=" + displayType
