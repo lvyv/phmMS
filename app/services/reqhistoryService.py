@@ -135,3 +135,24 @@ class ReqHistoryService(AppService):
             disguise = ",".join(it for it in json.loads(item.metrics))
             ret.append(disguise)
         return ServiceResult(ret)
+
+    def get_params(self, equipCode, metric, timeSegment, displayType):
+        if displayType not in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
+            return ServiceResult([])
+        devs = equipCode.split(",")
+        devs.sort()
+        tags = metric.split(",")
+        tags.sort()
+        payload = BegForService.getPlayLoadByTimeSegment(timeSegment)
+        start = PayloadUtil.get_start_time(payload)
+        end = PayloadUtil.get_end_time(payload)
+        records = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
+                                                                        json.dumps(tags, ensure_ascii=False),
+                                                                        displayType, start, end)
+        ret = []
+        for item in records:
+            param = json.loads(item.params)
+            if param["subFrom"] == -1 and param["subTo"] == -1:
+                continue
+            ret.append(ReqHistoryService.convert_time_segment(param["subFrom"], param["subTo"]))
+        return ServiceResult(ret)

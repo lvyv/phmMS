@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from services.convert.health_eval_util import HealthEvalUtil
+from services.convert.self_relation_util import SelfRelationUtil
 from services.equipTypeMappingService import EquipTypeMappingService
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
@@ -86,4 +87,17 @@ async def getEquipTypeByPlugin():
                             "$equipType^$equipCode^$metrics^SCATTER^$host",
                             "$equipType^$equipCode^$metrics^POLYLINE^$host",
                             "$equipType^$equipCode^SOH^EVAL^$host"])
+    return handle_result(result)
+
+
+@router.get("/timeSegment/params")
+async def getParamsByPlugin(equipType, equipCode, metric, timeSegment, displayType, db: get_db = Depends()):
+
+    if displayType not in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
+        return "不支持查询参数"
+    support, equipCode, metric = PublicModelValidate.support(equipCode, metric)
+    if support is False:
+        return "请输入不为空的设备编码或测点"
+    so = ReqHistoryService(db)
+    result = so.get_params(equipCode, metric, timeSegment, displayType)
     return handle_result(result)

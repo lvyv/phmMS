@@ -138,7 +138,7 @@ async def writeClusterDisplay(reqid: int, displayType: str, payload: dict, db: g
 # 注意：(自相关折线图数据 复用聚类折线图)  &from=$__from&to=$__to
 @router.post("/relation")
 async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: dict,
-                        subfrom: Optional[str] = None, subto: Optional[str] = None,
+                        params: Optional[str] = '',
                         timeSegment: Optional[str] = None, db: get_db = Depends()):
     equipTypeCode = equipType
 
@@ -156,8 +156,8 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
         return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
 
     try:
-        sub_from = SelfRelationUtil.getTagInfoByPayload(subfrom)
-        sub_to = SelfRelationUtil.getTagInfoByPayload(subto)
+        paramsPayload = BegForService.getPlayLoadByTimeSegment(params)
+        sub_from, sub_to = SelfRelationUtil.getTagInfoByPayload(paramsPayload)
     except Exception as e:
         logging.info(e)
         sub_from = sub_to = -1
