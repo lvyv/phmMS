@@ -207,10 +207,21 @@ def calculate_relate(inData, subFrom, subTo):
 
     res = {devList[0]: {"lag": [], "value": []}}
     # TODO 自相关模型 目前支持自相关模型
-    acf = stattools.acf(x[0], adjusted=True)
-    for index, item in enumerate(acf):
-        res[devList[0]]["lag"].append(index)
-        res[devList[0]]["value"].append(item)
+    if subFrom == -1 and subTo == -1:
+        acf = stattools.acf(x[0], adjusted=True)
+        for index, item in enumerate(acf):
+            res[devList[0]]["lag"].append(index)
+            res[devList[0]]["value"].append(item)
+    else:
+        x_len = len(x[0])
+        y_len = len(y[0])
+        for start in range(0, x_len, y_len):
+            if start + y_len > x_len:
+                break
+            ccf = stattools.ccf(x[0][start: start + y_len], y[0])
+            for index, item in enumerate(ccf):
+                res[devList[0]]["lag"].append(start + index)
+                res[devList[0]]["value"].append(item)
     return res
 
 
