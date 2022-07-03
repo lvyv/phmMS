@@ -2,12 +2,14 @@ from random import random, choice
 import requests
 import json
 
+from phmconfig import constants
 from physics.common import cluster, mds
 import logging
 from physics.common.cluster_utils import cluster_shape
 from statsmodels.tsa.api import stattools
 from services.convert.cluster_display_util import ClusterDisplayUtil
 from physics.transport import dataCenter
+from scipy.stats import pearsonr
 
 
 def compute_df_color(df2, dfnew):
@@ -207,7 +209,7 @@ def calculate_relate(inData, subFrom, subTo):
 
     res = {devList[0]: {"lag": [], "value": []}}
     # TODO 自相关模型 目前支持自相关模型
-    if subFrom == -1 and subTo == -1:
+    if subFrom == -1 and subTo == -1 or len(y[0]) == 0:
         acf = stattools.acf(x[0], adjusted=True)
         for index, item in enumerate(acf):
             res[devList[0]]["lag"].append(index)
@@ -215,13 +217,23 @@ def calculate_relate(inData, subFrom, subTo):
     else:
         x_len = len(x[0])
         y_len = len(y[0])
-        for start in range(0, x_len, y_len):
-            if start + y_len > x_len:
-                break
-            ccf = stattools.ccf(x[0][start: start + y_len], y[0])
-            for index, item in enumerate(ccf):
-                res[devList[0]]["lag"].append(start + index)
-                res[devList[0]]["value"].append(item)
+        if constants.METHOD_ZLX_TYPE == 1:
+            for start in range(0, x_len, y_len):
+                if start + y_len > x_len:
+                    break
+                ccf = stattools.ccf(x[0][start: start + y_len], y[0])
+                for index, item in enumerate(ccf):
+                    res[devList[0]]["lag"].append(start + index)
+                    res[devList[0]]["value"].append(item)
+        else:
+            i = 0
+            for start in range(0, x_len, min(1, y_len)):
+                if start + y_len > x_len:
+                    break
+                k, _ = pearsonr(x[0][start: start + y_len], y[0])
+                res[devList[0]]["lag"].append(i)
+                res[devList[0]]["value"].append(k)
+                i = i + 1
     return res
 
 

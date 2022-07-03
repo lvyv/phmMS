@@ -56,6 +56,9 @@ TIME_SEGMENT_SHOW_UTF8 = cfg["time_segment_show_utf_8"] if "time_segment_show_ut
 
 API_AUTH_AUTO_PASSWORD = cfg["api_auth_auto_password"] if "api_auth_auto_password" in cfg_keys else "admin@123"
 
+# 1: ccf  2:  pearsonr
+METHOD_ZLX_TYPE = cfg["method_zlx_type"] if "method_zlx_type" in cfg_keys else 2
+
 # ------------------------- api ------------------------------
 
 # 配置服务启动模式
