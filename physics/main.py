@@ -114,13 +114,14 @@ def post_process_vrla_relation(reqid, items):
 def soh_task(sohin, reqid):
     # 下载装备数据
     dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
-    mappingS = dataCenter.query_metric_mapping(sohin.equipTypeCode)
-    convertMapping = {}
-    if mappingS is not None:
-        for k, v in mappingS.items():
-            convertMapping[v] = k
-    logging.info("测点映射:" + json.dumps(convertMapping, ensure_ascii=False))
     try:
+        mappingS = dataCenter.query_metric_mapping(sohin.equipTypeCode)
+        convertMapping = {}
+        if mappingS is not None:
+            for k, v in mappingS.items():
+                convertMapping[v] = k
+        logging.info("测点映射:" + json.dumps(convertMapping, ensure_ascii=False))
+
         dev_type = dataCenter.query_equip_type_by_equip_type_code(sohin.equipTypeCode)
         # 计算SOH
         res = phm.calculate_soh(dataS, convertMapping, dev_type)
