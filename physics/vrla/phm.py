@@ -209,7 +209,7 @@ def calculate_relate(inData, subFrom, subTo):
 
     res = {devList[0]: {"lag": [], "value": []}}
     # TODO 自相关模型 目前支持自相关模型
-    if subFrom == -1 and subTo == -1 or len(y[0]) == 0:
+    if subFrom == -1 and subTo == -1 or len(y[0]) <= 1:
         acf = stattools.acf(x[0], adjusted=True)
         for index, item in enumerate(acf):
             res[devList[0]]["lag"].append(index)

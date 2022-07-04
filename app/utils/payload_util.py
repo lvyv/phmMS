@@ -11,7 +11,7 @@ class PayloadUtil:
             if "now" in start or "now" in end:
                 return False
         except Exception as e:
-            print(e)
+            # print(e)
             return True
 
 

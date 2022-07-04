@@ -138,8 +138,9 @@ async def writeClusterDisplay(reqid: int, displayType: str, payload: dict, db: g
 # 注意：(自相关折线图数据 复用聚类折线图)  &from=$__from&to=$__to
 @router.post("/relation")
 async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: dict,
-                        params: Optional[str] = '',
-                        timeSegment: Optional[str] = None, db: get_db = Depends()):
+                        timeSegment: str, params: str,
+                        subFrom: str, subTo: str,
+                        db: get_db = Depends()):
     equipTypeCode = equipType
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
@@ -155,22 +156,35 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     if support is False:
         return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
 
-    try:
-        paramsPayload = BegForService.getPlayLoadByTimeSegment(params)
-        sub_from, sub_to = SelfRelationUtil.getTagInfoByPayload(paramsPayload)
-    except Exception as e:
-        logging.info(e)
-        sub_from = sub_to = -1
-
-    # 调用模型
-    BegForService(db).exec(equipTypeCode, equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
-                           sub_from, sub_to)
-
     # 更新playload
     if timeSegment is not None:
         pl = BegForService.getPlayLoadByTimeSegment(timeSegment)
         if pl is not None:
             payload = pl
+
+    # TODO 自相关调度 ，采用 timeSegment + subFrom + subTo
+
+    try:
+        sub_from = SelfRelationUtil.getTagInfoByTime(subFrom)
+        sub_to = SelfRelationUtil.getTagInfoByTime(subTo)
+    except Exception as e:
+        # logging.info(e)
+        sub_from = sub_to = -1
+        return "请选择参与自相关运算的时间窗口【起点】与【终点】"
+
+    # 调用模型
+    BegForService(db).exec(equipTypeCode, equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
+                           sub_from, sub_to)
+
+    # TODO 数据展示， 采用 timeSegment + params
+
+    try:
+        paramsPayload = BegForService.getPlayLoadByTimeSegment(params)
+        sub_from, sub_to = SelfRelationUtil.getTagInfoByPayload(paramsPayload)
+    except Exception as e:
+        # logging.info(e)
+        sub_from = sub_to = -1
+        return "请选择参与自相关运算的历史时间窗口"
 
     # 数据展示
     so = SelfRelationService(db)

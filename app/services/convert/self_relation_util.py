@@ -1,3 +1,4 @@
+from phmconfig.timeUtils import TimeUtils
 from utils.payload_util import PayloadUtil
 
 
@@ -31,3 +32,9 @@ class SelfRelationUtil:
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
         return start, end
+
+    @staticmethod
+    def getTagInfoByTime(subTime):
+        subTimeLong = TimeUtils.convert_time_stamp(subTime)
+        return subTimeLong
+

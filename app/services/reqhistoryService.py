@@ -151,6 +151,8 @@ class ReqHistoryService(AppService):
                                                                         displayType, start, end)
         ret = []
         for item in records:
+            if item.status != constants.REQ_STATUS_SETTLED:
+                continue
             param = json.loads(item.params)
             if param["subFrom"] == -1 and param["subTo"] == -1:
                 continue
