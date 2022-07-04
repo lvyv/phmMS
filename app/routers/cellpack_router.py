@@ -167,14 +167,17 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     try:
         sub_from = SelfRelationUtil.getTagInfoByTime(subFrom)
         sub_to = SelfRelationUtil.getTagInfoByTime(subTo)
+        canSchedule = True
     except Exception as e:
         # logging.info(e)
         sub_from = sub_to = -1
-        return "请选择参与自相关运算的时间窗口【起点】与【终点】"
+        canSchedule = False
+        # return "请选择参与自相关运算的时间窗口【起点】与【终点】"
 
-    # 调用模型
-    BegForService(db).exec(equipTypeCode, equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
-                           sub_from, sub_to)
+    if canSchedule is True:
+        # 调用模型
+        BegForService(db).exec(equipTypeCode, equipCode, metrics, SelfRelationUtil.DISPLAY_SELF_RELATION, payload,
+                               sub_from, sub_to)
 
     # TODO 数据展示， 采用 timeSegment + params
 
