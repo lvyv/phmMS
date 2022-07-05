@@ -27,7 +27,6 @@ class GrafanaMangerService:
             return True
         return False
 
-
     @staticmethod
     def syncHost(username, password):
         result = []
@@ -58,8 +57,9 @@ class GrafanaMangerService:
                             if GrafanaMangerService.found_zbjk_dashboard(_list) is True:
                                 for t in _list:
                                     if t["name"] == "host":
-                                        t.update({"query":  GrafanaMangerService.get_host()})
-                                        hasModify = True
+                                        if t["query"] != GrafanaMangerService.get_host():
+                                            t.update({"query": GrafanaMangerService.get_host()})
+                                            hasModify = True
                 if hasModify is True:
                     ret = GrafanaMangerService.save_dashboard(data, username, password)
                     result.append(ret)
