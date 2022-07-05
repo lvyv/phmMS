@@ -43,5 +43,5 @@ async def get_trend_dashboard(query: Optional[str] = None, filter: Optional[str]
 
 
 @router.get("/grafana/syncHost")
-async def grafana_sync_host(username: Optional[str] = "admin", password: Optional[str] = "admin"):
-    return GrafanaMangerService.syncHost(username, password)
+async def grafana_sync_host(host: Optional[str] = None, username: Optional[str] = "admin", password: Optional[str] = "admin"):
+    return GrafanaMangerService.syncHost(host, username, password)

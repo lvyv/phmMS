@@ -13,8 +13,13 @@ class GrafanaMangerService:
     zbjk_preset_template_name_intersection = ["equipType", "equipCode", "host"]
 
     @staticmethod
-    def get_host():
-        return constants.PHMMS_URL_PREFIX
+    def get_host(host):
+        if host is None:
+            return constants.PHMMS_URL_PREFIX
+        if len(constants.PHMMS_CONTAINER_NAME.split(":")) == 2:
+            return constants.PHMMS_URL_PREFIX
+        else:
+            return constants.SCHEMA_HEADER + "://" + host
 
     @staticmethod
     def found_zbjk_dashboard(items):
@@ -28,7 +33,7 @@ class GrafanaMangerService:
         return False
 
     @staticmethod
-    def syncHost(username, password):
+    def syncHost(host, username, password):
         result = []
         dashboards = GrafanaMangerService.query_dashboard_list()
         for dash in dashboards:
@@ -57,8 +62,8 @@ class GrafanaMangerService:
                             if GrafanaMangerService.found_zbjk_dashboard(_list) is True:
                                 for t in _list:
                                     if t["name"] == "host":
-                                        if t["query"] != GrafanaMangerService.get_host():
-                                            t.update({"query": GrafanaMangerService.get_host()})
+                                        if t["query"] != GrafanaMangerService.get_host(host):
+                                            t.update({"query": GrafanaMangerService.get_host(host)})
                                             hasModify = True
                 if hasModify is True:
                     ret = GrafanaMangerService.save_dashboard(data, username, password)
