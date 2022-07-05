@@ -33,7 +33,7 @@ class GrafanaMangerService:
         return False
 
     @staticmethod
-    def syncHost(host, username, password):
+    def syncHost(host, timeSegmentLabel, username, password):
         result = []
         dashboards = GrafanaMangerService.query_dashboard_list()
         for dash in dashboards:
@@ -64,6 +64,10 @@ class GrafanaMangerService:
                                     if t["name"] == "host":
                                         if t["query"] != GrafanaMangerService.get_host(host):
                                             t.update({"query": GrafanaMangerService.get_host(host)})
+                                            hasModify = True
+                                    elif t["name"] == "timeSegment":
+                                        if timeSegmentLabel is not None and t["label"] != timeSegmentLabel:
+                                            t.update({"label": timeSegmentLabel})
                                             hasModify = True
                 if hasModify is True:
                     ret = GrafanaMangerService.save_dashboard(data, username, password)
