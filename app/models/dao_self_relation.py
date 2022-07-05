@@ -11,7 +11,8 @@ class SelfRelationCRUD(AppCRUD):
         reqdao = TSelfRelation(ts=item.ts,
                                reqId=item.reqId,
                                lag=item.lag,
-                               value=item.value
+                               value=item.value,
+                               own_key=item.own_key
                                )
         self.db.add(reqdao)
         self.db.commit()
@@ -26,7 +27,8 @@ class SelfRelationCRUD(AppCRUD):
                 reqdao = TSelfRelation(ts=int(time.time() * 1000),
                                        reqId=reqid,
                                        lag=item,
-                                       value=eqitem["value"][index]
+                                       value=eqitem["value"][index],
+                                       own_key=did
                                        )
                 batch.append(reqdao)
         self.db.add_all(batch)

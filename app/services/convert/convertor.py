@@ -155,3 +155,19 @@ class IConvertor:
         for key in tmpDict.keys():
             rets.append({"name": key, "type": SelfRelationUtil.get_metric_type(key), "values": tmpDict[key]})
         return rets
+
+    @staticmethod
+    def convertSelfRelationMulti(items):
+        rets = []
+        tmpDict = {}
+        useMetrics = SelfRelationUtil.get_use_metrics(SelfRelationUtil.DISPLAY_SELF_RELATION)
+        for item in items:
+            for m in useMetrics:
+                key = item.own_key + "#" + m
+                if key in tmpDict.keys():
+                    tmpDict[key].append(SelfRelationUtil.get_metric_value(item, m))
+                else:
+                    tmpDict[key] = [SelfRelationUtil.get_metric_value(item, m)]
+        for key in tmpDict.keys():
+            rets.append({"name": key, "type": SelfRelationUtil.get_metric_type(key.split("#")[1]), "values": tmpDict[key]})
+        return rets

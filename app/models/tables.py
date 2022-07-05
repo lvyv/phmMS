@@ -148,6 +148,7 @@ class TSelfRelation(Base):
     reqId = Column(Integer)
     lag = Column(Integer)
     value = Column(FLOAT)
+    own_key = Column(TEXT)
 
 
 class TMetricMapping(Base):

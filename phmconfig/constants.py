@@ -59,6 +59,7 @@ API_AUTH_AUTO_PASSWORD = cfg["api_auth_auto_password"] if "api_auth_auto_passwor
 # 1: ccf  2:  pearsonr
 METHOD_ZLX_TYPE = cfg["method_zlx_type"] if "method_zlx_type" in cfg_keys else 2
 
+SUPPORT_MUTIL_RELATION = cfg["support_mutil_relation"] if "support_mutil_relation" in cfg_keys else False
 # ------------------------- api ------------------------------
 
 # 配置服务启动模式

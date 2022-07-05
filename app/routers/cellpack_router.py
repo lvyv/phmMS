@@ -4,6 +4,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 
 import json
+
+from phmconfig import constants
 from services.convert.health_eval_util import HealthEvalUtil
 from services.convert.self_relation_util import SelfRelationUtil
 from services.equipTypeMappingService import EquipTypeMappingService
@@ -152,9 +154,10 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
         return "请输入不为空的设备编码或测点"
 
     # 自相关模型支持判断
-    support = RelationModelValidate.support(equipCode, metrics)
-    if support is False:
-        return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
+    if constants.SUPPORT_MUTIL_RELATION is False:
+        support = RelationModelValidate.support(equipCode, metrics)
+        if support is False:
+            return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
 
     # 更新playload
     if timeSegment is not None:

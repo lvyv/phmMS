@@ -205,35 +205,36 @@ def cluster_convert(dataS):
 # res = {"B001": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]},
 #        "B002": {"lag": [1, 5, 10, 15, 20, 25], "value": [1.5, 2.5, 3.5, 4.5, 5.5, 1.5]}}
 def calculate_relate(inData, subFrom, subTo):
-    x, y, devList = dataCenter.process_zb_history_data_relation(inData, subFrom, subTo)
-
-    res = {devList[0]: {"lag": [], "value": []}}
-    # TODO 自相关模型 目前支持自相关模型
-    if subFrom == -1 and subTo == -1 or len(y[0]) <= 1:
-        acf = stattools.acf(x[0], adjusted=True)
-        for index, item in enumerate(acf):
-            res[devList[0]]["lag"].append(index)
-            res[devList[0]]["value"].append(item)
-    else:
-        x_len = len(x[0])
-        y_len = len(y[0])
-        if constants.METHOD_ZLX_TYPE == 1:
-            for start in range(0, x_len, y_len):
-                if start + y_len > x_len:
-                    break
-                ccf = stattools.ccf(x[0][start: start + y_len], y[0])
-                for index, item in enumerate(ccf):
-                    res[devList[0]]["lag"].append(start + index)
-                    res[devList[0]]["value"].append(item)
+    x, y, devList, keyList = dataCenter.process_zb_history_data_relation(inData, subFrom, subTo)
+    res = {}
+    for keyIndex,  key in enumerate(keyList):
+        res.update({key: {"lag": [], "value": []}})
+        # TODO 自相关模型 目前支持自相关模型
+        if subFrom == -1 and subTo == -1 or len(y[0]) <= 1:
+            acf = stattools.acf(x[keyIndex], adjusted=True)
+            for index, item in enumerate(acf):
+                res[keyList[keyIndex]]["lag"].append(index)
+                res[keyList[keyIndex]]["value"].append(item)
         else:
-            i = 0
-            for start in range(0, x_len, min(1, y_len)):
-                if start + y_len > x_len:
-                    break
-                k, _ = pearsonr(x[0][start: start + y_len], y[0])
-                res[devList[0]]["lag"].append(i)
-                res[devList[0]]["value"].append(k)
-                i = i + 1
+            x_len = len(x[keyIndex])
+            y_len = len(y[keyIndex])
+            if constants.METHOD_ZLX_TYPE == 1:
+                for start in range(0, x_len, y_len):
+                    if start + y_len > x_len:
+                        break
+                    ccf = stattools.ccf(x[keyIndex][start: start + y_len], y[0])
+                    for index, item in enumerate(ccf):
+                        res[keyList[keyIndex]]["lag"].append(start + index)
+                        res[keyList[keyIndex]]["value"].append(item)
+            else:
+                i = 0
+                for start in range(0, x_len, min(1, y_len)):
+                    if start + y_len > x_len:
+                        break
+                    k, _ = pearsonr(x[keyIndex][start: start + y_len], y[0])
+                    res[keyList[keyIndex]]["lag"].append(i)
+                    res[keyList[keyIndex]]["value"].append(k)
+                    i = i + 1
     return res
 
 

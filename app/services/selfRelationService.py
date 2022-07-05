@@ -34,6 +34,8 @@ class SelfRelationService(AppService):
                                                                            json.dumps(tags, ensure_ascii=False),
                                                                            SelfRelationUtil.DISPLAY_SELF_RELATION,
                                                                            start, end)
+        if hisRecords is None:
+            return ServiceResult("自相关模型未查找到记录...")
         for his in hisRecords:
             params = json.loads(his.params)
             if params["subFrom"] == subFrom and params["subTo"] == subTo:
@@ -47,5 +49,5 @@ class SelfRelationService(AppService):
         convertor = ConvertorFactory.get_convertor(clz)
         if convertor is None:
             return ServiceResult("equipType只支持battery")
-        convertItems = convertor.convertSelfRelation(items)
+        convertItems = convertor.convertSelfRelationMulti(items)
         return ServiceResult(convertItems)

@@ -200,12 +200,13 @@ def process_zb_history_data_soh(data, mapping):
 # 生成自相关数据格式
 def process_zb_history_data_relation(data, subfrom, subto):
     if data is None:
-        return None, None, None
+        return None, None, None, None
     code = data["code"]
     if code == "success":
         dataList = []
         subDataList = []
         devList = []
+        keyList = []
         tmpDic = {}
         subTmpDic = {}
         for item in data["result"]:
@@ -238,12 +239,15 @@ def process_zb_history_data_relation(data, subfrom, subto):
 
         for key in tmpDic.keys():
             dataList.append(tmpDic[key])
-        for key in subTmpDic.keys():
-            subDataList.append(subTmpDic[key])
+            keyList.append(key)
+            if key in subTmpDic.keys():
+                subDataList.append(subTmpDic[key])
+            else:
+                subDataList.append([])
 
-        return dataList, subDataList, devList
+        return dataList, subDataList, devList, keyList
     else:
-        return None, None, None
+        return None, None, None, None
 
 
 def query_metric_mapping(equipTypeCode):
