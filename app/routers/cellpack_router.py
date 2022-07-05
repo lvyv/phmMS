@@ -157,7 +157,7 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
     if constants.SUPPORT_MUTIL_RELATION is False:
         support = RelationModelValidate.support(equipCode, metrics)
         if support is False:
-            return handle_result(ServiceResult("自相关只支持单设备单测点模型建立..."))
+            return "自相关只支持单设备单测点模型建立..."
 
     # 更新playload
     if timeSegment is not None:

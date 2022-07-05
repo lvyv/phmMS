@@ -85,7 +85,7 @@ class IConvertor:
         userMetrics = ClusterDisplayUtil.get_use_metrics(ClusterDisplayUtil.DISPLAY_POLYLINE)
         for dev in devs:
             for tag in tags:
-                userMetrics.append(dev + "#" + tag)
+                userMetrics.append(dev + "^" + tag)
         rets = []
         tmpDict = {}
         # TODO fix 时间选择
@@ -95,7 +95,7 @@ class IConvertor:
             for item in items:
                 if item.did == dev:
                     for m in userMetrics:
-                        mtr = m.split("#")
+                        mtr = m.split("^")
                         if len(mtr) == 2:
                             if mtr[0] == dev:
                                 if m in tmpDict.keys():
@@ -163,11 +163,11 @@ class IConvertor:
         useMetrics = SelfRelationUtil.get_use_metrics(SelfRelationUtil.DISPLAY_SELF_RELATION)
         for item in items:
             for m in useMetrics:
-                key = item.own_key + "#" + m
+                key = item.own_key + "^" + m
                 if key in tmpDict.keys():
                     tmpDict[key].append(SelfRelationUtil.get_metric_value(item, m))
                 else:
                     tmpDict[key] = [SelfRelationUtil.get_metric_value(item, m)]
         for key in tmpDict.keys():
-            rets.append({"name": key, "type": SelfRelationUtil.get_metric_type(key.split("#")[1]), "values": tmpDict[key]})
+            rets.append({"name": key, "type": SelfRelationUtil.get_metric_type(key.split("^")[1]), "values": tmpDict[key]})
         return rets
