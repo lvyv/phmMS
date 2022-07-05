@@ -43,7 +43,8 @@ setup(
         'physics.vrla',
         'physics.test',
         'physics.common',
-        'physics.math'
+        'physics.math',
+        'physics.router'
     ],
     install_requires=[
         'blinker',

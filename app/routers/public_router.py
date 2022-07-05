@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import Optional
+
+from services.configManagerService import ConfigManagerService
 from services.dashboardManagerService import DashboardManagerService
 from services.equipTypeMappingService import EquipTypeMappingService
 from services.grafanaManagerService import GrafanaMangerService
@@ -46,4 +48,16 @@ async def get_trend_dashboard(query: Optional[str] = None, filter: Optional[str]
 async def grafana_sync_host(host: Optional[str] = None,
                             timeSegmentLabel: Optional[str] = None,
                             username: Optional[str] = "admin", password: Optional[str] = "admin"):
-    return GrafanaMangerService.syncHost(host, timeSegmentLabel,  username, password)
+    return GrafanaMangerService.syncHost(host, timeSegmentLabel, username, password)
+
+
+# TODO 同步修改重要的配置参数
+@router.post("/conf/params")
+async def modify_primary_conf_params(msHost: Optional[str] = None, mdHost: Optional[str] = None,
+                                     dbHost: Optional[str] = None, dbUser: Optional[str] = None,
+                                     dbPw: Optional[str] = None, dbName: Optional[str] = None,
+                                     grafanaHost: Optional[str] = None, sjzyHost: Optional[str] = None,
+                                     schema: Optional[bool] = None, sample: Optional[int] = None,
+                                     multiSelf: Optional[bool] = None, clickGap: Optional[int] = None):
+    return ConfigManagerService.update(msHost, mdHost, dbHost, dbUser, dbPw, dbName,
+                                       grafanaHost, sjzyHost, schema, sample, multiSelf, clickGap)

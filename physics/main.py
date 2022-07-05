@@ -6,13 +6,10 @@ entrypoint of the app
 模型微服务入口.
 """
 import threading
-import time
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
-from phmconfig.dataConvertUtil import DataConvertUtil
 from phmconfig import constants as bcf
 import concurrent.futures
 import httpx
@@ -23,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from physics.test import mock_zb_router
 from physics.vrla import phm
 from physics.transport import dataCenter
-from services.convert.cluster_display_util import ClusterDisplayUtil
+from physics.router import public_router
 from phmconfig.timeUtils import TimeUtils
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -192,3 +189,4 @@ async def calculate_relation(sohin: SohInputParams, reqid: int, subFrom: int, su
 
 
 app.include_router(mock_zb_router.router)
+app.include_router(public_router.router)
