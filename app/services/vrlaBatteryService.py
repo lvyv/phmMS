@@ -5,7 +5,6 @@ import json
 
 from schemas.reqhistory_model import ReqItemCreate
 from services.convert.self_relation_util import SelfRelationUtil
-from services.equipTypeMappingService import EquipTypeMappingService
 from services.main import AppService
 from models.dao_reqhistory import RequestHistoryCRUD
 from utils.service_result import ServiceResult
@@ -31,13 +30,11 @@ class VRLABatteryService(AppService):
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        mm = EquipTypeMappingService(self.db).getEquipTypeMapping(equipTypeCode)
-
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': "" if mm is None else mm,
+            'model': equipTypeCode,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
@@ -72,13 +69,11 @@ class VRLABatteryService(AppService):
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        mm = EquipTypeMappingService(self.db).getEquipTypeMapping(equipTypeCode)
-
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': "" if mm is None else mm,
+            'model': equipTypeCode,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),
@@ -113,13 +108,11 @@ class VRLABatteryService(AppService):
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
 
-        mm = EquipTypeMappingService(self.db).getEquipTypeMapping(equipTypeCode)
-
         devs.sort()
         tags.sort()
 
         external_data = {
-            'model': "" if mm is None else mm,
+            'model': equipTypeCode,
             'status': ct.REQ_STATUS_PENDING,
             'result': ct.REQ_STATUS_PENDING,
             'requestts': int(time.time() * 1000),

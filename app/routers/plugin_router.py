@@ -102,9 +102,6 @@ async def getParamsByPlugin(equipType, equipCode, metric, timeSegment, displayTy
 
 @router.get("/getReqHistory")
 async def getReqHistoryByEquipType(equipType, db: get_db = Depends()):
-    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
-    if equipType is None or equipType is '':
-        return "请先建立装备类型编码与装备类型映射表。"
     so = ReqHistoryService(db)
     result = so.get_all(equipType)
     return handle_result(result)
