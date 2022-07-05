@@ -82,7 +82,7 @@ async def deleteTimeSegmentByPlugin(equipType, equipCode, metric, displayType, t
 async def getEquipTypeByPlugin():
     result = ServiceResult(["$equipType^$equipCode^$metrics^2D^$host", "$equipType^$equipCode^$metrics^3D^$host",
                             "$equipType^$equipCode^$metrics^AGG2D^$host", "$equipType^$equipCode^$metrics^AGG3D^$host",
-                            "$equipType^$equipCode^$metrics^SELF_RELATION^$host",
+                            "$equipType^$equipCode^$metrics^$timeSegment^SELF_RELATION^$host",
                             "$equipType^$equipCode^$metrics^SELF_POLYLINE^$host",
                             "$equipType^$equipCode^$metrics^SCATTER^$host",
                             "$equipType^$equipCode^$metrics^POLYLINE^$host",
