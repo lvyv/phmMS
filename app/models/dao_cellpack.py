@@ -72,13 +72,13 @@ class CellPackCRUD(AppCRUD):
         self.db.refresh(record)
         return record
 
-    def create_batch(self, reqid, items) -> TCellPack:
+    def create_batch(self, reqid, items, clz) -> TCellPack:
         records = []
         for im in items:
             item = DataConvertUtil.SOH(reqid, im)
             record = TCellPack(ts=item["ts"],
                                did=item["did"],
-                               dclz=item["dclz"],
+                               dclz=clz,
                                reqId=reqid,
                                M01=item["M01"],
                                M02=item["M02"],

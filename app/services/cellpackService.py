@@ -16,7 +16,15 @@ class CellPackService(AppService):
         return ServiceResult(item)
 
     def create_batch(self, reqid,  items) -> ServiceResult:
-        items = CellPackCRUD(self.db).create_batch(reqid, items)
+
+        # TODO 通过 reqid 查询到 equipTypeCode
+        rhi = RequestHistoryCRUD(self.db).get_record_by_id(reqid)
+        if rhi is None:
+            clz = "N/A"
+        else:
+            clz = rhi.model
+
+        items = CellPackCRUD(self.db).create_batch(reqid, items, clz)
         return ServiceResult(items)
 
     def health_eval(self, clz, code, metrics, payload, allMetrics) -> ServiceResult:
