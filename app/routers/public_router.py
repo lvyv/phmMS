@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
+from typing import Optional
 from services.dashboardManagerService import DashboardManagerService
 from services.equipTypeMappingService import EquipTypeMappingService
-from services.http.dataCenterService import DataCenterService
+from services.grafanaManagerService import GrafanaMangerService
 from services.metricMappingService import MetricMappingService
 from phmconfig.database import get_db
 from services.reqhistoryService import ReqHistoryService
@@ -39,3 +40,8 @@ async def updateHistoryRecord(reqid: str, res: str, db: get_db = Depends()):
 @router.get("/dashboards")
 async def get_trend_dashboard(query, filter):
     return DashboardManagerService.getDashboardList(query, filter)
+
+
+@router.get("/grafana/syncHost")
+async def grafana_sync_host(username: Optional[str] = "admin", password: Optional[str] = "admin"):
+    return GrafanaMangerService.syncHost(username, password)
