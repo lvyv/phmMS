@@ -38,7 +38,7 @@ async def updateHistoryRecord(reqid: str, res: str, db: get_db = Depends()):
 
 
 @router.get("/dashboards")
-async def get_trend_dashboard(query, filter):
+async def get_trend_dashboard(query: Optional[str] = None, filter: Optional[str] = None):
     return DashboardManagerService.getDashboardList(query, filter)
 
 
