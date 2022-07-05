@@ -42,7 +42,6 @@ async def getMetricByPlugin(equipType, equipCode, displayType, db: get_db = Depe
 # 获取时间段
 @router.get("/timeSegment")
 async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: get_db = Depends()):
-
     support, equipCode, metric = PublicModelValidate.support(equipCode, metric)
     if support is False:
         return "请输入不为空的设备编码或测点"
@@ -60,8 +59,7 @@ async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: 
 
 # 删除时间段
 @router.delete("/timeSegment")
-async def deleteTimeSegmentByPlugin(equipType, equipCode, metric, displayType, timeSegment, db:get_db = Depends()):
-
+async def deleteTimeSegmentByPlugin(equipType, equipCode, metric, displayType, timeSegment, db: get_db = Depends()):
     support, equipCode, metric = PublicModelValidate.support(equipCode, metric)
     if support is False:
         return "请输入不为空的设备编码或测点"
@@ -92,7 +90,6 @@ async def getEquipTypeByPlugin():
 
 @router.get("/timeSegment/params")
 async def getParamsByPlugin(equipType, equipCode, metric, timeSegment, displayType, db: get_db = Depends()):
-
     if displayType not in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
         return "不支持查询参数"
     support, equipCode, metric = PublicModelValidate.support(equipCode, metric)
@@ -100,4 +97,21 @@ async def getParamsByPlugin(equipType, equipCode, metric, timeSegment, displayTy
         return "请输入不为空的设备编码或测点"
     so = ReqHistoryService(db)
     result = so.get_params(equipCode, metric, timeSegment, displayType)
+    return handle_result(result)
+
+
+@router.get("/getReqHistory")
+async def getReqHistoryByEquipType(equipType, db: get_db = Depends()):
+    equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
+    if equipType is None or equipType is '':
+        return "请先建立装备类型编码与装备类型映射表。"
+    so = ReqHistoryService(db)
+    result = so.get_all(equipType)
+    return handle_result(result)
+
+
+@router.delete("/delReqHistoryById")
+async def delReqHistoryById(reqId: int, db: get_db = Depends()):
+    so = ReqHistoryService(db)
+    result = so.delete_by_id(reqId)
     return handle_result(result)

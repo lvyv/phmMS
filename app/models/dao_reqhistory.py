@@ -1,6 +1,6 @@
 import time
 
-from sqlalchemy import and_, desc, or_, distinct
+from sqlalchemy import and_, desc, or_, distinct, asc
 
 from services.main import AppCRUD
 from models.tables import TReqHistory
@@ -78,7 +78,7 @@ class RequestHistoryCRUD(AppCRUD):
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          TReqHistory.metrics == metrics,
-                                                         TReqHistory.displayType == displayType))\
+                                                         TReqHistory.displayType == displayType)) \
             .order_by(desc(TReqHistory.startTs), desc(TReqHistory.endTs)).all()
         return records
 
@@ -88,13 +88,13 @@ class RequestHistoryCRUD(AppCRUD):
         return records
 
     def get_equip_code(self, displayType):
-        records = self.db.query(TReqHistory).filter(TReqHistory.displayType == displayType)\
+        records = self.db.query(TReqHistory).filter(TReqHistory.displayType == displayType) \
             .distinct(TReqHistory.memo).all()
         return records
 
     def get_equip_metric(self, displayType, equipCode):
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.displayType == displayType,
-                                                         TReqHistory.memo == equipCode))\
+                                                         TReqHistory.memo == equipCode)) \
             .distinct(TReqHistory.metrics).all()
         return records
 
@@ -102,3 +102,9 @@ class RequestHistoryCRUD(AppCRUD):
         self.db.query(TReqHistory).filter(TReqHistory.id == reqid).delete()
         self.db.commit()
 
+    def get_record_by_id(self, reqId):
+        return self.db.query(TReqHistory).filter(TReqHistory.id == reqId).first()
+
+    def get_records_by_model(self, model: str) -> TReqHistory:
+        records = self.db.query(TReqHistory).filter(TReqHistory.model == model).order_by(asc(TReqHistory.id)).all()
+        return records

@@ -158,3 +158,32 @@ class ReqHistoryService(AppService):
                 continue
             ret.append(ReqHistoryService.convert_time_segment(param["subFrom"], param["subTo"]))
         return ServiceResult(ret)
+
+    def get_all(self, model):
+        records = RequestHistoryCRUD(self.db).get_records_by_model(model)
+        return ServiceResult(records)
+
+    def delete_by_id(self, reqId):
+        rh = RequestHistoryCRUD(self.db)
+        # 获取记录
+        record = rh.get_record_by_id(reqId)
+        if record is None:
+            return ServiceResult(False)
+        # 删除记录
+        rh.delete_record(reqId)
+        # 删除管理数据
+        displayType = record.displayType
+        if displayType in [HealthEvalUtil.DISPLAY_HEALTH_EVAL,
+                           ClusterDisplayUtil.DISPLAY_SCATTER,
+                           ClusterDisplayUtil.DISPLAY_POLYLINE,
+                           SelfRelationUtil.DISPLAY_SELF_RELATION_POLYLINE]:
+            CellPackCRUD(self.db).delete_record(record.id)
+        elif displayType in [ClusterDisplayUtil.DISPLAY_2D,
+                             ClusterDisplayUtil.DISPLAY_3D,
+                             ClusterDisplayUtil.DISPLAY_AGG2D,
+                             ClusterDisplayUtil.DISPLAY_AGG3D]:
+            ClusterCRUD(self.db).delete_record(record.id)
+        elif displayType in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
+            SelfRelationCRUD(self.db).delete_record(record.id)
+
+        return ServiceResult(True)
