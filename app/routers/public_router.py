@@ -61,3 +61,8 @@ async def modify_primary_conf_params(msHost: Optional[str] = None, mdHost: Optio
                                      multiSelf: Optional[bool] = None, clickGap: Optional[int] = None):
     return ConfigManagerService.update(msHost, mdHost, dbHost, dbUser, dbPw, dbName,
                                        grafanaHost, sjzyHost, schema, sample, multiSelf, clickGap)
+
+
+@router.get("/conf/getParams")
+async def query_primary_conf_params():
+    return ConfigManagerService.query()

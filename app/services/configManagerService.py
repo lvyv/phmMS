@@ -52,3 +52,37 @@ class ConfigManagerService:
             ConfigSet.save_json()
 
         return True
+
+    @staticmethod
+    def query():
+        conf = {}
+
+        if "phmms_container_name" in constants.cfg_keys:
+            conf.update({"msHost": constants.cfg["phmms_container_name"]})
+
+        if "phmmd_container_name" in constants.cfg_keys:
+            conf.update({"mdHost": constants.cfg["phmmd_container_name"]})
+
+        if "datasource_url" in constants.cfg_keys:
+            dbInfo = constants.cfg["datasource_url"].split("://")[1]
+            userNameAndPassword = dbInfo.split("@")[0]
+            hostAndName = dbInfo.split("@")[1]
+            conf.update({"dbHost": hostAndName.split("/")[0]})
+            conf.update({"dbUser": userNameAndPassword.split(":")[0]})
+            conf.update({"dbPw": userNameAndPassword.split(":")[0]})
+            conf.update({"dbName": hostAndName.split("/")[1]})
+
+        if "url_ms_get_dashboard_list" in constants.cfg_keys:
+            conf.update({"grafanaHost": constants.cfg["url_ms_get_dashboard_list"]})
+        if "url_sjzy_host" in constants.cfg_keys:
+            conf.update({"sjzyHost": constants.cfg["url_sjzy_host"]})
+        if "schema_https" in constants.cfg_keys:
+            conf.update({"schema": constants.cfg["schema_https"]})
+        if "max_point" in constants.cfg_keys:
+            conf.update({"sample": constants.cfg["max_point"]})
+        if "support_mutil_relation" in constants.cfg_keys:
+            conf.update({"multiSelf": constants.cfg["support_mutil_relation"]})
+        if "click_gap" in constants.cfg_keys:
+            conf.update({"clickGap": constants.cfg["click_gap"]})
+
+        return conf
