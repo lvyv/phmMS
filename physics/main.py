@@ -15,7 +15,7 @@ import concurrent.futures
 import httpx
 import json
 import logging
-from physics.transport.mqttclient import MqttClient
+# from physics.transport.mqttclient import MqttClient
 from fastapi.staticfiles import StaticFiles
 from physics.test import mock_zb_router
 from physics.vrla import phm
@@ -42,16 +42,16 @@ app.mount('/static', StaticFiles(directory='../swagger_ui_dep/static'), name='st
 executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 
 
-def startMqtt():
-    try:
-        MqttClient().start()
-    except Exception as e:
-        print(e)
-    finally:
-        pass
+# def startMqtt():
+#     try:
+#         MqttClient().start()
+#     except Exception as e:
+#         print(e)
+#     finally:
+#         pass
 
 
-threading.Thread(target=startMqtt()).start()
+# threading.Thread(target=startMqtt()).start()
 
 
 def write_back_history_result(reqid):
@@ -61,14 +61,14 @@ def write_back_history_result(reqid):
         client.put(f'{bcf.URL_MD_WRITE_REQ_HISTORY}', params=params)
 
 
-def publish_data_to_iot(reqid, data):
-    # 发布遥测数据到IOT
-    try:
-        MqttClient().publish(json.dumps({"reqid": reqid, "sohres": data}))
-    except Exception as e:
-        print(e)
-    finally:
-        pass
+# def publish_data_to_iot(reqid, data):
+#     # 发布遥测数据到IOT
+#     try:
+#         MqttClient().publish(json.dumps({"reqid": reqid, "sohres": data}))
+#     except Exception as e:
+#         print(e)
+#     finally:
+#         pass
 
 
 def post_process_vrla_soh(reqid, items):
@@ -78,7 +78,7 @@ def post_process_vrla_soh(reqid, items):
     with httpx.Client(timeout=None, verify=False) as client:
         client.post(f'{bcf.URL_MD_WRITE_EVAL_BATCH}', params={"reqid": reqid},  json={"items": json.dumps(items)})
 
-    publish_data_to_iot(reqid, items)
+    # publish_data_to_iot(reqid, items)
 
 
 def post_process_vrla_cluster(reqid, sohres, displayType):
@@ -92,7 +92,7 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
                     params={"reqid": reqid, "displayType": displayType},
                     json={"items": json.dumps(items)})
 
-    publish_data_to_iot(reqid, sohres)
+    # publish_data_to_iot(reqid, sohres)
 
 
 def post_process_vrla_relation(reqid, items):
@@ -104,7 +104,7 @@ def post_process_vrla_relation(reqid, items):
                     params={"reqid": reqid},
                     json={"items": json.dumps(items)})
 
-    publish_data_to_iot(reqid, items)
+    # publish_data_to_iot(reqid, items)
 
 
 # time intensive tasks
