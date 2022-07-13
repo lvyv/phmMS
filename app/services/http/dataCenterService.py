@@ -78,7 +78,10 @@ class DataCenterService:
                 url = constants.API_QUERY_MEASUSRE_POINT_BY_EQUIP_TYPE_CODE
             params = {"equipTypeCode": equipTypeCode}
             r = client.get(url, params=params)
-            dataS = r.json()
+            try:
+                dataS = r.json()
+            except json.JSONDecodeError:
+                dataS = None
             return DataCenterService.parse_zb_metric_by_type_code(equipTypeCode, dataS)
         return None
 

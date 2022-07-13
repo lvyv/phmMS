@@ -28,6 +28,9 @@ async def updateEquipType(equipTypeCode: str, equipType, db: get_db = Depends())
     # TODO 同步测点
     metrics = DataCenterService.download_zb_metric_by_type_code(equipTypeCode)
 
+    if metrics is None:
+        return "装备类型编码，未找到测点数据，不进行类型绑定。"
+
     # TODO 自动绑定
     ownMetrics = MetricMappingCRUD(db).get_all(equipTypeCode)
     if ownMetrics is None:
