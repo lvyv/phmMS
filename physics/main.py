@@ -170,20 +170,21 @@ class SohInputParams(BaseModel):
 
 @app.post("/api/v1/soh")
 async def calculate_soh(sohin: SohInputParams, reqid: int):
-    """模拟耗时的机器学习任务"""
+    """提交soh任务"""
     executor_.submit(soh_task, sohin, reqid)
     return {'task': reqid, 'status': 'submitted to work thread.'}
 
 
 @app.post("/api/v1/cluster")
 async def calculate_cluster(sohin: SohInputParams, reqid: int, displayType: str):
-    """模拟耗时的机器学习任务"""
+    """提交聚类任务"""
     executor_.submit(cluster_task, sohin, reqid, displayType)
     return {'task': reqid, 'status': 'submitted to work thread.'}
 
 
 @app.post("/api/v1/relation")
 async def calculate_relation(sohin: SohInputParams, reqid: int, subFrom: int, subTo: int):
+    """提交自相关任务"""
     executor_.submit(relation_task, sohin, reqid, subFrom, subTo)
     return {'task': reqid, 'status': 'submitted to work thread.'}
 

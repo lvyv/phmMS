@@ -7,7 +7,14 @@ from sqlalchemy import and_
 
 
 class SelfRelationCRUD(AppCRUD):
+    """
+    自相关CRUD操作类
+    """
+
     def create_record(self, item: SelfRelationModel) -> TSelfRelation:
+        """
+        添加一条自相关记录
+        """
         reqdao = TSelfRelation(ts=item.ts,
                                reqId=item.reqId,
                                lag=item.lag,
@@ -20,6 +27,9 @@ class SelfRelationCRUD(AppCRUD):
         return reqdao
 
     def create_batch(self, reqid, items) -> TSelfRelation:
+        """
+        批量添加自相关记录
+        """
         batch = []
         for did in items.keys():
             eqitem = items[did]
@@ -36,9 +46,15 @@ class SelfRelationCRUD(AppCRUD):
         return reqdao
 
     def get_records(self, reqIds: []) -> TSelfRelation:
+        """
+        通过请求ID列表获取记录列表
+        """
         records = self.db.query(TSelfRelation).filter(TSelfRelation.reqId.in_(reqIds)).all()
         return records
 
     def delete_record(self, reqid):
+        """
+        通过请求ID删除记录
+        """
         self.db.query(TSelfRelation).filter(TSelfRelation.reqId == reqid).delete()
         self.db.commit()

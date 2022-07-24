@@ -6,8 +6,14 @@ from sqlalchemy import and_, desc
 
 
 class CellPackCRUD(AppCRUD):
+    """
+    装备评估CRUD
+    """
 
     def create_record(self, item: CellPackModel) -> TCellPack:
+        """
+        创建一条记录
+        """
         record = TCellPack(ts=item.ts,
                            did=item.did,
                            dclz=item.dclz,
@@ -73,6 +79,9 @@ class CellPackCRUD(AppCRUD):
         return record
 
     def create_batch(self, reqid, items, clz) -> TCellPack:
+        """
+        批量创建记录
+        """
         records = []
         for im in items:
             item = DataConvertUtil.SOH(reqid, im)
@@ -137,12 +146,18 @@ class CellPackCRUD(AppCRUD):
         return records
 
     def get_records_by_reqIds(self, reqIds: []) -> TCellPack:
+        """
+        通过请求ID列表查询记录
+        """
         records = self.db.query(TCellPack).filter(and_(TCellPack.reqId.in_(reqIds))).all()
         if records:
             return records
         return None
 
     def get_record_latest_by_id(self, dev, reqid: str) -> TCellPack:
+        """
+        根据设备ID和请求ID，查询记录
+        """
         record = self.db.query(TCellPack).filter(
             and_(TCellPack.reqId == reqid,
                  TCellPack.did == dev)).order_by(desc(TCellPack.ts)).first()
@@ -151,6 +166,9 @@ class CellPackCRUD(AppCRUD):
         return None
 
     def get_records_latest_by_reqIds(self, devs: [], reqIds: []) -> TCellPack:
+        """
+        根据设备ID列表和请求ID列表，查询记录
+        """
         items = []
         for reqId in reqIds:
             for dev in devs:
@@ -162,6 +180,9 @@ class CellPackCRUD(AppCRUD):
         return items
 
     def get_records_by_limit(self, dids, limit) -> TCellPack:
+        """
+        根据设备ID列表和limit，查询记录
+        """
         items = []
         for did in dids:
             item = self.db.query(TCellPack).filter(TCellPack.did == did) \
@@ -173,5 +194,8 @@ class CellPackCRUD(AppCRUD):
         return items
 
     def delete_record(self, reqid):
+        """
+        根据请求ID删除记录
+        """
         self.db.query(TCellPack).filter(TCellPack.reqId == reqid).delete()
         self.db.commit()

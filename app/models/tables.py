@@ -2,28 +2,6 @@ from sqlalchemy import Column, Integer, String, FLOAT, INTEGER, BigInteger, Bool
 from phmconfig.database import Base, create_tables
 
 
-# class TApiToken(Base):
-#     """
-#     令牌表，暂存api访问令牌，便于使用。
-#     该表主要字段：
-#         id: 记录权限Token；
-#         url: api的原型，https://ip:port/api/v1/phm/{soh}；
-#         tk: 该api的访问令牌。
-#
-#     Attributes
-#     ----------
-#
-#     Methods
-#     -------
-#
-#     """
-#     __tablename__ = "api_token"
-#
-#     id = Column(Integer, primary_key=True, index=True)
-#     url = Column(String(512))
-#     tk = Column(String(512))
-
-
 class TReqHistory(Base):
     """
     在phmMS收到REST调用时，创建一条记录，保存该异步请求，之后调用phmMD。
@@ -37,12 +15,6 @@ class TReqHistory(Base):
         settledts: Ai模型执行完成的时间戳。
         memo: 放设备id。
         metrics: 存放设备测点。
-    Attributes
-    ----------
-
-    Methods
-    -------
-
     """
     __tablename__ = "xc_req_history"
 
@@ -61,12 +33,20 @@ class TReqHistory(Base):
 
 
 class TCellPack(Base):
+    """
+    模型评估表，用于设备存放测量值与部分计算值
+    """
     __tablename__ = "xc_cell_pack"
-    id = Column(Integer, primary_key=True, index=True)  # 主键
-    reqId = Column(Integer)  # 执行请求ID 关联历史记录表
-    ts = Column(BigInteger)  # 时间
-    did = Column(TEXT)  # 装备ID
-    dclz = Column(TEXT)  # 装备类型
+    # 主键
+    id = Column(Integer, primary_key=True, index=True)
+    # 执行请求ID 关联历史记录表
+    reqId = Column(Integer)
+    # 时间
+    ts = Column(BigInteger)
+    # 装备ID
+    did = Column(TEXT)
+    # 装备类型
+    dclz = Column(TEXT)
 
     # 普通测点   可采集的测点
     M01 = Column(FLOAT)
@@ -128,48 +108,87 @@ class TCellPack(Base):
 
 
 class TCluster(Base):
+    """
+    聚类计算表，用于存放聚类计算结果
+    """
     __tablename__ = "xc_cluster"
-    id = Column(Integer, primary_key=True, index=True)  # 主键
-    ts = Column(BigInteger)  # 时间
-    reqId = Column(Integer)  # 执行请求ID 关联历史记录表
-    x = Column(FLOAT)  # x 轴坐标
-    y = Column(FLOAT)  # y 轴坐标
-    z = Column(FLOAT)  # z 轴坐标
-    color = Column(TEXT)  # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
-    size = Column(FLOAT)  # 大小
-    shape = Column(TEXT)  # 形状 eg: "circle", "star","square", "cross", "diamond"
-    name = Column(TEXT)  # 装备ID
+    # 主键
+    id = Column(Integer, primary_key=True, index=True)
+    # 时间
+    ts = Column(BigInteger)
+    # 执行请求ID 关联历史记录表
+    reqId = Column(Integer)
+    # x 轴坐标
+    x = Column(FLOAT)
+    # y 轴坐标
+    y = Column(FLOAT)
+    # z 轴坐标
+    z = Column(FLOAT)
+    # 颜色值 eg: "red", "green", "yellow", "blue", "gray","black", "orange"
+    color = Column(TEXT)
+    # 大小
+    size = Column(FLOAT)
+    # 形状 eg: "circle", "star","square", "cross", "diamond"
+    shape = Column(TEXT)
+    # 装备ID
+    name = Column(TEXT)
 
 
 class TSelfRelation(Base):
+    """
+    自相关表，用于存放自相关计算值
+    """
     __tablename__ = "xc_self_relation"
-    id = Column(Integer, primary_key=True, index=True)  # 主键
+    # 主键
+    id = Column(Integer, primary_key=True, index=True)
+    # 计算时间
     ts = Column(BigInteger)
+    # 请求ID
     reqId = Column(Integer)
+    # lag
     lag = Column(Integer)
+    # 值
     value = Column(FLOAT)
+    # 设备ID+测点
     own_key = Column(TEXT)
 
 
 class TMetricMapping(Base):
+    """
+    测点映射表
+    """
     __tablename__ = "xc_metric_mapping"
     id = Column(Integer, primary_key=True, index=True)
-    metric_code = Column(TEXT)     # 测点编码      ignore
-    metric_name = Column(TEXT)     # 测点名称
-    metric_alias = Column(TEXT)    # 测点别名
-    equip_code = Column(TEXT)      # 装备编码      ignore
-    equip_name = Column(TEXT)      # 装备名称      ignore
-    equip_type = Column(TEXT)      # 装备类型
-    equip_type_code = Column(TEXT)  # 装备类型编码
-    metric_describe = Column(TEXT)        # 描述   ignore
-    metric_unit = Column(TEXT)     # 测点类型
+    # 测点编码      ignore
+    metric_code = Column(TEXT)
+    # 测点名称
+    metric_name = Column(TEXT)
+    # 测点别名
+    metric_alias = Column(TEXT)
+    # 装备编码      ignore
+    equip_code = Column(TEXT)
+    # 装备名称      ignore
+    equip_name = Column(TEXT)
+    # 装备类型
+    equip_type = Column(TEXT)
+    # 装备类型编码
+    equip_type_code = Column(TEXT)
+    # 描述   ignore
+    metric_describe = Column(TEXT)
+    # 测点类型
+    metric_unit = Column(TEXT)
 
 
 class TEquipTypeMapping(Base):
+    """
+    装备编码映射
+    """
     __tablename__ = "xc_equip_type_mapping"
     id = Column(Integer, primary_key=True, index=True)
-    equip_type_code = Column(TEXT)  # 装备类型编码
-    equip_type = Column(TEXT)  # 装备类型
+    # 装备类型编码
+    equip_type_code = Column(TEXT)
+    # 装备类型
+    equip_type = Column(TEXT)
 
 
 # create all tables

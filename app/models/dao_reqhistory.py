@@ -10,10 +10,13 @@ from phmconfig import constants as ct
 
 class RequestHistoryCRUD(AppCRUD):
     """
-    电池模型请求数据访问。
+    历史请求数据访问CRUD。
     """
 
     def create_record(self, item: ReqItemCreate) -> TReqHistory:
+        """
+        创建一条历史记录
+        """
         record = TReqHistory(model=item.model,
                              status=item.status,
                              result=item.result,
@@ -31,6 +34,9 @@ class RequestHistoryCRUD(AppCRUD):
         return record
 
     def update_record(self, reqid, result) -> TReqHistory:
+        """
+        删除一条记录
+        """
         record = self.db.query(TReqHistory).filter(TReqHistory.id == reqid).first()
         record.status = ct.REQ_STATUS_SETTLED
         record.result = result
@@ -39,6 +45,9 @@ class RequestHistoryCRUD(AppCRUD):
         return record
 
     def get_record_last(self, equipCode: str, metrics: str, displayType: str) -> TReqHistory:
+        """
+        查询最后一条记录
+        """
         record = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                         TReqHistory.metrics == metrics,
                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
@@ -49,6 +58,9 @@ class RequestHistoryCRUD(AppCRUD):
         return None
 
     def get_records(self, equipCode: str, metrics: str, displayType: str, start: int, end: int) -> TReqHistory:
+        """
+        模糊匹配查询满足条件记录
+        """
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.metrics == metrics,
                                                          # TReqHistory.status == ct.REQ_STATUS_SETTLED,
@@ -65,6 +77,9 @@ class RequestHistoryCRUD(AppCRUD):
 
     def get_records_prefect_match(self, equipCode: str, metrics: str,
                                   displayType: str, start: int, end: int) -> TReqHistory:
+        """
+        精确匹配查询满足条件记录
+        """
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.metrics == metrics,
                                                          # TReqHistory.status == ct.REQ_STATUS_SETTLED,
@@ -75,6 +90,9 @@ class RequestHistoryCRUD(AppCRUD):
 
     # 获取时间片段
     def get_time_segment(self, equipCode: str, metrics: str, displayType: str):
+        """
+        查询满足条件记录
+        """
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
                                                          TReqHistory.status == ct.REQ_STATUS_SETTLED,
                                                          TReqHistory.metrics == metrics,
@@ -83,28 +101,46 @@ class RequestHistoryCRUD(AppCRUD):
         return records
 
     def get_records_by_displayType(self, displayType):
+        """
+        根据类型查询记录
+        """
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.displayType == displayType,
                                                          TReqHistory.status == ct.REQ_STATUS_SETTLED)).all()
         return records
 
     def get_equip_code(self, displayType):
+        """
+        根据类型查询记录
+        """
         records = self.db.query(TReqHistory).filter(TReqHistory.displayType == displayType) \
             .distinct(TReqHistory.memo).all()
         return records
 
     def get_equip_metric(self, displayType, equipCode):
+        """
+        根据类型、装备编码查询记录
+        """
         records = self.db.query(TReqHistory).filter(and_(TReqHistory.displayType == displayType,
                                                          TReqHistory.memo == equipCode)) \
             .distinct(TReqHistory.metrics).all()
         return records
 
     def delete_record(self, reqid):
+        """
+        根据请求ID删除记录
+        """
         self.db.query(TReqHistory).filter(TReqHistory.id == reqid).delete()
         self.db.commit()
 
     def get_record_by_id(self, reqId):
+        """
+        根据类型查询记录
+        """
         return self.db.query(TReqHistory).filter(TReqHistory.id == reqId).first()
 
     def get_records_by_model(self, model: str) -> TReqHistory:
+        """
+        根据equipType查询记录
+        """
         records = self.db.query(TReqHistory).filter(TReqHistory.model == model).order_by(asc(TReqHistory.id)).all()
         return records
