@@ -126,8 +126,8 @@ class NasaDataManage:
         start = TimeUtil.convert_time_stamp(startTime)
         end = TimeUtil.convert_time_stamp(endTime)
         # int(down)  ceil(up) round(四舍五入)
-        # interval = round((end - start) / 1000 / data_len)
-        interval = 5
+        interval = round((end - start) / 1000 / data_len)
+        # interval = 5
         return TimeUtil.convert_time_str(start + index * interval * 1000)
 
 

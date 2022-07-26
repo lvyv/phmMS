@@ -1,4 +1,6 @@
 from random import random, choice
+
+import numpy as np
 import requests
 import json
 
@@ -228,12 +230,15 @@ def calculate_relate(inData, subFrom, subTo):
                         res[keyList[keyIndex]]["value"].append(item)
             else:
                 i = 0
-                for start in range(0, x_len, min(1, y_len)):
+                # _y_len = y_len if x_len/y_len > 31 else min(int(x_len/31) + 1, y_len)
+                _y_len = min(1, y_len)
+                for start in range(0, x_len, _y_len):
                     if start + y_len > x_len:
                         break
                     k, _ = pearsonr(x[keyIndex][start: start + y_len], y[keyIndex])
                     res[keyList[keyIndex]]["lag"].append(i)
-                    res[keyList[keyIndex]]["value"].append(round(k, 5))
+                    _value = 0 if np.isnan(k) else round(k, 5)
+                    res[keyList[keyIndex]]["value"].append(_value)
                     i = i + 1
     return res
 
