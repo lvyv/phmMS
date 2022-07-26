@@ -110,7 +110,7 @@ def post_process_vrla_relation(reqid, items):
 # time intensive tasks
 def soh_task(sohin, reqid):
     # 下载装备数据
-    dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
+    dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts, sohin.equipTypeCode)
     try:
         mappingS = dataCenter.query_metric_mapping(sohin.equipTypeCode)
         convertMapping = {}
@@ -130,7 +130,7 @@ def soh_task(sohin, reqid):
 
 
 def cluster_task(clusterin, reqid, displayType):
-    dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
+    dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts, clusterin.equipTypeCode)
     try:
         res = phm.calculate_cluster(dataS, displayType)
         post_process_vrla_cluster(reqid, res, displayType)
@@ -150,7 +150,7 @@ def relation_task(relationin, reqid, subFrom, subTo):
                      " endTime: " + TimeUtils.convert_time_str(relationin.endts) +
                      " subFrom: " + TimeUtils.convert_time_str(subFrom) +
                      " subTo: " + TimeUtils.convert_time_str(subTo))
-    dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
+    dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts, relationin.equipTypeCode)
     try:
         res = phm.calculate_relate(dataS, subFrom, subTo)
         post_process_vrla_relation(reqid, res)

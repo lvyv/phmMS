@@ -8,8 +8,8 @@ from phmconfig.timeUtils import TimeUtils
 
 
 #   设备编码， 测点名称 ， 开始时间， 结束时间
-def download_zb_data(devs, metrics, start, end):
-    return download_zb_real_data(devs, metrics, start, end)
+def download_zb_data(devs, metrics, start, end, equipTypeCode=None):
+    return download_zb_real_data(devs, metrics, start, end, equipTypeCode)
 
 
 #  ######################################
@@ -18,10 +18,10 @@ def download_zb_data(devs, metrics, start, end):
 # startTime：查询开始时间  格式yyyy-MM-dd HH:mm:ss
 # endTime: 查询结束时间  格式 yyyy-MM-dd HH:mm:ss
 # interval: 数据抽取间隔  格式 [数字][M|H|D]
-def download_zb_history_data_from(equipCode, metricName, startTime, endTime, interval):
+def download_zb_history_data_from(equipCode, metricName, startTime, endTime, interval, equipTypeCode=None):
     with httpx.Client(timeout=None, verify=False) as client:
         if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
-            url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData"
+            url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData?equipTypeCode=" + equipTypeCode
         else:
             url = constants.API_QUERY_HISTORY_DATA
 
@@ -39,7 +39,7 @@ def download_zb_history_data_from(equipCode, metricName, startTime, endTime, int
 # devs:设备编号
 # metrics: 测点名称  注意不是测点编码
 # start end : 时间戳ms
-def download_zb_real_data(devs, metrics, start, end):
+def download_zb_real_data(devs, metrics, start, end, equipTypeCode=None):
     devices = json.loads(devs)
     measurePoints = json.loads(metrics)
     startStr = TimeUtils.convert_time_str(start)
@@ -47,7 +47,7 @@ def download_zb_real_data(devs, metrics, start, end):
     interval = TimeUtils.get_time_interval(start, end)
     equipCodes = ",".join(item for item in devices)
     metricNames = ",".join(item for item in measurePoints)
-    data = download_zb_history_data_from(equipCodes, metricNames, startStr, endStr, interval)
+    data = download_zb_history_data_from(equipCodes, metricNames, startStr, endStr, interval, equipTypeCode)
     return data
 
 
