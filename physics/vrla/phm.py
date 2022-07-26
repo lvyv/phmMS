@@ -210,7 +210,7 @@ def calculate_relate(inData, subFrom, subTo):
     for keyIndex,  key in enumerate(keyList):
         res.update({key: {"lag": [], "value": []}})
         # TODO 自相关模型 目前支持自相关模型
-        if subFrom == -1 and subTo == -1 or len(y[0]) <= 1:
+        if subFrom == -1 and subTo == -1 or len(y[keyIndex]) <= 1:
             acf = stattools.acf(x[keyIndex], adjusted=True)
             for index, item in enumerate(acf):
                 res[keyList[keyIndex]]["lag"].append(index)
@@ -222,7 +222,7 @@ def calculate_relate(inData, subFrom, subTo):
                 for start in range(0, x_len, y_len):
                     if start + y_len > x_len:
                         break
-                    ccf = stattools.ccf(x[keyIndex][start: start + y_len], y[0])
+                    ccf = stattools.ccf(x[keyIndex][start: start + y_len], y[keyIndex])
                     for index, item in enumerate(ccf):
                         res[keyList[keyIndex]]["lag"].append(start + index)
                         res[keyList[keyIndex]]["value"].append(item)
@@ -231,9 +231,9 @@ def calculate_relate(inData, subFrom, subTo):
                 for start in range(0, x_len, min(1, y_len)):
                     if start + y_len > x_len:
                         break
-                    k, _ = pearsonr(x[keyIndex][start: start + y_len], y[0])
+                    k, _ = pearsonr(x[keyIndex][start: start + y_len], y[keyIndex])
                     res[keyList[keyIndex]]["lag"].append(i)
-                    res[keyList[keyIndex]]["value"].append(k)
+                    res[keyList[keyIndex]]["value"].append(round(k, 5))
                     i = i + 1
     return res
 
