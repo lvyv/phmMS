@@ -144,6 +144,8 @@ class ReqHistoryService(AppService):
         tags = metric.split(",")
         tags.sort()
         payload = BegForService.getPlayLoadByTimeSegment(timeSegment)
+        if payload is None:
+            return ServiceResult([])
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
         records = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
