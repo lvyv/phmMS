@@ -24,6 +24,7 @@ class ClusterDisplayService(AppService):
 
     def clusterDisplay(self, clz, code, metrics, displayType, payload) -> ServiceResult:
 
+        # 时间转换
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
 
@@ -33,12 +34,15 @@ class ClusterDisplayService(AppService):
         tags.sort()
 
         hisRecordId = []
+
+        # 查询历史记录
         hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
                                                                            json.dumps(tags, ensure_ascii=False),
                                                                            displayType, start, end)
         for his in hisRecords:
             hisRecordId.append(his.id)
 
+        # 查询数据
         if displayType == ClusterDisplayUtil.DISPLAY_SCATTER:
             if len(hisRecordId) == 0:
                 items = None
@@ -60,9 +64,13 @@ class ClusterDisplayService(AppService):
 
         if items is None or len(items) == 0:
             return ServiceResult("趋势分析模型正在调度中，请稍等...")
+
+        # 实例化数据转换类
         convertor = ConvertorFactory.get_convertor(clz)
         if convertor is None:
             return ServiceResult("equipType只支持battery")
+
+        # 数据转换
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
                            ClusterDisplayUtil.DISPLAY_AGG2D, ClusterDisplayUtil.DISPLAY_AGG3D]:
             # 2D 3D AGG2D AGG3D

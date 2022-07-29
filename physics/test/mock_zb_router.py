@@ -13,39 +13,18 @@ router = APIRouter(
 )
 
 
+# 数据模拟类
 @router.post("/zbMetric")
 async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[str] = None,
                       equipName: Optional[str] = None):
     ret = {
         "result": [{
             "equipCode": "B001", "equipName": "电池1", "equipTypeCode": "N0001",
-            "measurePoints": [{"pointCode": "M0001", "pointName": "容量", "pointUnit": "%"},
-                              {"pointCode": "M0002", "pointName": "健康指标"},
-                              {"pointCode": "M0003", "pointName": "最大温度"},
-                              {"pointCode": "M0004", "pointName": "电池单元的最大开路电压"},
-                              {"pointCode": "M0005", "pointName": "电池单元的最小开路电压"},
-                              {"pointCode": "M0006", "pointName": "电池单元的最大端电压"},
-                              {"pointCode": "M0007", "pointName": "电池单元的最小端电压"},
-                              {"pointCode": "M0008", "pointName": "电池单元的均值端电压"},
-                              {"pointCode": "M0009", "pointName": "电池组的环境温度（存在多个测点）"},
-                              {"pointCode": "M0010", "pointName": "电池单元端电压集合"},
-                              {"pointCode": "M0011", "pointName": "电池单元容量集合"},
-                              {"pointCode": "M0012", "pointName": "健康状态"},
-                              {"pointCode": "M0013", "pointName": "电压不平衡度"}]
+            "measurePoints": [{"pointCode": "M0001", "pointName": "容量", "pointUnit": "%"}]
         },
             {
                 "equipCode": "B002", "equipName": "电池2", "equipTypeCode": "N0001",
-                "measurePoints": [{"pointCode": "M0015", "pointName": "容量", "pointUnit": "%"},
-                                  {"pointCode": "M0016", "pointName": "健康指标"},
-                                  {"pointCode": "M0017", "pointName": "剩余寿命"},
-                                  {"pointCode": "M0018", "pointName": "开路电压"},
-                                  {"pointCode": "M0019", "pointName": "端电压"},
-                                  {"pointCode": "M0020", "pointName": "内阻不平衡度"},
-                                  {"pointCode": "M0021", "pointName": "冲放电电流"},
-                                  {"pointCode": "M0022", "pointName": "最小温度"},
-                                  {"pointCode": "M0023", "pointName": "最大温度"},
-                                  {"pointCode": "M0024", "pointName": "电池单元的最大开路电压"},
-                                  {"pointCode": "M0025", "pointName": "电压不平衡度"}]
+                "measurePoints": [{"pointCode": "M0015", "pointName": "容量", "pointUnit": "%"}]
             }
         ]
     }
@@ -54,6 +33,15 @@ async def getZbMetric(equipTypeCode: Optional[str] = None, equipCode: Optional[s
 
 @router.post("/zbData")
 async def getZbData(equipCode, metricName, startTime, endTime, interval: Optional[str] = None):
+    """
+    模拟装备数据
+    :param equipCode:
+    :param metricName:
+    :param startTime:
+    :param endTime:
+    :param interval:
+    :return:
+    """
     # 根据开始数据 与 结束时间生成 时间序列
     skipK = 1
     maxPoints = int(constants.EQUIP_DATA_MAX_POINT / skipK)
@@ -122,74 +110,16 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval: Optiona
 
 @router.get("/zbMetricByTypeCode")
 async def getZbMetricByTypeCode(equipTypeCode: Optional[str] = None):
-    ret = {
-        "result": {
-            "data": [
-                {"unit": "%",
-                 "pointName": "容量"
-                 },
-                {"unit": "",
-                 "pointName": "健康指标"
-                 },
-                {"unit": "℃",
-                 "pointName": "最大温度"
-                 },
-                {"unit": "℃",
-                 "pointName": "最小温度"
-                 },
-                {"unit": "%",
-                 "pointName": "电压不平衡度"
-                 },
-                {"unit": "%",
-                 "pointName": "剩余寿命"
-                 },
-                {"unit": "∨",
-                 "pointName": "开路电压"
-                 },
-                {"unit": "∨",
-                 "pointName": "端电压"
-                 },
-                {"unit": "",
-                 "pointName": "内阻不平衡度"
-                 },
-                {"unit": "∨",
-                 "pointName": "电池单元的最大开路电压"
-                 },
-                {"unit": "∨",
-                 "pointName": "电池单元的最小开路电压"
-                 },
-                {"unit": "∨",
-                 "pointName": "电池单元的最大端电压"
-                 },
-                {"unit": "欧姆",
-                 "pointName": "内阻"
-                 },
-                {"unit": "v",
-                 "pointName": "电池单元的最小端电压"
-                 },
-                {"unit": "v",
-                 "pointName": "电池单元的均值端电压"
-                 }
-                ,
-                {"unit": "℃",
-                 "pointName": "电池组的环境温度（存在多个测点）"
-                 }
-                ,
-                {"unit": "v",
-                 "pointName": "电池单元端电压集合"
-                 }
-                ,
-                {"unit": "%",
-                 "pointName": "电池单元容量集合"
-                 }
-                ,
-                {"unit": "",
-                 "pointName": "健康状态"
-                 },
-                {"unit": "I",
-                 "pointName": "冲放电电流"
-                 }
-            ]
-        }
-    }
+    """
+    模拟测点数据
+    :param equipTypeCode:
+    :return:
+    """
+    ret = {"result": {"data": []}}
+    mockPointsName = ["容量", "健康指标", "最大温度", "最小温度", "电压不平衡度", "剩余寿命", "开路电压", "端电压",
+                      "内阻不平衡度", "电池单元的最大开路电压", "电池单元的最小开路电压", "电池单元的最大端电压", "内阻",
+                      "电池单元的最小端电压", "电池单元的均值端电压", "电池组的环境温度（存在多个测点）", "电池单元端电压集合",
+                      "电池单元容量集合", "健康状态", "冲放电电流"]
+    for item in mockPointsName:
+        ret["result"]["data"].append({"unit": "", "pointName": item})
     return ret

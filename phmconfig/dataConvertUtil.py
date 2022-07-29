@@ -5,6 +5,9 @@ from services.convert.cluster_display_util import ClusterDisplayUtil
 
 
 class DataConvertUtil:
+    """
+    数据转换
+    """
     @staticmethod
     def SOH(reqid, item):
         keys = item.keys()

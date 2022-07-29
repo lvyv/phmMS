@@ -19,6 +19,12 @@ router = APIRouter(
 # 查询装备编码类型
 @router.get("/getTypeByName")
 async def getEquipTypeCodeByName(equipName: str, equipCode: Optional[str] = None):
+    """
+    通过装备名称获取装备类型
+    :param equipName:  装备名称
+    :param equipCode:  装备编码
+    :return:
+    """
     return DataCenterService.filter_zb_equip_type_code(DataCenterService.download_zb_type_code(equipName, equipCode))
 
 
@@ -32,6 +38,7 @@ async def updateEquipType(equipTypeCode: str, equipType, db: get_db = Depends())
         return "装备类型编码，未找到测点数据，不进行类型绑定。"
 
     # TODO 自动绑定
+    # 通过装备编码类型从数据库中获取测点。
     ownMetrics = MetricMappingCRUD(db).get_all(equipTypeCode)
     if ownMetrics is None:
         metrics = AutomaticMetricBind.autoRun(metrics)
@@ -59,6 +66,12 @@ async def dataMapping(equipTypeCode: str, metricName: str, metric_alias: str,
 
 @router.post("/getAllMetrics")
 async def getAllMetrics(equipTypeCode: str, db: get_db = Depends()):
+    """
+    根据装备类型获取所有的测点
+    :param equipTypeCode:
+    :param db:
+    :return:
+    """
     so = MetricMappingService(db)
     result = so.get_items_by_equip_type_code(equipTypeCode)
     return handle_result(result)

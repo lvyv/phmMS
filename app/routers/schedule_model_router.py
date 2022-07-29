@@ -29,8 +29,9 @@ class SohInputParams(BaseModel):
 @router.post("/soh")
 async def call_soh(sohin: SohInputParams, displayType: str, db: get_db = Depends()):
     """
-    健康评估模型
+    健康评估模型调度
 
+    :param displayType: 模型计算类型
     :param sohin: 计算设备的soh需要的参数。
     :type: SohInputParams。
     :param db: 数据库连接。
@@ -49,6 +50,13 @@ async def call_soh(sohin: SohInputParams, displayType: str, db: get_db = Depends
 # 2.工况判别模型，即主要利用聚类方法实现MVs的聚类分析。
 @router.post("/cluster")
 async def cluster(sohin: SohInputParams, displayType: str, db: get_db = Depends()):
+    """
+    聚类模型调度
+    :param sohin: 参与聚类模型参数
+    :param displayType: 聚类模型类型
+    :param db: 数据库连接
+    :return:
+    """
     try:
         bs = VRLABatteryService(db)
         res = await bs.cluster(sohin.equipTypeCode, json.loads(sohin.devices), json.loads(sohin.tags), sohin.startts,
@@ -60,6 +68,14 @@ async def cluster(sohin: SohInputParams, displayType: str, db: get_db = Depends(
 
 @router.post("/relation")
 async def relation(sohin: SohInputParams, subFrom: int, subTo: int, db: get_db = Depends()):
+    """
+    自相关模型调度
+    :param sohin:  参与自相关模型计算参数
+    :param subFrom:  计算时间窗开始时间
+    :param subTo:    计算时间窗结束时间
+    :param db:    数据库连接
+    :return:
+    """
     try:
         bs = VRLABatteryService(db)
         res = await bs.relation(sohin.equipTypeCode, json.loads(sohin.devices), json.loads(sohin.tags), sohin.startts,

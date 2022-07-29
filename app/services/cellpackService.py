@@ -28,6 +28,15 @@ class CellPackService(AppService):
         return ServiceResult(items)
 
     def health_eval(self, clz, code, metrics, payload, allMetrics) -> ServiceResult:
+        """
+        从数据库中查询健康评估数据
+        :param clz: 装备类型编码
+        :param code:  设备
+        :param metrics: 测点
+        :param payload:  时间段
+        :param allMetrics:  全部测点
+        :return:
+        """
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
 
@@ -39,6 +48,7 @@ class CellPackService(AppService):
 
         hisRecordId = []
 
+        # 查询历史记录
         hisRecords = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
                                                                            json.dumps(tags, ensure_ascii=False),
                                                                            HealthEvalUtil.DISPLAY_HEALTH_EVAL,
@@ -55,5 +65,6 @@ class CellPackService(AppService):
         convertor = ConvertorFactory.get_convertor(clz)
         if convertor is None:
             return ServiceResult("equipType只支持battery")
+        # 数据转换
         convertItems = convertor.convert(items, metrics)
         return ServiceResult(convertItems)

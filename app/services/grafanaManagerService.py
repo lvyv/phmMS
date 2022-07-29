@@ -12,6 +12,7 @@ class GrafanaMangerService:
                                      "timeSegment", "params", "subFrom", "subTo"]
     zbjk_preset_template_name_intersection = ["equipType", "equipCode", "host"]
 
+    # 获取MS服务的HOST地址
     @staticmethod
     def get_host(host):
         if host is None:
@@ -21,6 +22,7 @@ class GrafanaMangerService:
         else:
             return constants.SCHEMA_HEADER + "://" + host
 
+    # 判断大屏是否为装备健康大屏
     @staticmethod
     def found_zbjk_dashboard(items):
         templateName = []
@@ -59,17 +61,21 @@ class GrafanaMangerService:
                         _template = _dashboard["templating"]
                         if "list" in _template.keys():
                             _list = _template["list"]
+                            # 判断大屏是否为装备健康大屏
                             if GrafanaMangerService.found_zbjk_dashboard(_list) is True:
                                 for t in _list:
                                     if t["name"] == "host":
+                                        # 更新host
                                         if t["query"] != GrafanaMangerService.get_host(host):
                                             t.update({"query": GrafanaMangerService.get_host(host)})
                                             hasModify = True
                                     elif t["name"] == "timeSegment":
+                                        # 更新label
                                         if timeSegmentLabel is not None and t["label"] != timeSegmentLabel:
                                             t.update({"label": timeSegmentLabel})
                                             hasModify = True
                 if hasModify is True:
+                    # 保存大屏配置信息
                     ret = GrafanaMangerService.save_dashboard(data, username, password)
                     result.append(ret)
 

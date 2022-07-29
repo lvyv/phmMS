@@ -19,6 +19,12 @@ class VRLABatteryService(AppService):
 
     @staticmethod
     def checkReqValid(devs: list, tags: list):
+        """
+        参数合法性校验
+        :param devs:
+        :param tags:
+        :return:
+        """
         if len(devs) == 0 or len(tags) == 0 or devs == [""] or tags == [""]:
             logging.info("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
             return False
@@ -26,6 +32,16 @@ class VRLABatteryService(AppService):
 
     async def soh(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int,
                   displayType: str) -> ServiceResult:
+        """
+        装备SOH模型调度
+        :param equipTypeCode:
+        :param devs:
+        :param tags:
+        :param startts:
+        :param endts:
+        :param displayType:
+        :return:
+        """
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
@@ -65,6 +81,16 @@ class VRLABatteryService(AppService):
 
     async def cluster(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int,
                       displayType: str) -> ServiceResult:
+        """
+        聚类模型调度
+        :param equipTypeCode:
+        :param devs:
+        :param tags:
+        :param startts:
+        :param endts:
+        :param displayType:
+        :return:
+        """
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")
@@ -104,6 +130,18 @@ class VRLABatteryService(AppService):
 
     async def relation(self, equipTypeCode: str, devs: list, tags: list, startts: int, endts: int,
                        subFrom: int, subTo: int) -> ServiceResult:
+
+        """
+        自相关模型调度
+        :param equipTypeCode:
+        :param devs:
+        :param tags:
+        :param startts:
+        :param endts:
+        :param subFrom:
+        :param subTo:
+        :return:
+        """
 
         if VRLABatteryService.checkReqValid(devs, tags) is False:
             return ServiceResult("任务调度时，输入的参数非法。输入设备编码为空或者测点名称为空")

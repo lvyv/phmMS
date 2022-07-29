@@ -18,6 +18,9 @@ router = APIRouter(
 # 获取装备类型
 @router.get("/equipType")
 async def getEquipTypeByPlugin(db: get_db = Depends()):
+    """
+        获取所有的装备类型
+    """
     so = EquipTypeMappingService(db)
     result = ServiceResult(so.getAllEquipTypeMapping())
     return handle_result(result)
@@ -42,6 +45,20 @@ async def getMetricByPlugin(equipType, equipCode, displayType, db: get_db = Depe
 # 获取时间段
 @router.get("/timeSegment")
 async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: get_db = Depends()):
+    """
+      获取用于模型计算的时间段
+    Parameters
+    ----------
+    equipType   装备类型编码
+    equipCode   装备编码
+    metric      测点名称
+    displayType 模型类型
+    db          db
+
+    Returns
+    -------
+
+    """
     support, equipCode, metric = PublicModelValidate.support(equipCode, metric)
     if support is False:
         return "请输入不为空的设备编码或测点"
@@ -90,6 +107,22 @@ async def getEquipTypeByPlugin():
 
 @router.get("/timeSegment/params")
 async def getParamsByPlugin(equipType, equipCode, metric, timeSegment, displayType, db: get_db = Depends()):
+    """
+        获取参与自相关模型计算的SUB时间段
+
+    Parameters
+    ----------
+    equipType   装备类型编码
+    equipCode   装备编码
+    metric      测点名称
+    timeSegment   参数模型计算的时间端
+    displayType   模型类型
+    db            db
+
+    Returns
+    -------
+
+    """
     if displayType not in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
         return "不支持查询参数"
     support, equipCode, metric = PublicModelValidate.support(equipCode, metric)

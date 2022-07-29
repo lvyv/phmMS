@@ -36,6 +36,22 @@ router = APIRouter(
 # 健康指标
 @router.post("/healthIndicator")
 async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_db = Depends()):
+    """
+    获取健康指标
+
+    :param equipType: 装备类型编码
+    :type: str
+    :param equipCode: 装备编码  多个装备编码用逗号分开
+    :type: str
+    :param reqType: 0 最后值  1 时序值
+    :type: str
+    :param db: 数据库
+    :type: sqlalchemy.orm.sessionmaker。
+
+    :return: [{"state": 0, "soh": [75], "equipCode": "装备编码"}] state 取值 0（正常） 1（告警） 2（严重）
+    :rtype:
+
+    """
     equipTypeCode = equipType
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
     if equipType is None or equipType is '':
@@ -56,6 +72,22 @@ async def healthIndicator(equipType: str, equipCode: str, reqType: str, db: get_
 @router.post("/eval")
 async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict,
                      timeSegment: Optional[str] = None, db: get_db = Depends()):
+    """
+    健康评估
+
+    Parameters
+    ----------
+    equipType  - 装备类型编码
+    equipCode  - 装备编码
+    metrics    - 测点  多个测点用逗号分开
+    payload    - grafana payload
+    timeSegment  - 时间段
+    db            - 数据库
+
+    Returns
+    -------
+        评估时间序列
+    """
     equipTypeCode = equipType
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)

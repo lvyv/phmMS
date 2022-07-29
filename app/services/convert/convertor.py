@@ -6,9 +6,11 @@ class IConvertor:
     def __init__(self):
         self.tmpDict = {}
 
+    # 获取测点值
     def get_metric_value(self, item, metric):
         pass
 
+    # 获取测点数据类型
     @staticmethod
     def get_metric_type(key):
         if key in ["ts"]:
@@ -18,11 +20,13 @@ class IConvertor:
     def get_own_metrics(self):
         pass
 
+    # 判断测点是否合法
     def check_metric_valid(self, metric):
         if metric in self.get_own_metrics():
             return True
         return False
 
+    # 获取正确的测点
     def get_right_metrics(self, metrics):
         retMetrics = []
         for metric in metrics:
@@ -30,6 +34,7 @@ class IConvertor:
                 retMetrics.append(metric)
         return retMetrics
 
+    # 进行数据转化
     def convert(self, items, metrics):
         useMetrics = metrics.split(",")
         useMetrics = self.get_right_metrics(useMetrics)
@@ -44,6 +49,7 @@ class IConvertor:
                 else:
                     self.tmpDict[m] = [self.get_metric_value(item, m)]
 
+    # 将数据转化为健康指标数据协议格式
     @staticmethod
     def convertHealthIndicator(items):
         rets = []

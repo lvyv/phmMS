@@ -17,10 +17,27 @@ async def modify_primary_conf_params(msHost: Optional[str] = None, mdHost: Optio
                                      grafanaHost: Optional[str] = None, sjzyHost: Optional[str] = None,
                                      schema: Optional[bool] = None, sample: Optional[int] = None,
                                      multiSelf: Optional[bool] = None, clickGap: Optional[int] = None):
+    """
+    更新MD服务配置
+    :param msHost:
+    :param mdHost:
+    :param dbHost:
+    :param dbUser:
+    :param dbPw:
+    :param dbName:
+    :param grafanaHost:
+    :param sjzyHost:
+    :param schema:
+    :param sample:
+    :param multiSelf:
+    :param clickGap:
+    :return:
+    """
     return ConfigManagerService.update(msHost, mdHost, dbHost, dbUser, dbPw, dbName,
                                        grafanaHost, sjzyHost, schema, sample, multiSelf, clickGap)
 
 
+# 查询 MD服务配置
 @router.get("/conf/getParams")
 async def query_primary_conf_params():
     return ConfigManagerService.query()

@@ -4,6 +4,7 @@ from matplotlib import patches as mpatches
 from mpl_toolkits.mplot3d import Axes3D
 
 
+# 测试类 2D聚类绘制
 def draw_2d(objpos, pos, df2, dfnew, agelist, datumn):
     # plot mds scatter chart
     plt.figure(1)
@@ -43,6 +44,7 @@ def draw_2d(objpos, pos, df2, dfnew, agelist, datumn):
     plt.show()
 
 
+# 测试类 3D聚类绘制
 def draw_3D(objpos, pos, df2, dfnew, agelist, datumn):
     # plot mds scatter chart
     fig = plt.figure()

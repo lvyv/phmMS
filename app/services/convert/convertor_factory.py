@@ -2,6 +2,9 @@ from services.convert.cellpack_convertor import CellPackConvertor
 
 
 class ConvertorFactory:
+    """
+    实例化数据转化类
+    """
 
     convertorCache = {}
 

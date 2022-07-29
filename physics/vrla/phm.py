@@ -124,6 +124,7 @@ def calculate_cluster_3d(dataList, ageList, devList):
 def calculate_cluster_agg2d(dataList, ageList, devList):
     frequencies, spectrumn = cluster.ts2fft(dataList)
     logging.info("agg2d fft calculate complete")
+    # TODO: 时序聚类算法
     _, dfnew = cluster.cluster_vectors(spectrumn, False)
     logging.info("agg2d HDBSCAN calculate complete")
     df2 = mds.dev_age_compute(spectrumn, ageList, frequencies)

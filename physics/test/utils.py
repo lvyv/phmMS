@@ -3,6 +3,7 @@ import scipy.fftpack
 import scipy.io
 
 
+# 读取mat数据
 def load_mat(file, path):
     strf = f'{path}{file}'
     data = scipy.io.loadmat(strf)
@@ -24,6 +25,7 @@ def load_mat(file, path):
     return ampde, ampfe
 
 
+# 加载csv格式数据
 def load_csv(file, path, ns=['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8']):
     strf = f'{path}{file}'
     df = pd.read_table(strf, names=ns)

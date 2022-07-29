@@ -3,11 +3,22 @@ from phmconfig import constants
 
 
 class DashboardManagerService:
-
+    """
+    grafana 大屏管理服务
+    """
     @staticmethod
     def getDashboardList(query, filter):
-
+        """
+        获取zbjk大屏列表
+        :param query:  查询参数
+        :param filter: 过滤参数
+        :return:
+        """
         def fn_query():
+            """
+            查询大屏列表
+            :return:
+            """
             with httpx.Client(timeout=None, verify=False) as client:
                 # url = constants.API_QUERY_HISTORY_DATA
                 url = constants.URL_MS_GET_DASHBOARD_LIST + "/api/search"
@@ -19,6 +30,11 @@ class DashboardManagerService:
                 return dataS
 
         def fn_filter(items):
+            """
+            过滤大屏列表
+            :param items:
+            :return:
+            """
             ret = []
             if filter is not None:
                 ft = filter.split(",")
@@ -35,6 +51,11 @@ class DashboardManagerService:
             return ret
 
         def fn_convert(items):
+            """
+            将数据转换为grafana识别的数据格式
+            :param items:
+            :return:
+            """
             rets = []
             titles = []
             urls = []

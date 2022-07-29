@@ -29,6 +29,13 @@ class MetricMappingService(AppService):
         return ServiceResult(MetricMappingCRUD(self.db).get_all(equipTypeCode))
 
     def update_all_mapping(self, equipTypeCode, mappings, equipType):
+        """
+        更新测点映射
+        :param equipTypeCode:
+        :param mappings:
+        :param equipType:
+        :return:
+        """
         if mappings is None:
             return
 

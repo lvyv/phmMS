@@ -55,6 +55,7 @@ def create_database():
         logging.info("目前MS只支持pgsql、mysql")
 
 
+# 创建表
 def create_tables() -> list:
     create_database()
     Base.metadata.create_all(bind=engine)

@@ -139,15 +139,19 @@ class ReqHistoryService(AppService):
     def get_params(self, equipCode, metric, timeSegment, displayType):
         if displayType not in [SelfRelationUtil.DISPLAY_SELF_RELATION]:
             return ServiceResult([])
+        # 排序
         devs = equipCode.split(",")
         devs.sort()
         tags = metric.split(",")
         tags.sort()
+        # 获取时间
         payload = BegForService.getPlayLoadByTimeSegment(timeSegment)
         if payload is None:
             return ServiceResult([])
+        # 转换时间
         start = PayloadUtil.get_start_time(payload)
         end = PayloadUtil.get_end_time(payload)
+        # 查询记录
         records = RequestHistoryCRUD(self.db).get_records_prefect_match(json.dumps(devs, ensure_ascii=False),
                                                                         json.dumps(tags, ensure_ascii=False),
                                                                         displayType, start, end)

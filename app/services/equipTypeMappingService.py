@@ -14,6 +14,11 @@ class EquipTypeMappingService(AppService):
         return ServiceResult(item)
 
     def create_batch(self, batch):
+        """
+        批量写入
+        :param batch:
+        :return:
+        """
         items = EquipTypeMappingCRUD(self.db).get_all()
         if items is None:
             mappings = []

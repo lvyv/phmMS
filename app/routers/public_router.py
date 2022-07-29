@@ -39,11 +39,13 @@ async def updateHistoryRecord(reqid: str, res: str, db: get_db = Depends()):
     return handle_result(result)
 
 
+# 获取装备健康大屏列表
 @router.get("/dashboards")
 async def get_trend_dashboard(query: Optional[str] = None, filter: Optional[str] = None):
     return DashboardManagerService.getDashboardList(query, filter)
 
 
+# 修改装备大屏host地址
 @router.get("/grafana/syncHost")
 async def grafana_sync_host(host: Optional[str] = None,
                             timeSegmentLabel: Optional[str] = None,
@@ -51,7 +53,7 @@ async def grafana_sync_host(host: Optional[str] = None,
     return GrafanaMangerService.syncHost(host, timeSegmentLabel, username, password)
 
 
-# TODO 同步修改重要的配置参数
+# 同步修改重要的配置参数
 @router.post("/conf/params")
 async def modify_primary_conf_params(msHost: Optional[str] = None, mdHost: Optional[str] = None,
                                      dbHost: Optional[str] = None, dbUser: Optional[str] = None,
@@ -63,6 +65,7 @@ async def modify_primary_conf_params(msHost: Optional[str] = None, mdHost: Optio
                                        grafanaHost, sjzyHost, schema, sample, multiSelf, clickGap)
 
 
+# 获取重要的配置参数
 @router.get("/conf/getParams")
 async def query_primary_conf_params():
     return ConfigManagerService.query()

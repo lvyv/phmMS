@@ -5,6 +5,9 @@ from services.convert.metric_mapping_utils import MetricMappingUtils
 
 
 class CellPackConvertor(IConvertor):
+    """
+    评估模型转换类型
+    """
 
     def __init__(self, equipTypeCode):
         IConvertor.__init__(self)
@@ -28,6 +31,11 @@ class CellPackConvertor(IConvertor):
             return load_dict
 
     def __has_special_key(self, key):
+        """
+        判断测点名称映射是否为特殊测点
+        :param key:
+        :return:
+        """
         if key in self.metricMappingUtils.get_own_metrics(["AM1", "AM2", "AM3", "AM4", "AM5"]):
             return True
         return False

@@ -13,6 +13,12 @@ class TimeUtils:
 
     @staticmethod
     def get_time_interval(start, end):
+        """
+        计算时间间隔
+        :param start:
+        :param end:
+        :return:
+        """
         diff = int(end / 1000 - start / 1000)
         maxPoints = constants.EQUIP_DATA_MAX_POINT
         interval = int(diff / maxPoints)

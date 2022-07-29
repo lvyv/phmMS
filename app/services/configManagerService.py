@@ -4,9 +4,30 @@ from phmconfig.config import ConfigSet
 
 class ConfigManagerService:
 
+    """
+    MS 配置文件管理服务
+    """
+
     @staticmethod
     def update(msHost, mdHost, dbHost, dbUser, dbPw, dbName,
                grafanaHost, sjzyHost, schema, sample, multiSelf, clickGap):
+
+        """
+        修改配置文件参数
+        :param msHost:  MS服务HOST地址 IP:port  | IP
+        :param mdHost:  MD服务HOST地址 IP:port | IP
+        :param dbHost:  数据库服务HOST地址 IP:port
+        :param dbUser:  数据库用户名
+        :param dbPw:    数据库密码
+        :param dbName:  数据库库名
+        :param grafanaHost:  grafana服务HOST地址 http://ip:port
+        :param sjzyHost:  数据资源服务HOST地址  http://ip:port
+        :param schema:   MS服务模式 http | https
+        :param sample:   最大采样点
+        :param multiSelf:  自相关是否支持多测点，多设备
+        :param clickGap:   执行调度的最小时间间隔
+        :return:
+        """
 
         hasModify = False
 
@@ -56,6 +77,10 @@ class ConfigManagerService:
     @staticmethod
     def query():
         conf = {}
+
+        """
+        查询MS服务配置
+        """
 
         if "phmms_container_name" in constants.cfg_keys:
             conf.update({"msHost": constants.cfg["phmms_container_name"]})

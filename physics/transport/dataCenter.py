@@ -250,6 +250,7 @@ def process_zb_history_data_relation(data, subfrom, subto):
         return None, None, None, None
 
 
+# 查询测点映射
 def query_metric_mapping(equipTypeCode):
     with httpx.Client(timeout=None, verify=False) as client:
         url = constants.URL_MD_QUERY_METRIC_MAPPING
@@ -259,6 +260,7 @@ def query_metric_mapping(equipTypeCode):
     return None
 
 
+# 通过装备类型编码查询装备类型
 def query_equip_type_by_equip_type_code(equipTypeCode):
     with httpx.Client(timeout=None, verify=False) as client:
         url = constants.URL_MD_QUERY_EQUIP_TYPE_BY_EQUIP_TYPE_CODE
