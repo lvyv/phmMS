@@ -1,4 +1,26 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2021 The CASICloud Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+# pylint: disable=invalid-name
+# pylint: disable=missing-docstring
 class ClusterDisplayUtil:
+    """
+    聚类模型类型
+    """
     DISPLAY_SCATTER = "SCATTER"
     DISPLAY_POLYLINE = "POLYLINE"
     DISPLAY_2D = "2D"
@@ -8,6 +30,12 @@ class ClusterDisplayUtil:
 
     @staticmethod
     def get_use_metrics(displayType):
+        """
+        通过模型类型获取测点
+        :param displayType:
+                模型类型
+        :return:
+        """
         values = {
             "SCATTER": ["ts", "did"],
             "2D": ["x", "y", "color", "size", "shape", "name"],
@@ -20,6 +48,14 @@ class ClusterDisplayUtil:
 
     @staticmethod
     def get_metric_value(item, metric):
+        """
+        获取测点的值
+        :param item:
+                对象
+        :param metric:
+                测点
+        :return:
+        """
         values = {
             "x": item.x,
             "y": item.y,

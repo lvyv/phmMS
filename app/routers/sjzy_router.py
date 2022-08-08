@@ -1,3 +1,22 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2021 The CASICloud Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+# pylint: disable=invalid-name
+# pylint: disable=missing-docstring
 from typing import Optional
 from fastapi import APIRouter, Depends
 
@@ -31,6 +50,15 @@ async def getEquipTypeCodeByName(equipName: str, equipCode: Optional[str] = None
 # 绑定装备类型映射
 @router.post("/updateEquipType")
 async def updateEquipType(equipTypeCode: str, equipType, db: get_db = Depends()):
+    """
+    绑定装备类型映射
+    :param equipTypeCode:
+            装备类型编码
+    :param equipType:
+            装备类型
+    :param db:
+    :return:
+    """
     # TODO 同步测点
     metrics = DataCenterService.download_zb_metric_by_type_code(equipTypeCode)
 
@@ -59,6 +87,20 @@ async def updateEquipType(equipTypeCode: str, equipType, db: get_db = Depends())
 async def dataMapping(equipTypeCode: str, metricName: str, metric_alias: str,
                       metric_describe: Optional[str] = '',
                       db: get_db = Depends()):
+    """
+    更新测点映射
+    :param equipTypeCode:
+            装备类型编码
+    :param metricName:
+            测点名称
+    :param metric_alias:
+            测点别名
+    :param metric_describe:
+            测点描述
+    :param db:
+            数据库
+    :return:
+    """
     so = MetricMappingService(db)
     result = so.update_all_metric_alias(equipTypeCode, metricName, metric_alias, metric_describe)
     return handle_result(result)
@@ -69,7 +111,9 @@ async def getAllMetrics(equipTypeCode: str, db: get_db = Depends()):
     """
     根据装备类型获取所有的测点
     :param equipTypeCode:
+            装备类型编码
     :param db:
+            数据库
     :return:
     """
     so = MetricMappingService(db)
@@ -79,6 +123,14 @@ async def getAllMetrics(equipTypeCode: str, db: get_db = Depends()):
 
 @router.post("/syncMetrics")
 async def dataSync(equipTypeCode: str, db: get_db = Depends()):
+    """
+    通过装备测点
+    :param equipTypeCode:
+            装备类型编码
+    :param db:
+            数据库
+    :return:
+    """
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipTypeCode)
     if equipType is None or equipType is '':
         return "请先建立装备类型编码与装备类型映射表。"

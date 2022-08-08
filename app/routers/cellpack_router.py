@@ -1,3 +1,22 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2021 The CASICloud Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+# pylint: disable=invalid-name
+# pylint: disable=missing-docstring
 import logging
 from typing import Optional
 
@@ -80,8 +99,8 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
     equipType  - 装备类型编码
     equipCode  - 装备编码
     metrics    - 测点  多个测点用逗号分开
-    payload    - grafana payload
-    timeSegment  - 时间段
+    payload    - 模型调度json参数
+    timeSegment  - 历史计算时间段
     db            - 数据库
 
     Returns
@@ -125,6 +144,16 @@ async def healthEval(equipType: str, equipCode: str, metrics: str, payload: dict
 # 回写电池评估数据
 @router.post("/writeEvalBatch")
 async def writeHealthEvalBatch(reqid: int, payload: dict, db: get_db = Depends()):
+    """
+    批量写入评估数据
+    :param reqid:
+            历史记录请求ID
+    :param payload:
+            评估数据
+    :param db:
+            数据库
+    :return:
+    """
     so = CellPackService(db)
     result = so.create_batch(reqid, json.loads(payload["items"]))
     return handle_result(result)
@@ -136,6 +165,24 @@ async def writeHealthEvalBatch(reqid: int, payload: dict, db: get_db = Depends()
 async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayType: str, payload: dict,
                          timeSegment: Optional[str] = None,
                          db: get_db = Depends()):
+    """
+    聚类接口
+    :param equipType:
+            装备类型编码
+    :param equipCode:
+            装备编码
+    :param metrics:
+            测点名称
+    :param displayType:
+            聚类类型
+    :param payload:
+            post json格式参数
+    :param timeSegment:
+            历史计算时间端
+    :param db:
+            数据库
+    :return:
+    """
     equipTypeCode = equipType
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
@@ -163,6 +210,18 @@ async def clusterDisplay(equipType: str, equipCode: str, metrics: str, displayTy
 
 @router.post("/writeClusterBatch")
 async def writeClusterDisplay(reqid: int, displayType: str, payload: dict, db: get_db = Depends()):
+    """
+    批量写聚类结果
+    :param reqid:
+            历史请求记录ID
+    :param displayType:
+            聚类类型
+    :param payload:
+            内容
+    :param db:
+            数据库
+    :return:
+    """
     so = ClusterDisplayService(db)
     result = so.create_batch(reqid, displayType, json.loads(payload["items"]))
     return handle_result(result)
@@ -175,6 +234,30 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
                         timeSegment: str, params: str,
                         subFrom: str, subTo: str,
                         db: get_db = Depends()):
+
+    """
+    自相关接口
+    :param equipType:
+            装备类型编码
+    :param equipCode:
+            装备编码
+    :param metrics:
+            测点名称
+    :param payload:
+            post json 格式参数
+    :param timeSegment:
+            历史计算时间段
+    :param params:
+            参与历史计算子时间窗
+    :param subFrom:
+            参与模型调度开始时间
+    :param subTo:
+            参与模型调度结束时间
+    :param db:
+            数据库
+    :return:
+    """
+
     equipTypeCode = equipType
 
     equipType = EquipTypeMappingService(db).getEquipTypeMapping(equipType)
@@ -232,6 +315,16 @@ async def trendRelation(equipType: str, equipCode: str, metrics: str, payload: d
 
 @router.post("/writeRelationBatch")
 async def writeClusterDisplay(reqid: int, payload: dict, db: get_db = Depends()):
+    """
+    批量写入自相关模型结果数据
+    :param reqid:
+            请求历史记录ID
+    :param payload:
+            模型计算结果数据
+    :param db:
+            数据库
+    :return:
+    """
     so = SelfRelationService(db)
     result = so.create_batch(reqid, json.loads(payload["items"]))
     return handle_result(result)

@@ -1,3 +1,22 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2021 The CASICloud Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+# pylint: disable=invalid-name
+# pylint: disable=missing-docstring
 import json
 import httpx
 from phmconfig import constants
@@ -9,6 +28,14 @@ class DataCenterService:
     # equipTypeCode: 装备类型编码
     @staticmethod
     def download_zb_type_code(equipName: str, equipCode: str = None):
+        """
+        下载装备数据库
+        :param equipName:
+                装备名称
+        :param equipCode:
+                装备编码
+        :return:
+        """
         with httpx.Client(timeout=None, verify=False) as client:
             if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
                 url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetric"
@@ -71,6 +98,12 @@ class DataCenterService:
     # 新增查询装备测点接口使用
     @staticmethod
     def download_zb_metric_by_type_code(equipTypeCode: str):
+        """
+        下载装备测点
+        :param equipTypeCode:
+                装备类型编码
+        :return:
+        """
         with httpx.Client(timeout=None, verify=False) as client:
             if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
                 url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetricByTypeCode"

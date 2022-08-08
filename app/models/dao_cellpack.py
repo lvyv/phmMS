@@ -1,3 +1,22 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2021 The CASICloud Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+# pylint: disable=invalid-name
+# pylint: disable=missing-docstring
 from phmconfig.dataConvertUtil import DataConvertUtil
 from services.main import AppCRUD
 from models.tables import TCellPack
@@ -13,6 +32,12 @@ class CellPackCRUD(AppCRUD):
     def create_record(self, item: CellPackModel) -> TCellPack:
         """
         创建一条记录
+        存放测量值：
+        39个测点
+        存放计算值：
+        5个数组测点
+        1个整形测点
+        5个浮点测点
         """
         record = TCellPack(ts=item.ts,
                            did=item.did,
