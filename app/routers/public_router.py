@@ -68,9 +68,11 @@ async def getMapping(equipTypeCode: str, db: get_db = Depends()):
 
 
 @router.put("/updateHistoryRecord")
-async def updateHistoryRecord(reqid: str, res: str, db: get_db = Depends()):
+async def updateHistoryRecord(reqid: str, res: str, canDelete: Optional[bool] = False, db: get_db = Depends()):
     """
     更新历史记录
+    :param canDelete:
+            数据发送异常，删除请求历史
     :param reqid:
             历史记录ID
     :param res:
@@ -80,7 +82,10 @@ async def updateHistoryRecord(reqid: str, res: str, db: get_db = Depends()):
     :return:
     """
     reqs = ReqHistoryService(db)
-    result = reqs.update_item(reqid, res)
+    if canDelete:
+        result = reqs.delete_by_id(reqid)
+    else:
+        result = reqs.update_item(reqid, res)
     return handle_result(result)
 
 

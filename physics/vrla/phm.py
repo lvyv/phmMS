@@ -206,7 +206,7 @@ def calculate_cluster(dataS, display):
         logging.info("complete cluster =>" + display)
     except Exception as ce:
         logging.info("stop cluster =>" + display)
-        logging.error(ce)
+        logging.exception(ce)
     return out
 
 

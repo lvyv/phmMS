@@ -73,6 +73,13 @@ executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 # threading.Thread(target=startMqtt()).start()
 
 
+def delete_write_back_history_result(reqid):
+    with httpx.Client(timeout=bcf.REST_REQUEST_TIMEOUT, verify=False) as client:
+        # 回写历史状态
+        params = {'reqid': reqid, 'res': "settled", 'canDelete': True}
+        client.put(f'{bcf.URL_MD_WRITE_REQ_HISTORY}', params=params)
+
+
 def write_back_history_result(reqid):
     with httpx.Client(timeout=bcf.REST_REQUEST_TIMEOUT, verify=False) as client:
         # 回写历史状态
@@ -146,7 +153,8 @@ def soh_task(sohin, reqid):
         # 处理结果
         post_process_vrla_soh(reqid, res)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
+        delete_write_back_history_result(reqid)
     logging.info("计算SOH完成")
 
 
@@ -159,7 +167,8 @@ def cluster_task(clusterin, reqid, displayType):
         res = phm.calculate_cluster(dataS, displayType)
         post_process_vrla_cluster(reqid, res, displayType)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
+        delete_write_back_history_result(reqid)
     logging.info("聚类计算完成: " + displayType)
 
 
@@ -180,7 +189,8 @@ def relation_task(relationin, reqid, subFrom, subTo):
         res = phm.calculate_relate(dataS, subFrom, subTo)
         post_process_vrla_relation(reqid, res)
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
+        delete_write_back_history_result(reqid)
     logging.info("自相关计算完成")
 
 
