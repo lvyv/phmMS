@@ -36,7 +36,7 @@ class DataCenterService:
                 装备编码
         :return:
         """
-        with httpx.Client(timeout=None, verify=False) as client:
+        with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
             if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
                 url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetric"
             else:
@@ -104,7 +104,7 @@ class DataCenterService:
                 装备类型编码
         :return:
         """
-        with httpx.Client(timeout=None, verify=False) as client:
+        with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
             if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
                 url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbMetricByTypeCode"
             else:

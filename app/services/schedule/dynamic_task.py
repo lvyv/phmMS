@@ -18,7 +18,7 @@
 # pylint: disable=invalid-name
 # pylint: disable=missing-docstring
 import json
-import constants
+from phmconfig import constants
 import httpx
 import logging
 import threading
@@ -63,7 +63,7 @@ class DynamicTask(object):
     @staticmethod
     def __async_task(item):
         logging.info("Schedule Task =>" + item.dids + "<=>" + item.dtags + "<==>" + item.execUrl)
-        with httpx.Client(timeout=None, verify=False) as client:
+        with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
             params = {"devices": item.dids,
                       "tags": item.dtags,
                       "startts": item.startts,

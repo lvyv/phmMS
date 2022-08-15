@@ -103,7 +103,7 @@ class GrafanaMangerService:
     @staticmethod
     def query_dashboard_list():
         dashboardUid = []
-        with httpx.Client(timeout=None, verify=False) as client:
+        with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
             url = constants.URL_MS_GET_DASHBOARD_LIST + "/api/search"
             r = client.get(url)
             dataS = r.json()
@@ -117,7 +117,7 @@ class GrafanaMangerService:
 
     @staticmethod
     def query_dashboard_by_uid(uid):
-        with httpx.Client(timeout=None, verify=False) as client:
+        with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
             url = constants.URL_MS_GET_DASHBOARD_LIST + "/api/dashboards/uid/" + uid
             r = client.get(url)
             dataS = r.json()
@@ -130,7 +130,7 @@ class GrafanaMangerService:
 
     @staticmethod
     def save_dashboard(data, username, password):
-        with httpx.Client(timeout=None, verify=False) as client:
+        with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
             url = GrafanaMangerService.url_add_auth(username, password) + "/api/dashboards/db"
             r = client.post(url, json=data)
             dataS = r.json()

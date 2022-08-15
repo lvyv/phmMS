@@ -74,7 +74,7 @@ executor_ = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 
 
 def write_back_history_result(reqid):
-    with httpx.Client(timeout=None, verify=False) as client:
+    with httpx.Client(timeout=bcf.REST_REQUEST_TIMEOUT, verify=False) as client:
         # 回写历史状态
         params = {'reqid': reqid, 'res': "settled"}
         client.put(f'{bcf.URL_MD_WRITE_REQ_HISTORY}', params=params)
@@ -94,7 +94,7 @@ def post_process_vrla_soh(reqid, items):
 
     write_back_history_result(reqid)
 
-    with httpx.Client(timeout=None, verify=False) as client:
+    with httpx.Client(timeout=bcf.REST_REQUEST_TIMEOUT, verify=False) as client:
         client.post(f'{bcf.URL_MD_WRITE_EVAL_BATCH}', params={"reqid": reqid},  json={"items": json.dumps(items)})
 
     # publish_data_to_iot(reqid, items)
@@ -104,7 +104,7 @@ def post_process_vrla_cluster(reqid, sohres, displayType):
 
     write_back_history_result(reqid)
 
-    with httpx.Client(timeout=None, verify=False) as client:
+    with httpx.Client(timeout=bcf.REST_REQUEST_TIMEOUT, verify=False) as client:
         # 聚类模型需要数据转换
         items = phm.cluster_convert(sohres)
         client.post(bcf.URL_MD_WRITE_CLUSTER_BATCH,
@@ -118,7 +118,7 @@ def post_process_vrla_relation(reqid, items):
 
     write_back_history_result(reqid)
 
-    with httpx.Client(timeout=None, verify=False) as client:
+    with httpx.Client(timeout=bcf.REST_REQUEST_TIMEOUT, verify=False) as client:
         client.post(f'{bcf.URL_MD_WRITE_SELF_RELATION_BATCH}',
                     params={"reqid": reqid},
                     json={"items": json.dumps(items)})
@@ -128,9 +128,11 @@ def post_process_vrla_relation(reqid, items):
 
 # time intensive tasks
 def soh_task(sohin, reqid):
-    # 下载装备数据
-    dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
     try:
+        logging.info("开始执行计算SOH任务")
+        # 下载装备数据
+        dataS = dataCenter.download_zb_data(sohin.devices, sohin.tags, sohin.startts, sohin.endts)
+
         mappingS = dataCenter.query_metric_mapping(sohin.equipTypeCode)
         convertMapping = {}
         if mappingS is not None:
@@ -149,8 +151,11 @@ def soh_task(sohin, reqid):
 
 
 def cluster_task(clusterin, reqid, displayType):
-    dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
     try:
+        logging.info("开始执行聚类计算任务")
+
+        dataS = dataCenter.download_zb_data(clusterin.devices, clusterin.tags, clusterin.startts, clusterin.endts)
+
         res = phm.calculate_cluster(dataS, displayType)
         post_process_vrla_cluster(reqid, res, displayType)
     except Exception as e:
@@ -169,8 +174,9 @@ def relation_task(relationin, reqid, subFrom, subTo):
                      " endTime: " + TimeUtils.convert_time_str(relationin.endts) +
                      " subFrom: " + TimeUtils.convert_time_str(subFrom) +
                      " subTo: " + TimeUtils.convert_time_str(subTo))
-    dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
     try:
+        logging.info("开始执行自相关任务")
+        dataS = dataCenter.download_zb_data(relationin.devices, relationin.tags, relationin.startts, relationin.endts)
         res = phm.calculate_relate(dataS, subFrom, subTo)
         post_process_vrla_relation(reqid, res)
     except Exception as e:

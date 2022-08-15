@@ -38,7 +38,7 @@ class DashboardManagerService:
             查询大屏列表
             :return:
             """
-            with httpx.Client(timeout=None, verify=False) as client:
+            with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
                 # url = constants.API_QUERY_HISTORY_DATA
                 url = constants.URL_MS_GET_DASHBOARD_LIST + "/api/search"
                 if query is not None:

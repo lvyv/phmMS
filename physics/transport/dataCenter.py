@@ -38,7 +38,7 @@ def download_zb_data(devs, metrics, start, end):
 # endTime: 查询结束时间  格式 yyyy-MM-dd HH:mm:ss
 # interval: 数据抽取间隔  格式 [数字][M|H|D]
 def download_zb_history_data_from(equipCode, metricName, startTime, endTime, interval):
-    with httpx.Client(timeout=None, verify=False) as client:
+    with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
         if constants.MOCK_ZB_DATA is True or constants.MOCK_ZB_DATA is "true":
             url = constants.PHMMD_URL_PREFIX + "/api/v1/mock/zbData"
         else:
@@ -271,7 +271,7 @@ def process_zb_history_data_relation(data, subfrom, subto):
 
 # 查询测点映射
 def query_metric_mapping(equipTypeCode):
-    with httpx.Client(timeout=None, verify=False) as client:
+    with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
         url = constants.URL_MD_QUERY_METRIC_MAPPING
         r = client.get(url, params={"equipTypeCode": equipTypeCode})
         dataS = r.json()
@@ -281,7 +281,7 @@ def query_metric_mapping(equipTypeCode):
 
 # 通过装备类型编码查询装备类型
 def query_equip_type_by_equip_type_code(equipTypeCode):
-    with httpx.Client(timeout=None, verify=False) as client:
+    with httpx.Client(timeout=constants.REST_REQUEST_TIMEOUT, verify=False) as client:
         url = constants.URL_MD_QUERY_EQUIP_TYPE_BY_EQUIP_TYPE_CODE
         r = client.get(url, params={"equipTypeCode": equipTypeCode})
         return r.text
