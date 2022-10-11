@@ -72,7 +72,7 @@ class DataConvertUtil:
             eqi["size"] = items[did][1]
 
         if displayType in [ClusterDisplayUtil.DISPLAY_2D, ClusterDisplayUtil.DISPLAY_3D,
-                           ClusterDisplayUtil.DISPLAY_AGG2D]:
+                           ClusterDisplayUtil.DISPLAY_AGG2D,ClusterDisplayUtil.DISPLAY_AGG3D]:
             eqi["shape"] = items[did][3]
 
         if displayType in [ClusterDisplayUtil.DISPLAY_3D, ClusterDisplayUtil.DISPLAY_AGG3D]:
