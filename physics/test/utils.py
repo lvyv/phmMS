@@ -18,6 +18,8 @@
 # pylint: disable=invalid-name
 # pylint: disable=missing-docstring
 import logging
+import os
+
 import math
 import time
 import pandas as pd
@@ -37,17 +39,20 @@ mappings = {"Voltage_measured": "测量的电压",
             "Cycle": "充电次数",
             "internal_resistance": "内阻"}
 
-BList = ["B001", "B002", "B003", "B004", "B005", "B006", "B007", "B008", "B009", "B010",
-         "B011", "B012", "B013", "B014", "B015", "B016", "B017", "B018", "B019", "B020",
-         "B021", "B022", "B023", "B024", "B025", "B026", "B027", "B028", "B029", "B030",
-         "B031", "B032", "B033", "B034", "B035", "B036", "B037", "B038", "B039", "B040"]
-nasaDataPath = Path(Path(__file__).parent).joinpath("nasaData")
 nameSpace = mappings.keys()
+
+
+def loadBList(nasaDataPath):
+    tmpList = []
+    files = os.listdir(nasaDataPath)
+    for file in files:
+        if not os.path.isdir(file) and file.endswith(".csv"):
+            tmpList.append(file.split(".")[0])
+    return tmpList
 
 
 # 加载csv格式数据
 def load_csv(path, file, ns):
-
     tmpPathPrefix = path.joinpath(file)
     strf = f'{tmpPathPrefix}.csv'
     df = pd.read_csv(strf, names=ns)
@@ -69,6 +74,10 @@ def makeTime(startTime, endTime, data_len, index):
 
 
 def convert(equipCode, metricName, startTime, endTime, maxPoints=200):
+    # resource
+    nasaDataPath = Path(Path(__file__).parent).joinpath("nasaData")
+    BList = loadBList(nasaDataPath)
+
     # 设备分割
     deviceIds = equipCode.split(",")
     metricIds = metricName.split(",")
@@ -104,7 +113,7 @@ def convert(equipCode, metricName, startTime, endTime, maxPoints=200):
                 if index < maxPoints:
                     genTag["metricData"].append({
                         "timestamp": makeTime(startTime, endTime, data_len, index),
-                        "metricValue":  0 if math.isnan(float(itval)) else itval
+                        "metricValue": 0 if math.isnan(float(itval)) else itval
                     })
             genDev["equipData"].append(genTag)
             tagNumber = tagNumber + 1
@@ -127,8 +136,3 @@ class TimeUtil:
         bj_time = time.strftime("%Y-%m-%d %H:%M:%S", time_tuple)
         # print("北京时间:", bj_time)
         return bj_time
-
-
-if __name__ == "__main__":
-    load_csv(nasaDataPath, "B001", nameSpace)
-    convert("B001,B002", "容量,健康指标", "2022-10-09 10:00:00", "2022-10-09 12:00:00")
