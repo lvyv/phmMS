@@ -153,7 +153,7 @@ def process_zb_history_data_agg2d(data):
                 devKey = equipName + metricName
                 for md in metricData:
                     timestamp = md["timestamp"]  # 时间戳
-                    metricValue = md["metricValue"]  # 测点值
+                    metricValue = round(float(md["metricValue"]), 4)  # 测点值
                     if devKey in tmpDic.keys():
                         tmpDic[devKey].append(metricValue)
                     else:

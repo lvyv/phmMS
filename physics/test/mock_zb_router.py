@@ -24,6 +24,7 @@ from typing import Optional
 
 from phmconfig import constants
 from phmconfig.timeUtils import TimeUtils
+from physics.test import utils
 
 router = APIRouter(
     prefix="/api/v1/mock",
@@ -61,6 +62,9 @@ async def getZbData(equipCode, metricName, startTime, endTime, interval: Optiona
     :param interval:
     :return:
     """
+    if True:
+        return utils.convert(equipCode, metricName, startTime, endTime, constants.EQUIP_DATA_MAX_POINT)
+
     # 根据开始数据 与 结束时间生成 时间序列
     skipK = 1
     maxPoints = int(constants.EQUIP_DATA_MAX_POINT / skipK)
@@ -138,7 +142,8 @@ async def getZbMetricByTypeCode(equipTypeCode: Optional[str] = None):
     mockPointsName = ["容量", "健康指标", "最大温度", "最小温度", "电压不平衡度", "剩余寿命", "开路电压", "端电压",
                       "内阻不平衡度", "电池单元的最大开路电压", "电池单元的最小开路电压", "电池单元的最大端电压", "内阻",
                       "电池单元的最小端电压", "电池单元的均值端电压", "电池组的环境温度（存在多个测点）", "电池单元端电压集合",
-                      "电池单元容量集合", "健康状态", "冲放电电流"]
+                      "电池单元容量集合", "健康状态", "冲放电电流",
+                      "环境温度", "充电次数", "工作温度", "测量的电流", "测量的电压","充电电流","充电电压"]
     for item in mockPointsName:
         ret["result"]["data"].append({"unit": "", "pointName": item})
     return ret

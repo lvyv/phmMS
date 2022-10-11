@@ -62,7 +62,7 @@ USING_DATABASE_TYPE = get_database_type()
 REQ_STATUS_PENDING = 'pending'
 REQ_STATUS_SETTLED = 'settled'
 # 后台ai模型的地址
-REST_REQUEST_TIMEOUT = 10
+REST_REQUEST_TIMEOUT = 180
 
 EQUIP_DATA_MAX_POINT = cfg["max_point"] if "max_point" in cfg_keys else 1000
 
