@@ -44,14 +44,14 @@ class ReqHistoryService(AppService):
             pass
         return ServiceResult(req_item)
 
-    def get_time_segment(self, equipCode, metric, displayType):
+    def get_time_segment(self, equipCode, metric, displayType, scheduleState):
         devs = equipCode.split(",")
         devs.sort()
         tags = metric.split(",")
         tags.sort()
 
         record = RequestHistoryCRUD(self.db).get_time_segment(json.dumps(devs, ensure_ascii=False),
-                                                              json.dumps(tags, ensure_ascii=False), displayType)
+                                                              json.dumps(tags, ensure_ascii=False), displayType, scheduleState)
         if len(record) <= 0:
             return ServiceResult([])
         ret = []

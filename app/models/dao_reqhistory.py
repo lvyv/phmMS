@@ -108,15 +108,21 @@ class RequestHistoryCRUD(AppCRUD):
         return records
 
     # 获取时间片段
-    def get_time_segment(self, equipCode: str, metrics: str, displayType: str):
+    def get_time_segment(self, equipCode: str, metrics: str, displayType: str, scheduleState: bool):
         """
         查询满足条件记录
         """
-        records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
-                                                         TReqHistory.status == ct.REQ_STATUS_SETTLED,
-                                                         TReqHistory.metrics == metrics,
-                                                         TReqHistory.displayType == displayType)) \
-            .order_by(desc(TReqHistory.startTs), desc(TReqHistory.endTs)).all()
+        if scheduleState is True:
+            records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
+                                                             TReqHistory.metrics == metrics,
+                                                             TReqHistory.displayType == displayType)) \
+                .order_by(desc(TReqHistory.startTs), desc(TReqHistory.endTs)).all()
+        else:
+            records = self.db.query(TReqHistory).filter(and_(TReqHistory.memo == equipCode,
+                                                             TReqHistory.status == ct.REQ_STATUS_SETTLED,
+                                                             TReqHistory.metrics == metrics,
+                                                             TReqHistory.displayType == displayType)) \
+                .order_by(desc(TReqHistory.startTs), desc(TReqHistory.endTs)).all()
         return records
 
     def get_records_by_displayType(self, displayType):

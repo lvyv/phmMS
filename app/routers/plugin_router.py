@@ -26,6 +26,7 @@ from phmconfig.database import get_db
 from services.reqhistoryService import ReqHistoryService
 from services.validate.publicModelValidate import PublicModelValidate
 from utils.service_result import handle_result, ServiceResult
+from typing import Optional
 
 router = APIRouter(
     prefix="/api/v1/public/plugin",
@@ -85,7 +86,8 @@ async def getMetricByPlugin(equipType, equipCode, displayType, db: get_db = Depe
 
 # 获取时间段
 @router.get("/timeSegment")
-async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: get_db = Depends()):
+async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, scheduleState: Optional[bool] = False,
+                                 db: get_db = Depends()):
     """
       获取用于模型计算的时间段
     Parameters
@@ -109,9 +111,9 @@ async def getTimeSegmentByPlugin(equipType, equipCode, metric, displayType, db: 
         # 评估界面获取所有测点的数据，用于评估计算 健康值，健康状态，电压不平衡度，内阻不平衡度
         result = MetricMappingService(db).get_all_mapping_by_equip_type_code(equipType)
         allMetrics = ",".join(metricName for metricName in result.values())
-        result = so.get_time_segment(equipCode, allMetrics, displayType)
+        result = so.get_time_segment(equipCode, allMetrics, displayType, scheduleState)
     else:
-        result = so.get_time_segment(equipCode, metric, displayType)
+        result = so.get_time_segment(equipCode, metric, displayType, scheduleState)
     return handle_result(result)
 
 
